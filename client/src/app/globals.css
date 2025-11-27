@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+html{
+  scroll-behavior: smooth;
+}
+
+.lightTheme{
+  @apply bg-amber-50 text-green-800;
+}
+
+.darkTheme{
+  @apply bg-[#021802] text-amber-50;
+}
+
+.pageWrapper{
+  @apply h-fit font-semibold;
+}
+
+.mainItem:hover .dropContent{
+  @apply block;
+}
+
+.dropContent{
+  @apply hidden;
+}
+
+.transitionEffect{
+  transition: 1400ms ease-in-out;
+}
