@@ -48,8 +48,8 @@ export default function SignIn(){
                              <label className="inputLabel">password</label>
                              <input type="password" className="inputs" placeholder="password"/>
                              <div className="w-full flex justify-between py-2">
-                                 <h1 className="passwordUtility">Show password ?</h1>
-                                 <h1 className="passwordUtility">Forgot password ?</h1>
+                                 <h1 className="passwordUtility">Show password?</h1>
+                                 <h1 className="passwordUtility">Forgot password?</h1>
                              </div>
                        </div>
 
@@ -62,7 +62,7 @@ export default function SignIn(){
                         </div>
                 
                         <a className="button" href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}>
-                            <button type="button">Continue With Google</button>
+                            <button type="button" className="flex justify-center w-full gap-2"><img src="/googleIcon.png" className="h-6"/>Continue With Google</button>
                         </a> 
                         <div className="utilityButton">
                              <h1 className="text-[12px]">Don’t have an account ?</h1>
