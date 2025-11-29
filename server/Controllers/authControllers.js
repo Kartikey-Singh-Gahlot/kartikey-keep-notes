@@ -46,15 +46,6 @@ const guestCreator = async (req, res)=>{
     }
 }
 
-const guestDestructor = async (req, res)=>{
-  try{
-
-  }
-  catch(err){
-
-  }
-}
-
 
 const signup = async (req, res)=>{
    const {name, email, password} = req.body;
@@ -85,9 +76,11 @@ const signout = async (req, res)=>{
     }
 }
 
-const checkAuth = async ()=>{
+const checkAuth = async (req, res)=>{
+  const {authCookie} = req.cookies;
+  console.log(authCookie);
   try{
-
+    
   }
   catch(err){
 
@@ -95,4 +88,4 @@ const checkAuth = async ()=>{
 }
 
 
-module.exports = {signin, signup, signout, checkAuth, guestCreator, guestDestructor}
+module.exports = {signin, signup, signout, checkAuth, guestCreator}

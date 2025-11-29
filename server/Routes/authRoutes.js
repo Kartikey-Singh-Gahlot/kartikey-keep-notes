@@ -1,11 +1,12 @@
-const { guestCreator } = require('../Controllers/authControllers.js');
-const {checkGuestTheme} = require("../Controllers/utilityControllers.js");
+const { guestCreator, checkAuth } = require('../Controllers/authControllers.js');
 
 const authRouter = require('express').Router();
 
 
 
 authRouter.post("/auth/guest", guestCreator );
+authRouter.get("/auth/user", checkAuth);
+
 
 
 
