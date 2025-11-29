@@ -13,7 +13,7 @@ html{
 }
 
 .pageWrapper{
-  @apply h-fit font-semibold;
+  @apply h-fit ;
 }
 
 .mainItem:hover .dropContent{

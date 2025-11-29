@@ -8,7 +8,7 @@ export function HomeNavBar({items ,itemLinks ,subItems}){
 
     let listItems = items.map((i, idx)=>{
        return(
-         <li className="transition-all px-10 py-2 relative mainItem cursor-pointer hover:bg-green-800 hover:text-white rounded-[4px]" key={idx}>
+         <li className="transition-all px-10 py-2 relative mainItem cursor-pointer hover:bg-green-800 hover:text-white rounded-[4px] " key={idx}>
             <a href={itemLinks[idx]}>
                 {i}
             </a>
@@ -20,7 +20,7 @@ export function HomeNavBar({items ,itemLinks ,subItems}){
     })
 
     return(
-        <ul className="flex min-[780px]:flex-row flex-col ">
+        <ul className="flex min-[780px]:flex-row flex-col font-semibold ">
             {listItems}
         </ul>
     )

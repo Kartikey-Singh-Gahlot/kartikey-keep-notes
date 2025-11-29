@@ -5,7 +5,8 @@ import Features from "./components/features.js";
 import Logo from "./components/logo.js";
 import "./globals.css";
 import { useEffect, useState } from "react";
-const crypto = require("crypto");
+
+
 
 export default function Home() {
 
@@ -51,9 +52,9 @@ export default function Home() {
 
 
   return (
-   <main className={`pageWrapper ${(lightTheme)?"lightTheme":"darkTheme"} transition-colors`} onClick={trgrMobileNavOff}>
+   <main className={`pageWrapper ${(lightTheme)?"lightTheme":"darkTheme"} transition-colors font-semibold`} onClick={trgrMobileNavOff}>
          <header className={`${(lightTheme)?"lightTheme":"darkTheme"} fixed w-full flex px-2 py-3 items-center box-border  transition-colors`}>
-                <div className="w-full "><Logo/></div>
+                <div className="w-full"><Logo/></div>
 
                 <nav className="pl-2 px-2 flex min-[780px]:flex-row flex-col justify-end items-center box-border w-full " >
                     <div className="min-[780px]:w-fit w-full flex justify-end"> 
@@ -72,7 +73,7 @@ export default function Home() {
                            <li className=" transition-all flex  items-center box-border cursor-pointer border-green-800 border border-[#ffffff00] text-nowrap px-4 py-1 rounded-[4px]"onClick={trgrModeChange} >
                                 <img src={`${(lightTheme)?"/darkModeIcon.png":"/lightModeIcon.png"}`} className="h-5"/>
                            </li>  
-                           <Link  href={"/auth/signup"} className=" transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer">Get Started</Link>   
+                           <Link  href={"/auth/signin"} className=" transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer">Get Started</Link>   
                         </ul>
                     </div>
                 </nav>
@@ -89,7 +90,7 @@ export default function Home() {
                     <img src={(lightTheme)?"/mainBgBlackImage.png":"/mainBgImage.png"} className="min-[780px]:h-90 h-70"/>
                     <div className="w-full flex  justify-center gap-5 items-center">
                           <h1 className="text-center">Start Noting</h1>
-                          <button><Link href={`auth/signup`} className=" transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer" >Get Started</Link></button>
+                          <button><Link href={`auth/signin`} className=" transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer" >Get Started</Link></button>
                     </div> 
                 </div>
 

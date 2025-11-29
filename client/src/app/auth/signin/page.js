@@ -30,7 +30,7 @@ export default function SignIn(){
     },[]);
 
     return(
-        <main className={`${(lightTheme)?"lightTheme":"darkTheme"} transition-colors overflow-clip`}>
+        <main className={`${(lightTheme)?"lightTheme":"darkTheme"} transition-colors overflow-clip font-semibold`}>
             <header className="fixed w-full flex justify-between px-4 py-2">
                    <Logo/>
                    <li className="transition-all flex  items-center box-border cursor-pointer border-green-800 border  text-nowrap px-4 py-1 rounded-[4px]"onClick={trgrModeChange} >
