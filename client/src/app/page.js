@@ -128,7 +128,7 @@ export default function Home() {
               <hr className={`w-full h border ${(lightTheme)?"border-[#00000018]":"border-[#ffffff25]"}`}/>
             </div>
 
-             <section className=" h-fit w-full px-4 py-10" id="contact">
+             <section className=" h-fit w-full px-4 " id="contact">
                    
                    <h1 className="w-full  py-4 px-2 text-center text-4xl">Get In Touch</h1>
                     <div className="w-full flex justify-center">
@@ -149,7 +149,7 @@ export default function Home() {
                    
 
                    <footer className=" h-fit flex flex-col py-2 justify-center ">
-                       <ul className=" flex w-full justify-center gap-5 py-10">
+                       <ul className=" flex w-full justify-center gap-5 py-2">
                           <li className="h-fit"><a className="text-[13px] flex items-center gap-1"  target="_blank" href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox?compose=GTvVlcSHxjdKGSFjBdMXjKFbqcFvvwmVlJVFZKGtdGBSmmhdpWpmdXpkfkvmzHhWXZSwtTHLckcpq"><img src={(lightTheme)?"/mailBlackIcon.png":"/mailIcon.png"} className="h-5"/>Email</a></li>
                           <li className="h-fit"><a className="text-[13px] flex items-center gap-1"  target="_blank" href="https://www.linkedin.com/in/kartikey-singh-gahlot-58020124b/"><img src={(lightTheme)?"/linkedInBlackIcon.png":"/linkedInIcon.png"} className="h-5"/>LinkedIn</a></li>
                           <li className="h-fit"><a className="text-[13px] flex items-center gap-1"  target="_blank" href="https://github.com/Kartikey-Singh-Gahlot"><img src={(lightTheme)?"/gitHubBlackIcon.png":"/gitHubIcon.png"} className="h-5"/>GitHub</a></li>
