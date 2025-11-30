@@ -67,25 +67,44 @@ const signin = async (req, res)=>{
     }
 }
 
-const signout = async (req, res)=>{
+const signOut = async (req, res)=>{
     try{
-
+     res.clearCookie('authCookie');
+     res.status(200).json({
+      status:true,
+      body:"SignOut Successfull"
+     })
     }
     catch(err){
-
+      res.status(500).json({
+        status:false,
+        body:"Internal Server Error"
+      })
     }
 }
 
 const checkAuth = async (req, res)=>{
   const {authCookie} = req.cookies;
-  console.log(authCookie);
+  if(!authCookie){
+    return res.status(409).json({
+      status:false,
+      body:"No Auth Token Found"
+    })
+  }
   try{
-    
+    const valid = jwt.verify(authCookie, process.env.SECRETKEY);
+    return res.status(200).json({
+      status:true,
+      body:"Valid Auth Token Found"
+    })
   }
   catch(err){
-
+    return res.status(500).json({
+      status:false,
+      body:"Internal Server Error"
+    })
   }
 }
 
 
-module.exports = {signin, signup, signout, checkAuth, guestCreator}
+module.exports = {signin, signup, signOut, checkAuth, guestCreator}

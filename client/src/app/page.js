@@ -5,10 +5,13 @@ import Features from "./components/features.js";
 import Logo from "./components/logo.js";
 import "./globals.css";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation.js";
 
 
 
 export default function Home() {
+
+   const router = useRouter();
 
    let [lightTheme, setLightTheme] = useState(true);
    let [mobileNav, setMobileNav] = useState(false);
@@ -25,6 +28,14 @@ export default function Home() {
       if(pr.body.lightTheme==false){
         setLightTheme(!lightTheme);
       }
+   }
+
+   async function checkAuth(){
+     const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, {method:"GET", credentials:"include", headers:{"Content-Type":"application/json"}});
+     const pr = await unp.json();
+     if(pr.status){
+       router.push("/dashboard");
+     }
    }
 
    function trgrMobileNav(){
@@ -47,6 +58,7 @@ export default function Home() {
    useEffect(()=>{
      handleResize();
      checkTheme();
+     checkAuth();
      window.addEventListener("resize", handleResize);
    },[]);
 
