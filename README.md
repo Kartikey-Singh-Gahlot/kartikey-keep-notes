@@ -3,7 +3,7 @@ A full-stack note-taking web application that allows users to securely create, e
 
 ---
 # Live Demo
-[Visit The site ](https://kartz-keep-notes-frontend.vercel.app/)
+[Visit The site ](https://kartikey-keep-notes-frontend.vercel.app)
 
 ---
 # Features
