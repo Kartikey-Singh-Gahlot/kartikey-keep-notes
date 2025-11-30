@@ -9,7 +9,12 @@ import Link from "next/link.js";
 export default function SignUp(){
 
     const [lightTheme, setLightTheme] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({name:"", email:"", password:""});
 
+    function trgrShowPassword(){
+        setShowPassword(!showPassword);
+    }
    
     async function checkTheme() {
        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/util/theme`, {method:"GET",credentials:"include", headers: { "Content-Type": "application/json"}});
@@ -39,21 +44,21 @@ export default function SignUp(){
             </header>
             <section className="formWrapper">
                   <form className="form">
-                       <label className="formHeading">SignUp User</label>
+                       <label className="formHeading">Create Your Account</label>
                        <div className="inputWrapper">
                              <label className="inputLabel">Name</label>
-                             <input type="text" className="inputs" placeholder="xyz"/>
+                             <input type="text" name="name" className="inputs" placeholder="xyz" value={formData.name}/>
                        </div>
                        <div className="inputWrapper">
                              <label className="inputLabel">Email</label>
-                             <input type="email" className="inputs" placeholder="xyz@gmail.com"/>
+                             <input type="email" name="email" className="inputs" placeholder="xyz@gmail.com" value={formData.email}/>
                        </div>
                        <div className="inputWrapper">
                              <label className="inputLabel">password</label>
-                             <input type="password" className="inputs" placeholder="password"/>
+                             <input type={(showPassword)?"text":"password"} name="password" className="inputs" placeholder="password" value={formData.password}/>
                              <div className="w-full flex justify-between  py-2 px-2">
-                                 <h1 className="passwordUtility">Show password </h1>
-                                 <h1 className="passwordUtility">Forgot password ?</h1>
+                                 <h1 className="passwordUtility " onClick={trgrShowPassword}>{(showPassword)?"Hide password?":"Show password?"}</h1>
+                                 <h1 className="passwordUtility">Forgot password?</h1>
                              </div>
                        </div>
 

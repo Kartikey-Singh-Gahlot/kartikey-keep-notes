@@ -39,7 +39,7 @@ export default function SignIn(){
             </header>
             <section className="formWrapper">
                   <form className="form">
-                       <label className="formHeading">Welcome User</label>
+                       <label className="formHeading">Login To Your Account</label>
                        <div className="inputWrapper">
                              <label className="inputLabel">Email</label>
                              <input type="email" className="inputs" placeholder="xyz@gmail.com"/>
