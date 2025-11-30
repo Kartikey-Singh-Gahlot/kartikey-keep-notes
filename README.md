@@ -3,7 +3,7 @@ A full-stack note-taking web application that allows users to securely create, e
 
 ---
 # Live Demo
-[Visit The site ](https://kartz-keep-notes-frontend.vercel.app/)
+[Visit The site ](https://kartikey-keep-notes-frontend.vercel.app)
 
 ---
 # Features
@@ -19,13 +19,13 @@ A full-stack note-taking web application that allows users to securely create, e
   - Built on MVC structure for clean and maintainable code
 
   ## Frontend
-  - Responsive UI with React.js + Tailwind CSS
-  - React Router DOM for smooth client-side navigation
+  - Responsive UI with Next.js + Tailwind CSS
+    
 ---
 # Tech Stack
-- Frontend : React.js, Tailwind CSS, React Router DOM
+- Frontend : Next.js, Tailwind CSS
 - Backend : Node.js, Express.js ( MVC structure )
 - Database : MongoDB
-- Authentication : JWT, Cookies
+- Authentication : OAuth, JWT, Cookies
 
 
