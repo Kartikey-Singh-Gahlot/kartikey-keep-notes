@@ -26,9 +26,7 @@ export default function Dashboard(){
     async function trgrSignOut(){
         const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signout`,{ method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
         const pr = await un.json();
-        if(pr.status){
-          router.push("/auth/signin");
-        }
+        console.log(pr);
     }
 
     return(
