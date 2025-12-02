@@ -6,7 +6,7 @@ const authRouter = require('express').Router();
 
 authRouter.post("/auth/guest", guestCreator );
 authRouter.get("/auth/user", checkAuth);
-authRouter.get("/auth/user/signout", signOut);
+authRouter.post("/auth/user/signout", signOut);
 
 
 
