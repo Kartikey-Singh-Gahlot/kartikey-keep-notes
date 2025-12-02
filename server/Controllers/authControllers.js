@@ -76,7 +76,7 @@ const signOut = async (req, res)=>{
         maxAge : 7*24*60*60*1000,
     }
     
-     res.cookie('authCookie',"Cleared", cookieDetails);
+     res.cookie('ClearedCookie',"Cleared", cookieDetails);
      res.status(200).json({
       httpOnly: true,
       status:true,
