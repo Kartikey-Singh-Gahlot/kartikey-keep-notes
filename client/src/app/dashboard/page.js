@@ -40,9 +40,7 @@ export default function Dashboard(){
             <button type="button" onClick={trgrSignOut}>
                    SignOut
             </button>
-            <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}>
-                Continue with Google
-           </a>
+
         </main>
     )
 }
