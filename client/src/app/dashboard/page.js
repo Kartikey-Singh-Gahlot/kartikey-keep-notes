@@ -18,7 +18,6 @@ export default function Dashboard(){
             setUserDetails(pr.body);
             return;
         }
-        router.push("/auth/signin")
       }
       getCredentials();
     },[])
