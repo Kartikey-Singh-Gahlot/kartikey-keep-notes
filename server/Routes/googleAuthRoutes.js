@@ -15,10 +15,9 @@ googleRouter.get("/auth/google/callback", passport.authenticate("google", {sessi
       const token = jwt.sign({id:req.user._id, email:req.user.email}, process.env.SECRETKEY, {expiresIn:"7d"});
       const cookieDetails = {
         httpOnly: true,
-        secure: true,     
+        secure: true,      
         sameSite: "None",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        path: "/"
+        maxAge : 7*24*60*60*1000,
       }
       res.cookie("authCookie",token, cookieDetails);
       res.redirect(`${process.env.FRONTEND_LINK_STRING}/dashboard`)
