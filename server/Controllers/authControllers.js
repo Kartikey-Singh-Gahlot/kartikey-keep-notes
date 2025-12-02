@@ -69,13 +69,14 @@ const signin = async (req, res)=>{
 
 const signOut = async (req, res)=>{
     try{
-     const cookieDetails = {
-       httpOnly: true,
-       secure: true,
-       sameSite: "None"
-     }
+    const cookieDetails = {
+        httpOnly: true,
+        secure: true,      
+        sameSite: "None",
+        maxAge : 7*24*60*60*1000,
+    }
     
-     res.clearCookie('authCookie', cookieDetails);
+     res.cookie('authCookie',"Cleared", cookieDetails);
      res.status(200).json({
       httpOnly: true,
       status:true,
