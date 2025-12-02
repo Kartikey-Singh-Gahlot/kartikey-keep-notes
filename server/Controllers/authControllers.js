@@ -75,7 +75,7 @@ const signOut = async (req, res)=>{
         sameSite: "None",
     }
     
-     res.cookie('clearCookie', "Cleared", cookieDetails);
+     res.clearCookie('authCookie', cookieDetails);
      res.status(200).json({
       status:true,
       body:"SignOut Successfull"

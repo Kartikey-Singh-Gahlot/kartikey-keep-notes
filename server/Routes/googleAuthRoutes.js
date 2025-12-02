@@ -19,7 +19,7 @@ googleRouter.get("/auth/google/callback", passport.authenticate("google", {sessi
         sameSite: "None",
         maxAge : 7*24*60*60*1000,
       }
-      res.cookie("authorizationCookie",token, cookieDetails);
+      res.cookie("authCookie",token, cookieDetails);
       res.redirect(`${process.env.FRONTEND_LINK_STRING}/dashboard`)
     }catch(err){
       return res.status(500).json({
