@@ -40,8 +40,9 @@ const getUserDetails = async (req,res)=>{
         }
       }
       const email = valid.email;
+      const cookieDetails = { httpOnly: true, secure: true, sameSite: "None", path: "/" }
       const user = await userModel.findOne({email});
-      res.clearCookie("themeCookie");
+      res.clearCookie("themeCookie", cookieDetails);
       res.status(200).json({
         status : true,
         body : {email:user.email, name:user.name, lightTheme:theme, notes:user.notes}

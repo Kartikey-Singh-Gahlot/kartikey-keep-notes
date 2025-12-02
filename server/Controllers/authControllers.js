@@ -69,8 +69,10 @@ const signin = async (req, res)=>{
 
 const signOut = async (req, res)=>{
     try{
-     res.clearCookie('authCookie');
+     const cookieDetails = { httpOnly:true , secure: true, sameSite: "None", path: "/" }
+     res.clearCookie('authCookie', cookieDetails);
      res.status(200).json({
+      httpOnly: true,
       status:true,
       body:"SignOut Successfull"
      })

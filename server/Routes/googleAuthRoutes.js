@@ -17,7 +17,8 @@ googleRouter.get("/auth/google/callback", passport.authenticate("google", {sessi
         httpOnly: true,
         secure: true,     
         sameSite: "None",
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: "/"
       }
       res.cookie("authCookie",token, cookieDetails);
       res.redirect(`${process.env.FRONTEND_LINK_STRING}/dashboard`)
