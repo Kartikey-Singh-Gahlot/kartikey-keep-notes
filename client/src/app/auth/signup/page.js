@@ -3,6 +3,7 @@ import Logo from "../../components/logo.js";
 import "../credentials.css";
 import { useState, useEffect, use } from "react";
 import Link from "next/link.js";
+import { motion } from "framer-motion";
 
 
 
@@ -35,14 +36,14 @@ export default function SignUp(){
     },[]);
 
     return(
-        <main className={`${(lightTheme)?"lightTheme":"darkTheme"} transition-colors font-semibold`}>
+        <main className={`${(lightTheme)?"lightTheme":"darkTheme"} transition-colors font-semibold overflow-hidden`}>
             <header className="fixed w-full flex justify-between px-4 py-2">
                    <Logo/>
                    <li className="transition-all flex  items-center box-border cursor-pointer border-green-800 border  text-nowrap px-4 py-1 rounded-[4px]"onClick={trgrModeChange} >
                         <img src={`${(lightTheme)?"/darkModeIcon.png":"/lightModeIcon.png"}`} className="h-5"/>
                    </li>  
             </header>
-            <section className="formWrapper">
+            <motion.section className="formWrapper" initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } } >
                   <form className="form">
                        <label className="formHeading">Create Your Account</label>
                        <div className="inputWrapper">
@@ -80,7 +81,7 @@ export default function SignUp(){
                              </Link>
                         </div>                  
                   </form>
-            </section>
+            </motion.section>
         </main>
     )
 }

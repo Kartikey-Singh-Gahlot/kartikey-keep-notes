@@ -27,3 +27,20 @@ html{
 .transitionEffect{
   transition: 1400ms ease-in-out;
 }
+
+section{
+  animation: introAnimation;
+  animation-duration: 1000ms;
+  animation-iteration-count: 1;
+}
+
+@keyframes introAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
