@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+
+html{
+  scroll-behavior: smooth;
+}
+
+.pageWrapper{
+  @apply h-screen ;
+}

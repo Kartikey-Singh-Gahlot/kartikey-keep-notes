@@ -2,12 +2,30 @@
 import Logo from "../components/logo";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { HamBurgerMenu } from "../components/hamBurgerMenu";
+import { HomeNavBar } from "../components/navBar";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import "./dashboard.css";
 
 export default function Dashboard(){
 
     const router = useRouter();
 
-    let [userDetails, setUserDetails] = useState([]);
+    const [userDetails, setUserDetails] = useState([]);
+    const [mobileNav, setMobileNav] = useState(false);
+
+    function trgrMobileNav(){
+      setMobileNav(!mobileNav);
+    }
+
+    function trgrMobileNavOff(){
+
+    }
+
+    function trgrModeChange(){
+
+    }
     
     useEffect(()=>{
       async function getCredentials() {
@@ -32,17 +50,33 @@ export default function Dashboard(){
     }
 
     return(
-        <main>
-            <header>
-                   <Logo/>
-            </header>
-            <h1>Dashboard</h1>
-            <h1>{userDetails.name}</h1>
+      <main className={`pageWrapper ${(userDetails.lightTheme)?"lightTheme":"darkTheme"} transition-colors font-semibold `} onClick={trgrMobileNavOff}>
+        <header className={`${(userDetails.lightTheme)?"lightTheme":"darkTheme"} fixed w-full flex px-5 py-3 items-center box-border  transition-colors`}>
+            <div className="w-full"><Logo/></div>
+            
+            <nav className="pl-2 px-2 flex min-[780px]:flex-row flex-col justify-end items-center box-border w-full " >
+                 <div className="min-[780px]:w-fit w-full flex justify-end "> 
+                      <HamBurgerMenu trgrMobileNav={trgrMobileNav} mobileNav={mobileNav}/>
+                 </div>
 
-            <button type="button" onClick={trgrSignOut}>
-                   SignOut
-            </button>
+                 <div className={`min-[780px]:flex min-[780px]:relative ${(mobileNav)? `${(userDetails.lightTheme)?"lightTheme":"darkTheme"}  flex absolute top-12  py-10 gap-10 left-0 w-full  items-start border-b-2 border-b-green-800`:"hidden" }  min-[780px]:flex-row flex-col`}>
+                     <HomeNavBar items={["Home", "About", "Contact"]} itemLinks={["#home", "#about", "#contact"]} />
+                     <ul className="flex flex-row  w-full box-border gap-2 px-10">
+                        <li className=" transition-all flex  items-center box-border cursor-pointer border-green-800 border border-[#ffffff00] text-nowrap px-4 py-1 rounded-[4px]"onClick={trgrModeChange} >
+                             <img src={`${(userDetails.lightTheme)?"/darkModeIcon.png":"/lightModeIcon.png"}`} className="h-5"/>
+                        </li>  
+                        <Link type="button" href={"/auth/signin"} className=" transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer"  onClick={trgrSignOut}>Sign Out</Link> 
+                     </ul>
+                 </div>
+            </nav>     
+        </header>
 
-        </main>
+        <motion.section className="h-fit w-full flex flex-col items-center justify-center px-1.5 py-20" initial={{ opacity: 0, y: 100 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } } >
+                      <h1>{`Welcome ${userDetails.name}`}</h1>
+                     
+        </motion.section>
+        
+
+      </main>
     )
 }

@@ -7,6 +7,7 @@ import "./globals.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation.js";
 import { motion } from "framer-motion";
+import { HamBurgerMenu } from "./components/hamBurgerMenu.js";
 
 
 
@@ -71,15 +72,9 @@ export default function Home() {
                 <div className="w-full"><Logo/></div>
 
                 <nav className="pl-2 px-2 flex min-[780px]:flex-row flex-col justify-end items-center box-border w-full " >
-                    <div className="min-[780px]:w-fit w-full flex justify-end"> 
-                         <div className="min-[780px]:hidden flex flex-col justify-center h-fit  gap-1 cursor-pointer" onClick={trgrMobileNav}>
-                             <hr className={`transition-all h-0.5 w-6 ${(mobileNav)?"rotate-45  translate-y-1.5 ":"rotate-0"}  bg-green-800`}/>
-                             <hr className={`transition-all h-0.5 w-6 ${(mobileNav)?"bg-[#ffffff00] border-none":" bg-green-800"}`}/>
-                             <hr className={`transition-all h-0.5 w-6 ${(mobileNav)?"-rotate-45 -translate-y-1.5":"rotate-0"}  bg-green-800`}/>
-                        </div>
+                    <div className="min-[780px]:w-fit w-full flex justify-end "> 
+                         <HamBurgerMenu trgrMobileNav={trgrMobileNav} mobileNav={mobileNav}/>
                     </div>
-                    
-
                     <div className={`min-[780px]:flex min-[780px]:relative ${(mobileNav)? `${(lightTheme)?"lightTheme":"darkTheme"}  flex absolute top-12  py-10 gap-10 left-0 w-full  items-start border-b-2 border-b-green-800`:"hidden" }  min-[780px]:flex-row flex-col`}>
                         <HomeNavBar items={["Home", "About", "Contact"]} itemLinks={["#home", "#about", "#contact"]} />
                 
@@ -94,7 +89,7 @@ export default function Home() {
          </header>
 
 
-         <motion.section className="h-fit w-full flex flex-col items-center px-1.5 py-10" initial={{ opacity: 0, y: 100 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } }  
+         <motion.section className="h-fit w-full flex flex-col items-center px-1.5 py-10" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } }  
  id="home">
 
                 <div className="w-full flex  flex-col justify-center py-10">
@@ -112,7 +107,7 @@ export default function Home() {
 
           </motion.section>
 
-           <motion.section className=" h-fit px-4  py-7 flex flex-col justify-center" initial={{ opacity: 0, y: 100 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once:true }} transition={{ duration: 0.8, ease: "easeOut" }} style={{ opacity: 0 }}   id="about">
+           <motion.section className=" h-fit px-4  py-7 flex flex-col justify-center" initial={{ opacity: 0, y: 80 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once:true }} transition={{ duration: 0.8, ease: "easeOut" }} style={{ opacity: 0 }}   id="about">
                 <h1 className="w-full box-border py-4 px-2 text-4xl">About</h1>
                 
                 <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Keep Notes makes it effortless to organize your thoughts and ideas. Whether it’s a quick note or an important reminder, everything stays just a click away.</p>
@@ -132,7 +127,7 @@ export default function Home() {
               <hr className={`w-full h border ${(lightTheme)?"border-[#00000018]":"border-[#ffffff25]"}`}/>
             </div>
 
-             <motion.section className=" h-fit w-full px-4 " initial={{opacity: 0, y: 100 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once:true }} transition={{ duration: 0.8, ease: "easeOut" }} id="contact">
+             <motion.section className=" h-fit w-full px-4 " initial={{opacity: 0, y: 80 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once:true }} transition={{ duration: 0.8, ease: "easeOut" }} id="contact">
                    
                    <h1 className="w-full  py-4 px-2 text-center text-4xl">Get In Touch</h1>
                     <div className="w-full flex justify-center">
