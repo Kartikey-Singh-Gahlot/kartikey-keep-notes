@@ -29,9 +29,9 @@ const checkGuestTheme = async (req, res)=>{
 }
 
 const getUserDetails = async (req,res)=>{
-    const {authCookie, themeCookie} = req.cookies;
+    const {authorizationCookie, themeCookie} = req.cookies;
     try{
-      const valid = jwt.verify(authCookie, process.env.SECRETKEY);
+      const valid = jwt.verify(authorizationCookie, process.env.SECRETKEY);
       let theme = true;
       if(themeCookie){
         const themeValid = jwt.verify(themeCookie, process.env.SECRETKEY);
