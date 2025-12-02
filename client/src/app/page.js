@@ -34,9 +34,9 @@ export default function Home() {
      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, {method:"GET", credentials:"include", headers:{"Content-Type":"application/json"}});
      const pr = await unp.json();
      console.log(pr);
-     if(pr.status){
-       router.push("/dashboard");
-     }
+    //  if(pr.status){
+    //    router.push("/dashboard");
+    //  }
    }
 
    function trgrMobileNav(){
