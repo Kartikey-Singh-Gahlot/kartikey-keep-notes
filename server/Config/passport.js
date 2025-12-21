@@ -1,3 +1,4 @@
+const notesModel = require('../Models/notesModel.js');
 const userModel = require('../Models/userModel.js');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -25,15 +26,21 @@ passport.use(new GoogleStrategy({
               googleId: profile.id,
               password: null,
               lightTheme: true,
-              notes: [],  
+              isVerified : true 
             });
+            const newNote = new notesModel({
+               notesTitle : `Welcome ${user.name}`,
+               notesContent :"Welcome team keep notes welcomes you",
+               user:user._id
+            });
+            await newNote.save();
+            user.notes.push(newNote._id);
             await user.save();
          }
       }
       return cb(null, user);
     }
     catch(err){
-        console.error("Google Auth Error:", err);
         return done(err, null);
     }
   }

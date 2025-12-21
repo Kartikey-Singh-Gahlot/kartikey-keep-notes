@@ -8,7 +8,10 @@ googleRouter.get("/auth/google",passport.authenticate("google",{scope:["profile"
 
 googleRouter.get("/auth/google/callback", passport.authenticate("google", {session:false}),
   (req, res)=>{
+    const {themeCookie} = req.cookies;
     try{
+      const themeValid = jwt.verify(themeCookie, process.env.SECRETKEY);
+      
       if(!req.user){ 
         return res.redirect(`${process.env.FRONTEND_LINK_STRING}/auth/signup`)
       }

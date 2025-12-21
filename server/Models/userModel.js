@@ -7,7 +7,10 @@ const usersSchema = new mongoose.Schema({
    googleId : {type:String, default:null},
    admin : {type:Boolean, default:false},
    lightTheme : {type:Boolean, default:true},
-   notes : {type:[{type:mongoose.Schema.Types.ObjectId, ref:"kpNotes"}], default:[]}
+   notes : {type:[{type:mongoose.Schema.Types.ObjectId, ref:"kpNotes"}], default:[]},
+   otp: {type:String, select:false},
+   otpExpiresAt: {type:Date, select:false},
+   isVerified : {type:Boolean, default:false}
 })
 
 

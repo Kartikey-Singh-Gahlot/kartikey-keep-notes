@@ -25,8 +25,8 @@ export default function Home() {
      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/guest`, {method:"POST",credentials:"include", headers: { "Content-Type": "application/json"}, body: JSON.stringify({lightTheme:newTheme})});
    }
 
-   async function checkTheme() {
-      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/util/theme`, {method:"GET",credentials:"include", headers: { "Content-Type": "application/json"}});
+   async function checkTheme(){
+      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/guest/theme`, {method:"GET",credentials:"include", headers: { "Content-Type": "application/json"}});
       const pr = await unp.json();
       if(pr.body.lightTheme==false){
         setLightTheme(!lightTheme);

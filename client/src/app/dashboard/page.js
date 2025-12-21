@@ -12,7 +12,9 @@ export default function Dashboard(){
 
     const router = useRouter();
 
-    const [userDetails, setUserDetails] = useState([]);
+    const [userDetails, setUserDetails] = useState({email:"",name:"", lightTheme:true, notes:[]});
+    const [lightTheme, setLightTheme] = useState(true);
+
     const [mobileNav, setMobileNav] = useState(false);
 
     function trgrMobileNav(){
@@ -20,19 +22,22 @@ export default function Dashboard(){
     }
 
     function trgrMobileNavOff(){
-
+ 
     }
 
-    function trgrModeChange(){
-
+    async function trgrModeChange(){
+      const newTheme = !lightTheme;
+      setLightTheme(newTheme);
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/guest`, {method:"POST",credentials:"include", headers: { "Content-Type": "application/json"}, body: JSON.stringify({lightTheme:newTheme})});
+ 
     }
     
     useEffect(()=>{
       async function getCredentials() {
-        const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/util/user`,{method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
+        const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`,{method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
         const pr = await un.json();
-        console.log(pr);
-        if(pr.status){
+        console.log(pr.body);
+        if(pr.status && pr.body.isVerified){
             setUserDetails(pr.body);
             return;
         }
@@ -71,9 +76,10 @@ export default function Dashboard(){
             </nav>     
         </header>
 
-        <motion.section className="h-fit w-full flex flex-col items-center justify-center px-1.5 py-20" initial={{ opacity: 0, y: 100 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } } >
-                      <h1>{`Welcome ${userDetails.name}`}</h1>
-                     
+        <motion.section className="h-fit w-full flex flex-col items-center justify-center px-1.5 py-20" initial={{ opacity: 0, y: 100 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } } >                      
+                      <ul className="w-full flex">
+                          {(userDetails.notes.length>0)?userDetails.notes.map((i, idx)=>{ return <li className="border border-green-600 rounded-3xl flex flex-col gap-2 px-2 py-5" key={idx}><h1 className=" w-full text-center text-2xl">{i.notesTitle}</h1><p className="">{i.notesContent}</p></li>}):"Nothing to show here"}
+                      </ul>
         </motion.section>
         
 

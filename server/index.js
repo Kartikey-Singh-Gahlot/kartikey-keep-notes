@@ -4,8 +4,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const setDataBaseConnection = require('./Models/database.js');
 const googleRouter = require('./Routes/googleAuthRoutes.js');
-const authRouter = require('./Routes/authRoutes.js');
-const utilityRouter = require('./Routes/utitlityRoutes.js');
+const Router = require('./Routes/routes.js');
 const passport = require("./Config/passport.js");
 
 
@@ -27,9 +26,9 @@ app.use(cors({
 app.use(passport.initialize());
 
 
-app.use("/", authRouter);
+app.use("/", Router);
 app.use("/", googleRouter);
-app.use("/", utilityRouter);
+
 
 app.listen(8080, ()=>{
     console.log("listening..")

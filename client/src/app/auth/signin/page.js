@@ -11,10 +11,16 @@ import { motion } from "framer-motion";
 export default function SignIn(){
 
     const [lightTheme, setLightTheme] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({email:"", password:""});
 
    
+    function trgrShowPassword(){
+        setShowPassword(!showPassword);
+    }
+    
     async function checkTheme() {
-       const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/util/theme`, {method:"GET",credentials:"include", headers: { "Content-Type": "application/json"}});
+       const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/guest/theme`, {method:"GET",credentials:"include", headers: { "Content-Type": "application/json"}});
        const pr = await unp.json();
        if(pr.body.lightTheme==false){
         setLightTheme(!lightTheme);
@@ -25,6 +31,16 @@ export default function SignIn(){
      const newTheme = !lightTheme;
      setLightTheme(newTheme);
      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/guest`, {method:"POST",credentials:"include", headers: { "Content-Type": "application/json"}, body: JSON.stringify({lightTheme:newTheme})});
+   }
+
+   function trgrFormChange(e){
+     setFormData((prev)=>{
+        return {...prev, [e.target.name]:e.target.value}
+     })
+   }
+
+   function trgrFormSubmit(e){
+     e.preventDefault();
    }
 
     useEffect(()=>{
@@ -39,18 +55,19 @@ export default function SignIn(){
                         <img src={`${(lightTheme)?"/darkModeIcon.png":"/lightModeIcon.png"}`} className="h-5"/>
                    </li>  
             </header>
+
             <motion.section className="formWrapper" initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } } >
-                  <form className="form">
+                  <form className="form" onSubmit={(e)=>{ trgrFormSubmit(e)}} autoComplete="new-password">
                        <label className="formHeading">Login To Your Account</label>
                        <div className="inputWrapper">
                              <label className="inputLabel">Email</label>
-                             <input type="email" className="inputs" placeholder="xyz@gmail.com"/>
+                             <input autoComplete="new-password" autoFocus required name="email" type="email" className="inputs" placeholder="xyz@gmail.com" value={formData.email} onChange={(e)=>{trgrFormChange(e)}}/>
                        </div>
                        <div className="inputWrapper">
                              <label className="inputLabel">password</label>
-                             <input type="password" className="inputs" placeholder="password"/>
+                             <input autoComplete="new-password" required  name="password" type={(showPassword)?"text":"password"} className="inputs" placeholder="password" value={formData.password} onChange={(e)=>{trgrFormChange(e)}}/>
                              <div className="w-full flex justify-between py-2">
-                                 <h1 className="passwordUtility">Show password?</h1>
+                                 <h1 className="passwordUtility" onClick={trgrShowPassword}>{(showPassword)?"✖ Hide password?":"✔ Show password?"}</h1>
                                  <h1 className="passwordUtility">Forgot password?</h1>
                              </div>
                        </div>
