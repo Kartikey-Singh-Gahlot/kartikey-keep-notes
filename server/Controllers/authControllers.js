@@ -64,7 +64,7 @@ const signup = async (req, res)=>{
      const hashedPassword = await bcrypt.hash(password, salt);
      const otp = Math.floor(1000 + Math.random() * 9000)+"";
      const hashedOtp = await bcrypt.hash(otp, salt);
-     const otpExpiry = Date.now()+10*60*1000;
+     const otpExpiry = new Date(Date.now()+10*60*1000);
      const user = new userModel({name, email, password:hashedPassword, otp:hashedOtp, otpExpiry});
      const newNote = new notesModel({
         notesTitle : `Welcome ${user.name}`,
