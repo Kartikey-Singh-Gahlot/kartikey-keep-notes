@@ -4,16 +4,18 @@ import "../credentials.css";
 import { useState, useEffect, use } from "react";
 import Link from "next/link.js";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation.js";
 
 
 
 
 export default function SignIn(){
 
+    const router = useRouter();
     const [lightTheme, setLightTheme] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({email:"", password:""});
-
+     
    
     function trgrShowPassword(){
         setShowPassword(!showPassword);
@@ -26,6 +28,14 @@ export default function SignIn(){
         setLightTheme(!lightTheme);
        }
     }
+
+    async function checkAuth(){
+     const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, {method:"GET", credentials:"include", headers:{"Content-Type":"application/json"}});
+     const pr = await unp.json();
+     if(pr.status){
+       router.push("/dashboard");
+     }
+   }
 
     async function trgrModeChange(){
      const newTheme = !lightTheme;
@@ -45,6 +55,7 @@ export default function SignIn(){
 
     useEffect(()=>{
         checkTheme();
+        checkAuth();
     },[]);
 
     return(

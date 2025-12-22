@@ -47,7 +47,7 @@ const getUserDetails = async (req,res)=>{
         res.clearCookie("themeCookie", cookieDetails);
         return res.status(200).json({
           status : true,
-          body : {email:user.email, name:user.name, lightTheme:theme, notes:user.notes}
+          body : {email:user.email, name:user.name, lightTheme:theme, notes:user.notes, isVerified:user.isVerified}
         })
       }
       return res.status(401).json({

@@ -5,11 +5,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link.js";
 import { motion } from "framer-motion";
 import OtpVerificationBox from "../../components/otpverification.js";
+import { useRouter } from "next/navigation.js";
 
 
 
 export default function SignUp(){
-
+    
+    const router = useRouter();
     const [lightTheme, setLightTheme] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [hiddenOtpBox, setHiddenOtpBox] = useState(false);
@@ -26,6 +28,14 @@ export default function SignUp(){
          setLightTheme(!lightTheme);
        }
     }
+
+    async function checkAuth(){
+     const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, {method:"GET", credentials:"include", headers:{"Content-Type":"application/json"}});
+     const pr = await unp.json();
+     if(pr.status){
+       router.push("/dashboard");
+     }
+   }
 
     async function trgrModeChange(){
      const newTheme = !lightTheme;
@@ -52,6 +62,7 @@ export default function SignUp(){
 
     useEffect(()=>{
         checkTheme();
+        checkAuth();
     },[]);
 
     return(

@@ -1,7 +1,30 @@
+"use client"
+import {useState} from "react";
 export default function OtpVerificationBox(){
+    const [formData, setFormData] = useState({one:"", two:"", three:"", four:""});
+    function trgrChange(e){
+      if (!/^\d?$/.test(e.target.value)) return;
+      setFormData((prev)=>{
+         return {...prev, [e.target.name]:e.target.value};
+      });
+
+      if(e.target.value && e.target.nextSibling){
+         e.target.nextSibling.focus();
+      }
+
+    }
     return(
-        <main>
-            <h1>Verify Otp</h1>
-        </main>
+        <form className="flex flex-col items-center p-3 rounded-2xl gap-5">
+             <h1 className="text-3xl py-2">Otp Verification</h1>
+             <p className="w-full text-[10px] text-justify">An email has been sent to the registered email id, enter here for verification</p>
+             <div className="flex justify-center gap-2 ">
+                  <input onChange={(e)=>{trgrChange(e)}} type="text" name="one" inputMode="numeric" maxLength={1}   className="border-2 text-center border-green-900 rounded w-15 h-15" value={formData.one}/>
+                  <input onChange={(e)=>{trgrChange(e)}} type="text" name="two" inputMode="numeric" maxLength={1}   className="border-2 text-center border-green-900 rounded w-15 h-15" value={formData.two}/>
+                  <input onChange={(e)=>{trgrChange(e)}} type="text" name="three" inputMode="numeric" maxLength={1} className="border-2 text-center border-green-900 rounded w-15 h-15" value={formData.three}/>
+                  <input onChange={(e)=>{trgrChange(e)}} type="text" name="four" inputMode="numeric" maxLength={1}  className="border-2 text-center border-green-900 rounded w-15 h-15" value={formData.four}/>
+             </div>
+             <button type="submit" className="bg-green-900 text-white rounded-2xl px-20 py-2">Submit</button>
+             <div className="flex"><h1 className="px-1">didn't received mail ?</h1><button>resend</button></div>
+        </form>
     )
 }
