@@ -73,7 +73,7 @@ const signup = async (req, res)=>{
      await newNote.save()
      user.notes.push(newNote._id);
      await user.save();
-     mailerFunction(email, "Otp Verification", otpVerificationMailTemplate(otp));
+     await mailerFunction(email, "Otp Verification", otpVerificationMailTemplate(otp));
      const token = jwt.sign({id:user._id, email:user.email}, process.env.SECRETKEY, {expiresIn:"7d"});
      const cookieDetails ={
         httpOnly: true,
