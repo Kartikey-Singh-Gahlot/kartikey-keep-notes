@@ -19,11 +19,12 @@ Router.post("/auth/user",signup);
 Router.get("/guest/theme", checkGuestTheme);
 Router.get("/user", getUserDetails);
 
-Router.get("/mail",  (req, res)=>{ 
+Router.get("/mail",  async (req, res)=>{ 
     try{
-      mailerFunction("2002kartz@gmail.com", "Otp Verification", otpVerificationMailTemplate("test")); 
+      const unpr = await mailerFunction("2002kartz@gmail.com", "Otp Verification", otpVerificationMailTemplate("test")); 
       return res.status(200).json({
-        body:"Sent mail"
+        body:"Sent mail",
+        details : unpr
       })
     }
     catch(err){
