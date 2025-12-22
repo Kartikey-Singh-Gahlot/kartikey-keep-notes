@@ -37,7 +37,7 @@ export default function Dashboard(){
         const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`,{method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
         const pr = await un.json();
       
-        if(pr.status && pr.body.isVerified){
+        if(pr.status){
             setUserDetails(pr.body);
             return;
         }
