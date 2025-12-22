@@ -12,6 +12,16 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+transporter.verify((err, success) => {
+  if (err) {
+    console.error("❌ SMTP VERIFY FAILED");
+    console.error(err);
+  } else {
+    console.log("✅ SMTP READY");
+  }
+});
+
+
 
 const mailerFunction = async (to, sub, msg)=>{
   try{
