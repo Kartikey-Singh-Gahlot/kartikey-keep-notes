@@ -13,11 +13,11 @@ const transporter = nodemailer.createTransport({
 });
 
 transporter.verify((err, success) => {
-  if (err) {
-    console.error("❌ SMTP VERIFY FAILED");
+  if(err) {
+    console.error("SMTP VERIFY FAILED");
     console.error(err);
   } else {
-    console.log("✅ SMTP READY");
+    console.log("SMTP READY");
   }
 });
 
@@ -26,7 +26,7 @@ transporter.verify((err, success) => {
 const mailerFunction = async (to, sub, msg)=>{
   try{
       await transporter.sendMail({
-        from: `"Keep Notes" <${process.env.SMTP_USER}>`, 
+        from: `Keep Notes <${process.env.SMTP_USER}>`, 
         to:to,
         subject:sub,
         html:msg

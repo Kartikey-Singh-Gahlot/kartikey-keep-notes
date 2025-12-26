@@ -3,7 +3,6 @@ import Logo from "../../components/logo.js";
 import "../credentials.css";
 import { useState, useEffect, use } from "react";
 import Link from "next/link.js";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation.js";
 
 
@@ -67,7 +66,7 @@ export default function SignIn(){
                    </li>  
             </header>
 
-            <motion.section className="formWrapper" initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } } >
+            <section className="formWrapper" >
                   <form className="form" onSubmit={(e)=>{ trgrFormSubmit(e)}} autoComplete="new-password">
                        <label className="formHeading">Login To Your Account</label>
                        <div className="inputWrapper">
@@ -101,7 +100,7 @@ export default function SignIn(){
                              </Link>
                         </div>                   
                   </form>
-            </motion.section>
+            </section>
         </main>
     )
 }

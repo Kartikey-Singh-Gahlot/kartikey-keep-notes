@@ -26,7 +26,7 @@ const guestCreator = async (req, res)=>{
     }
     else{
        try{
-        const valid = jwt.verify(themeCookie, process.env.SECRETKEY);
+        jwt.verify(themeCookie, process.env.SECRETKEY);
         const themeDetails = jwt.sign({lightTheme}, process.env.SECRETKEY);
         const cookieDetails = {
           httpOnly: true,
@@ -60,10 +60,11 @@ const signup = async (req, res)=>{
      })
    }
    try{
-     const salt = await bcrypt.genSalt();
-     const hashedPassword = await bcrypt.hash(password, salt);
+     const salt1 = await bcrypt.genSalt();
+     const hashedPassword = await bcrypt.hash(password, salt1);
      const otp = Math.floor(1000 + Math.random() * 9000)+"";
-     const hashedOtp = await bcrypt.hash(otp, salt);
+     const salt2 = await bcrypt.genSalt();
+     const hashedOtp = await bcrypt.hash(otp.toString(), salt2);
      const otpExpiry = new Date(Date.now()+10*60*1000);
      const user = new userModel({name, email, password:hashedPassword, otp:hashedOtp, otpExpiry});
      const newNote = new notesModel({
@@ -138,7 +139,7 @@ const checkAuth = async (req, res)=>{
     })
   }
   try{
-    const valid = jwt.verify(authCookie, process.env.SECRETKEY);
+    jwt.verify(authCookie, process.env.SECRETKEY);
     return res.status(200).json({
       status:true,
       body:"Valid Auth Token Found"
@@ -152,5 +153,54 @@ const checkAuth = async (req, res)=>{
   }
 }
 
+const otpVerification = async (req, res)=>{
+    const {otp} = req.body;
+    const {authCookie} = req.cookies;
+    if(!authCookie){
+      return res.status(409).json({
+        status:false,
+        body:"No Auth Token Found"
+      })
+    }
+    try{
+      const valid = jwt.verify(authCookie,process.env.SECRETKEY);
+      const user = await userModel.findOne({email:valid.email}) .select("+otp +otpExpiry");
+      if(!user){
+        return res.status(404).json({
+          status:false,
+          body:"No User Found"
+        });
+      }
+      if(!user.otpExpiry || Date.now()>user.otpExpiry){
+        return res.status(400).json({
+          status:false,
+          body:"Otp Expired"
+        })
+      }
 
-module.exports = {signin, signup, signOut, checkAuth, guestCreator}
+      const otpValidity = await bcrypt.compare(otp.toString(), user.otp);
+      if(!otpValidity){
+        return res.status(401).json({
+          status:false,
+          body:"Invalid Otp"
+        })
+      }
+      user.isVerified = true;
+      user.otp = undefined;
+      user.otpExpiry = undefined;
+      await user.save();
+      return res.status(200).json({
+        status:true,
+        body:"Otp Verified"
+      });
+    }
+    catch(err){
+      return res.status(200).json({
+        status:false,
+        body :`Internal Server Error ${err.message}`
+      })
+    }
+}
+
+
+module.exports = {signin, signup, signOut, checkAuth, guestCreator, otpVerification}

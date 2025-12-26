@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { HamBurgerMenu } from "../components/hamBurgerMenu";
 import { HomeNavBar } from "../components/navBar";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import "./dashboard.css";
 
@@ -36,12 +35,12 @@ export default function Dashboard(){
       async function getCredentials() {
         const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`,{method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
         const pr = await un.json();
-      
+        console.log(pr);
         if(pr.status){
             setUserDetails(pr.body);
             return;
         }
-        router.push("/auth/signin");
+       
       }
       getCredentials();
     },[])
@@ -76,11 +75,11 @@ export default function Dashboard(){
             </nav>     
         </header>
 
-        <motion.section className="h-fit w-full flex flex-col items-center justify-center px-1.5 py-20" initial={{ opacity: 0, y: 100 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" } } >                      
+        <section className="h-fit w-full flex flex-col items-center justify-center px-1.5 py-20"  >                      
                       <ul className="w-full flex">
                           {(userDetails.notes.length>0)?userDetails.notes.map((i, idx)=>{ return <li className="border border-green-600 rounded-3xl flex flex-col gap-2 px-2 py-5" key={idx}><h1 className=" w-full text-center text-2xl">{i.notesTitle}</h1><p className="">{i.notesContent}</p></li>}):"Nothing to show here"}
                       </ul>
-        </motion.section>
+        </section>
         
 
       </main>

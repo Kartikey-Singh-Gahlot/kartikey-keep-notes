@@ -1,20 +1,34 @@
 "use client"
+import { useRouter } from "next/navigation.js";
 import {useState} from "react";
+
 export default function OtpVerificationBox(){
     const [formData, setFormData] = useState({one:"", two:"", three:"", four:""});
+    const router = useRouter();
+
+    async function trgrFormSubmit(e){
+      e.preventDefault();
+      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/otpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
+      const pr = await unp.json();
+      if(pr.status){
+        router.push("/dashboard");
+        return;
+      } 
+      
+    }
+
     function trgrChange(e){
       if (!/^\d?$/.test(e.target.value)) return;
       setFormData((prev)=>{
          return {...prev, [e.target.name]:e.target.value};
       });
-
       if(e.target.value && e.target.nextSibling){
          e.target.nextSibling.focus();
       }
 
     }
     return(
-        <form className="flex flex-col items-center p-3 rounded-2xl gap-5">
+        <form className="flex flex-col items-center p-3 rounded-2xl gap-5" onSubmit={(e)=>{trgrFormSubmit(e)}}>
              <h1 className="text-3xl py-2">Otp Verification</h1>
              <p className="w-full text-[10px] text-justify">An email has been sent to the registered email id, enter here for verification</p>
              <div className="flex justify-center gap-2 ">
