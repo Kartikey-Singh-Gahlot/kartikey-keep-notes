@@ -11,7 +11,6 @@ googleRouter.get("/auth/google/callback", passport.authenticate("google", {sessi
     const {themeCookie} = req.cookies;
     try{
       const themeValid = jwt.verify(themeCookie, process.env.SECRETKEY);
-      
       if(!req.user){ 
         return res.redirect(`${process.env.FRONTEND_LINK_STRING}/auth/signup`)
       }
@@ -27,7 +26,7 @@ googleRouter.get("/auth/google/callback", passport.authenticate("google", {sessi
     }catch(err){
       return res.status(500).json({
         status : false,
-        body : "Internal Server Error"
+        body : `Internal Server Error : ${err.message}`
       })
     }
   }

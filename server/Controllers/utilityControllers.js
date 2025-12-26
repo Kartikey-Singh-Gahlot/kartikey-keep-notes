@@ -6,7 +6,15 @@ require('dotenv').config();
 const checkGuestTheme = async (req, res)=>{
   const {themeCookie} = req.cookies;
   if(!themeCookie){
-    res.status(400).json({
+    const themeDetails = jwt.sign({lightTheme:true}, process.env.SECRETKEY);
+    const cookieDetails = {
+      httpOnly: true,
+      secure: true,      
+      sameSite: "None",
+      maxAge : 7*24*60*60*1000,
+    }
+    res.cookie("themeCookie", themeDetails, cookieDetails);
+    return res.status(400).json({
         status:false,
         body :"New User"
     })
@@ -31,24 +39,32 @@ const checkGuestTheme = async (req, res)=>{
 
 const getUserDetails = async (req,res)=>{
     const {authCookie, themeCookie} = req.cookies;
-    let theme = true;
+    const cookieDetails = { httpOnly: true, secure: true, sameSite: "None", path: "/" }
     try{
-      if(themeCookie){
-         const themeValid = jwt.verify(themeCookie, process.env.SECRETKEY);
-         if(themeValid?.lightTheme==false){
-            theme = false;
-         }
-      }
       if(authCookie){
         const valid = jwt.verify(authCookie, process.env.SECRETKEY);
         const email = valid.email;
-        const cookieDetails = { httpOnly: true, secure: true, sameSite: "None", path: "/" }
         const user = await userModel.findOne({email}).populate("notes");
+        if(!user){
+          return res.status(404).json({
+            status:false,
+            body:"User Not Found"
+          });
+        }
         res.clearCookie("themeCookie", cookieDetails);
         return res.status(200).json({
           status : true,
-          body : {email:user.email, name:user.name, lightTheme:theme, notes:user.notes, isVerified:user.isVerified}
+          body : {email:user.email, name:user.name, lightTheme:user.lightTheme, notes:user.notes, isVerified:user.isVerified}
         })
+      }
+      if(themeCookie){
+          const themeValid = jwt.verify(themeCookie, process.env.SECRETKEY);
+          return res.status(200).json({
+          status: true,
+          body: {
+            lightTheme: themeValid.lightTheme
+          }
+      }); 
       }
       return res.status(401).json({
         status:false,
