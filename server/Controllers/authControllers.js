@@ -52,17 +52,6 @@ const guestCreator = async (req, res)=>{
 
 const signup = async (req, res)=>{
    const {name, email, password} = req.body;
-   const {themeCookie} = req.cookies;
-   let theme = true;
-   if(themeCookie){
-      try{
-        const validTheme = jwt.verify(themeCookie, process.env.SECRETKEY);
-      }
-      catch(err){
-
-      }
-      
-   }
    const exists = await userModel.findOne({email});
    if(exists){
      return res.status(409).json({

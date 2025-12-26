@@ -12,20 +12,22 @@ passport.use(new GoogleStrategy({
   async (accessToken, refreshToken, profile, cb) =>{
     try{
       let user = await userModel.findOne({ googleId: profile.id });
+      let newUser = false;
       if(!user){
          const email = profile?.emails?.[0]?.value;
          user = await userModel.findOne({email});
+
          if(user){
             user.googleId = profile.id;
             await user.save();
          }
          else{
+            newUser = true;
             user = new userModel({
               name: profile.displayName,
               email: email,
               googleId: profile.id,
               password: null,
-              lightTheme: true,
               isVerified : true 
             });
             const newNote = new notesModel({
@@ -38,10 +40,10 @@ passport.use(new GoogleStrategy({
             await user.save();
          }
       }
-      return cb(null, user);
+      return cb(null, {user, newUser});
     }
     catch(err){
-        return done(err, null);
+        return  cb(err, null);
     }
   }
 ));

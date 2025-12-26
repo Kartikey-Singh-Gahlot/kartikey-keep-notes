@@ -59,6 +59,8 @@ const getUserDetails = async (req,res)=>{
       }
       if(themeCookie){
           const themeValid = jwt.verify(themeCookie, process.env.SECRETKEY);
+          await userModel.findOneAndUpdate({email}, {lightTheme:themeValid.lightTheme});
+          await user.save();
           return res.status(200).json({
           status: true,
           body: {
