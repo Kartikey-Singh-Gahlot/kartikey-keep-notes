@@ -3,9 +3,10 @@ import Logo from "../../components/logo.js";
 import "../credentials.css";
 import { useState, useEffect } from "react";
 import Link from "next/link.js";
-import OtpVerificationBox from "../../components/otpverification.js";
 import { useRouter } from "next/navigation.js";
 import Loader from "../../components/loader.js";
+import SignupOtpVerificationBox from "../../components/signupOtpverification.js";
+import { toast } from "sonner";
 
 
 
@@ -58,11 +59,18 @@ export default function SignUp(){
      try{
         const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signup`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify(formData)});
         const pr = await unp.json();
-        if(pr.status){
+        if(pr.status && pr.code=="OTP_VERIFICARION_REQUIRED"){
+          toast.s
           setHiddenOtpBox(true);
           return;
         }
-        alert(pr.body);
+        if(!pr.status && pr.code=="USER_EXISTS"){
+          toast.error("User already exists. Redirecting to login...",{ duration: 1000,});
+          setTimeout(()=>{
+           router.push("/auth/signin");
+          },1000);
+          return;
+        }
      }
      catch(err){
        alert("Server Error");
@@ -73,6 +81,7 @@ export default function SignUp(){
 
 
     useEffect(()=>{
+       
         checkTheme();
         checkAuth();
     },[]);
@@ -88,7 +97,7 @@ export default function SignUp(){
                        </li>  
                 </header>
                 <section className="formWrapper" >
-                    {(hiddenOtpBox)?(<OtpVerificationBox/>):
+                    {(hiddenOtpBox)?(<SignupOtpVerificationBox/>):
                       (<form className="form" onSubmit={(e)=>{ trgrFormSubmit(e)}} autoComplete="new-password">
                            <label className="formHeading">Create Your Account</label>
                            <div className="inputWrapper">

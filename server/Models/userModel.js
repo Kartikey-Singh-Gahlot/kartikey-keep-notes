@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const usersSchema = new mongoose.Schema({
    name : {type:String, default:"guest"},
    email : {type:String, required:true},
-   password : {type:String, default:null},
+   password : {type:String, default:null, select:false},
    googleId : {type:String, default:null},
    admin : {type:Boolean, default:false},
    lightTheme : {type:Boolean, default:true},

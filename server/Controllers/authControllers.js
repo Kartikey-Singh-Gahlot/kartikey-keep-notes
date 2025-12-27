@@ -3,34 +3,31 @@ const notesModel = require("../Models/notesModel.js");
 const {mailerFunction} = require("../Config/nodeMailer.js");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { otpVerificationMailTemplate } = require('../Utils/emailTemplate.js');
+const { signupOtpVerificationMailTemplate, loginOtpVerificationMailTemplate } = require('../Utils/emailTemplate.js');
 require('dotenv').config();
+const cookieDetails = require("../Utils/cookieDetails.js")
+
 
 
 const guestCreator = async (req, res)=>{
    try{
-    const cookieDetails = {
-        httpOnly: true,
-        secure: true,      
-        sameSite: "None",
-        maxAge : 7*24*60*60*1000,
-    }
     const {lightTheme} = req.body;
     const themeToken = jwt.sign({lightTheme}, process.env.SECRETKEY, {expiresIn:"7d"});
     res.cookie("themeCookie", themeToken,cookieDetails);
     return res.status(200).json({
       status:true,
-      body:"Theme Preference Saved"
+      body:"Theme Preference Saved",
+      code : "THEME_PREFERENCE_SAVED"
     });
    }
    catch(err){
       return res.status(500).json({
         status: false,
-        body: "Internal Server Error"
+        body: "Internal Server Error",
+        code : "SERVER_SIDE_ERROR"
       });
    }
 }
-
 
 const signup = async (req, res)=>{
    const {name, email, password} = req.body;
@@ -38,7 +35,8 @@ const signup = async (req, res)=>{
    if(exists){
      return res.status(409).json({
        status:false,
-       body: "User Exists"
+       body: "User already exists",
+       code: "USER_EXISTS"
      })
    }
    try{
@@ -57,39 +55,35 @@ const signup = async (req, res)=>{
      }
      const salt1 = await bcrypt.genSalt();
      const hashedPassword = await bcrypt.hash(password, salt1);
-     const otp = Math.floor(1000 + Math.random() * 9000)+"";
+     const otp = Math.floor(1000 + Math.random() * 9000).toString();
      const salt2 = await bcrypt.genSalt();
      const hashedOtp = await bcrypt.hash(otp.toString(), salt2);
      const otpExpiry = new Date(Date.now()+10*60*1000);
      const user = new userModel({name, email, password:hashedPassword, lightTheme:theme, otp:hashedOtp, otpExpiry});
      const newNote = new notesModel({
         notesTitle : `Welcome ${user.name}`,
-        notesContent :"Welcome team keep notes welcomes you",
+        notesContent :"Team keep notes welcomes you",
         user:user._id
      });
      await newNote.save()
      user.notes.push(newNote._id);
      await user.save();
-     await mailerFunction(email, "Otp Verification", otpVerificationMailTemplate(otp));
+     await mailerFunction(email, "Otp Verification", signupOtpVerificationMailTemplate(otp));
      const token = jwt.sign({id:user._id, email:user.email}, process.env.SECRETKEY, {expiresIn:"7d"});
-     const cookieDetails ={
-        httpOnly: true,
-        secure: true,      
-        sameSite: "None",
-        maxAge : 7*24*60*60*1000,
-     }
      res.clearCookie("themeCookie", cookieDetails);
      res.cookie("authCookie",token, cookieDetails);
      return res.status(200).json({
        status:true,
-       body : "Otp Verification Pending"
+       body : "Otp Verification Pending",
+       code : "OTP_VERIFICARION_REQUIRED"
      })
    }
    catch(err){
      console.log(err);
      return res.status(500).json({ 
        status:false,
-       body:`Internal Server Error ${err.message}`
+       body:`Internal_Server_Error ${err.message}`,
+       code :"SERVER_SIDE_ERROR"
      })
    }
 }
@@ -97,31 +91,68 @@ const signup = async (req, res)=>{
 const signin = async (req, res)=>{
     const {email, password} = req.body;
     try{
-
+      const user = await userModel.findOne({email}).select("+password +otp +otpExpiry");
+      if(!user){
+         return res.status(404).json({
+           status:false,
+           body:"No_User_Found",
+           code :"NO_USER_FOUND"
+         })
+      }  
+      if(user.googleId && !user.password){
+        const otp = Math.floor(1000+Math.random()*9000).toString();
+        const salt  = await bcrypt.genSalt();
+        const hashedOtp = await bcrypt.hash(otp, salt);
+        const otpExpiry = new Date(Date.now()+10*60*1000);
+        user.otp = hashedOtp;
+        user.otpExpiry = otpExpiry;
+        await user.save();
+        await mailerFunction(user.email, "Login Verification", loginOtpVerificationMailTemplate(otp))
+        return res.status(200).json({
+          status:true,
+          body:"Otp Verification Pending",
+          code :"OTP_VERIFICATION_REQUIRED"
+        })
+      }
+      const isValid =await bcrypt.compare(password, user.password);
+      if(!isValid){
+        return res.status(401).json({
+          status:false,
+          body:"Invalid Credentials",
+          code : "UNAUTHORIZED_ACCESS"
+        });
+      }
+      const token = jwt.sign({id:user.id, email:user.email}, process.env.SECRETKEY, {expiresIn:"7d"});
+      res.cookie("authCookie", token, cookieDetails);
+      return res.status(200).json({
+        status:true,
+        body:"Login Successful",
+        code :"LOGIN_SUCCESS"
+      })
     }
     catch(err){
-
+      return res.status(500).json({
+         status: false,
+         body: "Internal Server Error",
+         code :"SERVER_SIDE_ERROR"
+      });
     }
 }
 
 const signOut = async (req, res)=>{
     try{
-     const cookieDetails = {
-         httpOnly: true,
-         secure: true,
-         sameSite: "None",
-         path: "/"
-      }
      res.clearCookie('authCookie', cookieDetails);
      res.status(200).json({
       status:true,
-      body:"SignOut Successfull"
+      body:"SignOut Successfull",
+      code :"LOGOUT_SUCCESSFULL"
      })
     }
     catch(err){
       res.status(500).json({
         status:false,
-        body:"Internal Server Error"
+        body:"Internal Server Error",
+        code:"SERVER_SIDE_ERROR"
       })
     }
 }
@@ -129,33 +160,37 @@ const signOut = async (req, res)=>{
 const checkAuth = async (req, res)=>{
   const {authCookie} = req.cookies;
   if(!authCookie){
-    return res.status(409).json({
+    return res.status(401).json({
       status:false,
-      body:"No Auth Token Found"
+      body:"No Auth Token Found",
+      code :"UNAUTHORIZED_ACCESS"
     })
   }
   try{
     jwt.verify(authCookie, process.env.SECRETKEY);
     return res.status(200).json({
       status:true,
-      body:"Valid Auth Token Found"
+      body:"Valid Auth Token Found",
+      code :"VALIDATION_SUCCESSFULL"
     })
   }
   catch(err){
     return res.status(500).json({
       status:false,
-      body:"Internal Server Error"
+      body:"Internal Server Error",
+      code :"SERVER_SIDE_ERROR"
     })
   }
 }
 
-const otpVerification = async (req, res)=>{
+const signupOtpVerification = async (req, res)=>{
     const {otp} = req.body;
     const {authCookie} = req.cookies;
     if(!authCookie){
       return res.status(409).json({
         status:false,
-        body:"No Auth Token Found"
+        body:"No Auth Token Found",
+        code:"UNAUTHORIZED_ACCESS"
       })
     }
     try{
@@ -164,13 +199,15 @@ const otpVerification = async (req, res)=>{
       if(!user){
         return res.status(404).json({
           status:false,
-          body:"No User Found"
+          body:"No User Found",
+          code :"NO_USER_FOUND"
         });
       }
       if(!user.otpExpiry || Date.now()>user.otpExpiry){
         return res.status(400).json({
           status:false,
-          body:"Otp Expired"
+          body:"Otp Expired",
+          code:"OTP_EXPIRED"
         })
       }
 
@@ -178,7 +215,8 @@ const otpVerification = async (req, res)=>{
       if(!otpValidity){
         return res.status(401).json({
           status:false,
-          body:"Invalid Otp"
+          body:"Invalid Otp",
+          code:"INVALID_OTP"
         })
       }
       user.isVerified = true;
@@ -187,16 +225,18 @@ const otpVerification = async (req, res)=>{
       await user.save();
       return res.status(200).json({
         status:true,
-        body:"Otp Verified"
+        body:"Otp Verified",
+        code:"OTP_VERIFIED"
       });
     }
     catch(err){
       return res.status(200).json({
         status:false,
-        body :`Internal Server Error ${err.message}`
+        body :`Internal Server Error ${err.message}`,
+        code:"SERVER_SIDE_ERROR"
       })
     }
 }
 
 
-module.exports = {signin, signup, signOut, checkAuth, guestCreator, otpVerification}
+module.exports = {signin, signup, signOut, checkAuth, guestCreator, signupOtpVerification}

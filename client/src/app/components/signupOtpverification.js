@@ -2,18 +2,19 @@
 import { useRouter } from "next/navigation.js";
 import {useState} from "react";
 
-export default function OtpVerificationBox(){
+export default function SignupOtpVerificationBox(){
     const [formData, setFormData] = useState({one:"", two:"", three:"", four:""});
     const router = useRouter();
 
     async function trgrFormSubmit(e){
       e.preventDefault();
-      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/otpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
+      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signupOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
       const pr = await unp.json();
       if(pr.status){
         router.push("/dashboard");
         return;
-      } 
+      }
+      alert(pr.body); 
       
     }
 
