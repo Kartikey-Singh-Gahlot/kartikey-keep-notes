@@ -8,45 +8,27 @@ require('dotenv').config();
 
 
 const guestCreator = async (req, res)=>{
-    const {themeCookie} = req.cookies;
-    const {lightTheme} = req.body;
-    if(!themeCookie){
-      const themeDetails = jwt.sign({lightTheme}, process.env.SECRETKEY);
-      const cookieDetails = {
+   try{
+    const cookieDetails = {
         httpOnly: true,
         secure: true,      
         sameSite: "None",
         maxAge : 7*24*60*60*1000,
-      }
-      res.cookie("themeCookie", themeDetails, cookieDetails);
-      return res.status(200).json({
-        status : true,
-        body : "Guest Created"
-      })
     }
-    else{
-       try{
-        jwt.verify(themeCookie, process.env.SECRETKEY);
-        const themeDetails = jwt.sign({lightTheme}, process.env.SECRETKEY);
-        const cookieDetails = {
-          httpOnly: true,
-          secure: true,      
-          sameSite: "None",
-          maxAge : 7*24*60*60*1000,
-        }
-        res.cookie("themeCookie", themeDetails, cookieDetails);
-        return res.status(200).json({
-          status : true,
-          body : `Theme Changed : ${valid.lightTheme}`
-        })
-       }
-       catch(err){
-         res.status(500).json({
-          status :false,
-          body :"Internal server Error"
-         })
-       }
-    }
+    const {lightTheme} = req.body;
+    const themeToken = jwt.sign({lightTheme}, process.env.SECRETKEY, {expiresIn:"7d"});
+    res.cookie("themeCookie", themeToken,cookieDetails);
+    return res.status(200).json({
+      status:true,
+      body:"Theme Preference Saved"
+    });
+   }
+   catch(err){
+      return res.status(500).json({
+        status: false,
+        body: "Internal Server Error"
+      });
+   }
 }
 
 
@@ -60,13 +42,26 @@ const signup = async (req, res)=>{
      })
    }
    try{
+     const {themeCookie} = req.cookies;
+     let theme = true;
+     if(themeCookie){
+       try{
+         const validTheme = jwt.verify(themeCookie, process.env.SECRETKEY);
+         if(!validTheme.lightTheme){
+           theme = false;
+         } 
+       }
+       catch(err){
+          console.log(err);
+       }
+     }
      const salt1 = await bcrypt.genSalt();
      const hashedPassword = await bcrypt.hash(password, salt1);
      const otp = Math.floor(1000 + Math.random() * 9000)+"";
      const salt2 = await bcrypt.genSalt();
      const hashedOtp = await bcrypt.hash(otp.toString(), salt2);
      const otpExpiry = new Date(Date.now()+10*60*1000);
-     const user = new userModel({name, email, password:hashedPassword, otp:hashedOtp, otpExpiry});
+     const user = new userModel({name, email, password:hashedPassword, lightTheme:theme, otp:hashedOtp, otpExpiry});
      const newNote = new notesModel({
         notesTitle : `Welcome ${user.name}`,
         notesContent :"Welcome team keep notes welcomes you",
@@ -83,6 +78,7 @@ const signup = async (req, res)=>{
         sameSite: "None",
         maxAge : 7*24*60*60*1000,
      }
+     res.clearCookie("themeCookie", cookieDetails);
      res.cookie("authCookie",token, cookieDetails);
      return res.status(200).json({
        status:true,

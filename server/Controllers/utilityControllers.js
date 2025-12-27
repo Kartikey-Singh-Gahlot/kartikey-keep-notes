@@ -38,7 +38,7 @@ const checkGuestTheme = async (req, res)=>{
 }
 
 const getUserDetails = async (req,res)=>{
-    const {authCookie, themeCookie} = req.cookies;
+    const {authCookie} = req.cookies;
     const cookieDetails = { httpOnly: true, secure: true, sameSite: "None", path: "/" }
     try{
       if(authCookie){
@@ -51,22 +51,10 @@ const getUserDetails = async (req,res)=>{
             body:"User Not Found"
           });
         }
-        res.clearCookie("themeCookie", cookieDetails);
         return res.status(200).json({
           status : true,
           body : {email:user.email, name:user.name, lightTheme:user.lightTheme, notes:user.notes, isVerified:user.isVerified}
         })
-      }
-      if(themeCookie){
-          const themeValid = jwt.verify(themeCookie, process.env.SECRETKEY);
-          await userModel.findOneAndUpdate({email}, {lightTheme:themeValid.lightTheme});
-          await user.save();
-          return res.status(200).json({
-          status: true,
-          body: {
-            lightTheme: themeValid.lightTheme
-          }
-      }); 
       }
       return res.status(401).json({
         status:false,
