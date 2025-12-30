@@ -7,7 +7,7 @@ import "./globals.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation.js";
 import { HamBurgerMenu } from "./components/hamBurgerMenu.js";
-
+import ContactForm from "./components/contactForm.js";
 
 
 export default function Home() {
@@ -105,7 +105,7 @@ export default function Home() {
 
           </section>
 
-           <section className=" h-fit px-4  py-7 flex flex-col justify-center"   id="about">
+           <section className=" h-fit px-4  py-7 flex flex-col justify-center" id="about">
                 <h1 className="w-full box-border py-4 px-2 text-4xl">About</h1>
                 
                 <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Keep Notes makes it effortless to organize your thoughts and ideas. Whether it’s a quick note or an important reminder, everything stays just a click away.</p>
@@ -133,14 +133,7 @@ export default function Home() {
                     </div>
 
                    <div className="flex w-full justify-center py-2">
-                        <form className="flex flex-col  gap-2 p-4 rounded-2xl ">
-                            <input className="rounded-2xl border-green-800 border-2 w-[30vw] min-w-[250px] h-10 text-center placeholder-gray-400 " placeholder="Email"/>
-                            <input className="rounded-2xl border-green-800 border-2 w-[30vw] min-w-[250px] h-10 text-center placeholder-gray-400 " placeholder="Subject"/>
-                            <textarea className="rounded-2xl border-green-800 border-2  text-center min-h-40">
-                                 
-                            </textarea>
-                            <button type="submit" className="transition-colors text-nowrap px-4 py-2 rounded-2xl  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer">Send</button>
-                        </form>
+                        <ContactForm/>
                    </div>
                     
                    
