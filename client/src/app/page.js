@@ -133,7 +133,7 @@ export default function Home() {
                     </div>
 
                    <div className="flex w-full justify-center py-2">
-                        <ContactForm/>
+                        <ContactForm lightTheme={lightTheme}/>
                    </div>
                     
                    

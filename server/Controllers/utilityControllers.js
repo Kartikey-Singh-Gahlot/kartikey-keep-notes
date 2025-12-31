@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../Models/userModel.js');
-const notesModel = require('../Models/notesModel.js');
+const { mailerFunction } = require('../Config/nodeMailer.js');
+const {contactMailTemplate, contactAcknowledgementMailTemplate} = require("../Utils/emailTemplate.js");
 require('dotenv').config();
 
 const checkGuestTheme = async (req, res)=>{
@@ -103,4 +104,31 @@ const setUserTheme = async (req, res)=>{
 
 }
 
-module.exports = {checkGuestTheme, getUserDetails, setUserTheme}
+const contact = async (req, res)=>{
+  try{
+    const {sender, message} = req.body;
+    if(!sender || !message){
+      return res.status(400).json({
+        status:false,
+        body:"Sender email and message are required"
+      });
+    }
+    await mailerFunction(process.env.ADMIN_USERID, "User contact from contact form", contactMailTemplate(sender, message));
+    await mailerFunction(sender, "Acknowledgement", contactAcknowledgementMailTemplate(sender));
+
+    return res.status(200).json({
+      status:true,
+      body:"Email has been sent"
+    })
+  }
+  catch(err){
+   console.log(err);
+   return res.status(500).json({
+    status:false,
+    body:`Internal Server Error : ${err.message}`
+   })
+  }
+
+}
+
+module.exports = {checkGuestTheme, getUserDetails, setUserTheme, contact}

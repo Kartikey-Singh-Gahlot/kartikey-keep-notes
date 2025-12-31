@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 const signupOtpVerificationMailTemplate = (msg)=>{
     return (`
@@ -88,5 +89,100 @@ const loginOtpVerificationMailTemplate = (otp) => {
   `);
 };
 
+const contactMailTemplate = ( email, message) => {
+  return `
+    <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 30px;">
+      <div style="max-width: 520px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
 
-module.exports = {signupOtpVerificationMailTemplate, loginOtpVerificationMailTemplate};
+        <h2 style="text-align: center; color: #15803d; margin-bottom: 10px;">
+          New Contact Message
+        </h2>
+
+        <p style="font-size: 15px; color: #555;">
+          You have received a new message from your website contact form.
+        </p>
+
+        <div style="margin: 20px 0; padding: 15px; background-color: #f9fafb; border-radius: 6px;">
+          <p style="font-size: 14px; color: #333; margin: 0;">
+            <strong>Sender Email:</strong>
+          </p>
+          <p style="font-size: 14px; color: #15803d; margin-top: 4px;">
+            ${email}
+          </p>
+        </div>
+
+        <div style="margin: 20px 0;">
+          <p style="font-size: 14px; color: #333;">
+            <strong>Message:</strong>
+          </p>
+          <div style="margin-top: 8px; padding: 15px; background-color: #f9fafb; border-left: 4px solid #15803d; border-radius: 6px; color: #444; font-size: 14px; line-height: 1.6;">
+            ${message}
+          </div>
+        </div>
+
+        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e5e7eb;" />
+
+        <p style="font-size: 12px; color: #999; text-align: center;">
+          © ${new Date().getFullYear()} Kartikey Keep Notes. All rights reserved.
+        </p>
+
+      </div>
+    </div>
+  `;
+};
+
+const contactAcknowledgementMailTemplate = (email) => {
+  return `
+    <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 30px;">
+      <div style="max-width: 520px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+
+        <h2 style="text-align: center; color: #15803d; margin-bottom: 10px;">
+          Kartikey Keep Notes
+        </h2>
+
+        <p style="font-size: 16px; color: #333;">
+          Hello,
+        </p>
+
+        <p style="font-size: 15px; color: #555;">
+          Thank you for reaching out to <strong>Kartikey Keep Notes</strong>.
+          We have successfully received your message and our team will get back to you as soon as possible.
+        </p>
+
+        <div style="margin: 20px 0; padding: 15px; background-color: #f9fafb; border-left: 4px solid #15803d; border-radius: 6px;">
+          <p style="font-size: 14px; color: #333; margin: 0;">
+            <strong>Your Email:</strong>
+          </p>
+          <p style="font-size: 14px; color: #15803d; margin-top: 4px;">
+            ${email}
+          </p>
+        </div>
+
+        <p style="font-size: 15px; color: #555;">
+          If your query is urgent, you can also reach us through the following channels:
+        </p>
+
+        <ul style="font-size: 14px; color: #555; line-height: 1.8; padding-left: 18px;">
+          <li>Email: <strong>${process.env.ADMIN_USERID}</strong></li>
+        </ul>
+
+        <p style="font-size: 14px; color: #777; margin-top: 20px;">
+          Please do not reply to this automated email.  
+          Our team will contact you shortly if required.
+        </p>
+
+        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e5e7eb;" />
+
+        <p style="font-size: 12px; color: #999; text-align: center;">
+          © ${new Date().getFullYear()} Kartikey Keep Notes. All rights reserved.
+        </p>
+
+      </div>
+    </div>
+  `;
+};
+
+
+
+
+module.exports = {signupOtpVerificationMailTemplate, loginOtpVerificationMailTemplate, contactMailTemplate, contactAcknowledgementMailTemplate};

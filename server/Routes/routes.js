@@ -1,6 +1,6 @@
 const { guestCreator, checkAuth, signOut, signup, signin, signupOtpVerification } = require('../Controllers/authControllers.js');
-const {getUserDetails, checkGuestTheme} = require("../Controllers/utilityControllers.js");
-
+const {getUserDetails, checkGuestTheme, contact} = require("../Controllers/utilityControllers.js");
+const limiter = require("../Middlewares/rateLimiter.js");
 
 const Router = require('express').Router();
 
@@ -23,6 +23,7 @@ Router.post("/auth/user/signin",signin);
 
 Router.get("/guest/theme", checkGuestTheme);
 Router.get("/user", getUserDetails);
+Router.post("/contact", limiter, contact);
 
 
 
