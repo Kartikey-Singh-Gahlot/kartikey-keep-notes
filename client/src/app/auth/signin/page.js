@@ -90,8 +90,8 @@ export default function SignIn(){
                             <hr className=" border w-full"/>
                         </div>
                 
-                        <a className="button" href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}>
-                            <button type="button" className="flex justify-center w-full gap-2"><img src="/googleIcon.png" className="h-6"/>Continue With Google</button>
+                        <a className="button " href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}>
+                            <button type="button" className="flex justify-center w-full gap-2 "><img src="/googleIcon.png" className="h-6"/>Continue With Google</button>
                         </a> 
                         <div className="utilityButton">
                              <h1 className="text-[12px]">Don’t have an account ?</h1>
