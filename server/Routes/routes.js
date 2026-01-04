@@ -1,4 +1,4 @@
-const { guestCreator, checkAuth, signOut, signup, signin, signupOtpVerification } = require('../Controllers/authControllers.js');
+const { guestCreator, checkAuth, signOut, signup, signin, signupOtpVerification, signinOtpVerification } = require('../Controllers/authControllers.js');
 const {getUserDetails, checkGuestTheme, contact} = require("../Controllers/utilityControllers.js");
 const limiter = require("../Middlewares/rateLimiter.js");
 
@@ -11,6 +11,7 @@ Router.post("/auth/guest", guestCreator );
 Router.get("/auth/user", checkAuth);
 Router.post("/auth/user/signup",signup);
 Router.post("/auth/user/signupOtpVerification", signupOtpVerification);
+Router.post("/auth/user/signinOtpVerification", signinOtpVerification);
 
 Router.post("/auth/user/signout",signOut);
 

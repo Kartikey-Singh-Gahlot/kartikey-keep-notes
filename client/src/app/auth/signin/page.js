@@ -4,6 +4,10 @@ import "../credentials.css";
 import { useState, useEffect, use } from "react";
 import Link from "next/link.js";
 import { useRouter } from "next/navigation.js";
+import { FullScreenLoader } from "../../components/loader.js";
+import {SigninOtpVerificationBox} from "../../components/Otpverification.js";
+import { toast } from "sonner";
+
 
 
 
@@ -13,7 +17,9 @@ export default function SignIn(){
     const router = useRouter();
     const [lightTheme, setLightTheme] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({email:"", password:""});
+    const [hiddenOtpBox, setHiddenOtpBox] = useState(false);
      
    
     function trgrShowPassword(){
@@ -31,8 +37,10 @@ export default function SignIn(){
     async function checkAuth(){
      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, {method:"GET", credentials:"include", headers:{"Content-Type":"application/json"}});
      const pr = await unp.json();
-     if(pr.status){
-       router.push("/dashboard");
+     console.log(pr);
+     if(pr.status && pr.isVerified ){
+        router.push("/dashboard");
+        return;
      }
    }
 
@@ -48,8 +56,29 @@ export default function SignIn(){
      })
    }
 
-   function trgrFormSubmit(e){
+   async function trgrFormSubmit(e){
      e.preventDefault();
+     if(loading){ return};
+     setLoading(true);
+     try{
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signin`, {method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body:JSON.stringify(formData)});
+        const pr = await unp.json();
+        if(pr.status && pr.code=="OTP_VERIFICATION_REQUIRED"){
+          toast.success("Otp Sent", {duration:1000});
+          setHiddenOtpBox(true);
+        }
+        if(!pr.status && pr.code=="UNAUTHORIZED_ACCESS"){
+           toast.error("Invalid Credentials", {duration:1000});
+           setFormData({email:"", password:""});
+           return;
+        }
+     }
+     catch(err){
+      toast.error("Server Error");
+     }
+     finally{
+      setLoading(false);
+     }
    }
 
     useEffect(()=>{
@@ -59,15 +88,18 @@ export default function SignIn(){
 
     return(
         <main className={`${(lightTheme)?"lightTheme":"darkTheme"} transition-colors overflow-hidden font-semibold`}>
+          {(!loading)?
+            (<>   
             <header className="fixed w-full flex justify-between px-4 py-2">
                    <Logo/>
                    <li className="transition-all flex  items-center box-border cursor-pointer border-green-800 border  text-nowrap px-4 py-1 rounded-[4px]"onClick={trgrModeChange} >
                         <img src={`${(lightTheme)?"/darkModeIcon.png":"/lightModeIcon.png"}`} className="h-5"/>
                    </li>  
             </header>
-
             <section className="formWrapper" >
-                  <form className="form" onSubmit={(e)=>{ trgrFormSubmit(e)}} autoComplete="new-password">
+                {(hiddenOtpBox)?(<SigninOtpVerificationBox/>):
+
+                  (<form className="form" onSubmit={(e)=>{ trgrFormSubmit(e)}} autoComplete="new-password">
                        <label className="formHeading">Login To Your Account</label>
                        <div className="inputWrapper">
                              <label className="inputLabel">Email</label>
@@ -81,15 +113,13 @@ export default function SignIn(){
                                  <h1 className="passwordUtility">Forgot password?</h1>
                              </div>
                        </div>
-
                         <button className="button">Login</button>
-                        
                         <div className="w-full flex items-center px-4">
                             <hr className="border w-full"/>
                             <h1 className="px-2 py-1 text-center">or</h1>
                             <hr className=" border w-full"/>
                         </div>
-                
+
                         <a className="button " href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}>
                             <button type="button" className="flex justify-center w-full gap-2 "><img src="/googleIcon.png" className="h-6"/>Continue With Google</button>
                         </a> 
@@ -99,8 +129,11 @@ export default function SignIn(){
                                 Signup
                              </Link>
                         </div>                   
-                  </form>
-            </section>
+                  </form>)
+                }
+             </section>
+            </>):(<FullScreenLoader theme={(lightTheme)?"lightTheme":"darkTheme"}/>)
+          }
         </main>
     )
 }

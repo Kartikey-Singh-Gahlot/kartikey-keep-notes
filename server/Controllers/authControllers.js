@@ -69,7 +69,7 @@ const signup = async (req, res)=>{
      user.notes.push(newNote._id);
      await user.save();
      await mailerFunction(email, "Otp Verification", signupOtpVerificationMailTemplate(otp));
-     const token = jwt.sign({id:user._id, email:user.email}, process.env.SECRETKEY, {expiresIn:"7d"});
+     const token = jwt.sign({id:user._id, email:user.email, isVerified:user.isVerified}, process.env.SECRETKEY, {expiresIn:"7d"});
      res.clearCookie("themeCookie", cookieDetails);
      res.cookie("authCookie",token, cookieDetails);
      return res.status(200).json({
@@ -99,7 +99,7 @@ const signin = async (req, res)=>{
            code :"NO_USER_FOUND"
          })
       }  
-      if(user.googleId && !user.password){
+      if((user.googleId && !user.password) || (user.password && !user.isVerified) ){
         const otp = Math.floor(1000+Math.random()*9000).toString();
         const salt  = await bcrypt.genSalt();
         const hashedOtp = await bcrypt.hash(otp, salt);
@@ -122,7 +122,7 @@ const signin = async (req, res)=>{
           code : "UNAUTHORIZED_ACCESS"
         });
       }
-      const token = jwt.sign({id:user.id, email:user.email}, process.env.SECRETKEY, {expiresIn:"7d"});
+      const token = jwt.sign({id:user.id, email:user.email, isVerified:user.isVerified}, process.env.SECRETKEY, {expiresIn:"7d"});
       res.cookie("authCookie", token, cookieDetails);
       return res.status(200).json({
         status:true,
@@ -167,11 +167,12 @@ const checkAuth = async (req, res)=>{
     })
   }
   try{
-    jwt.verify(authCookie, process.env.SECRETKEY);
+    const user = jwt.verify(authCookie, process.env.SECRETKEY);
     return res.status(200).json({
       status:true,
       body:"Valid Auth Token Found",
-      code :"VALIDATION_SUCCESSFULL"
+      code :"VALIDATION_SUCCESSFULL",
+      isVerified : user.isVerified
     })
   }
   catch(err){
@@ -238,5 +239,58 @@ const signupOtpVerification = async (req, res)=>{
     }
 }
 
+const signinOtpVerification = async (req, res) => {
+  const { otp } = req.body;
+  if(!otp){
+    return res.status(400).json({
+      status: false,
+      body: "Otp Required",
+      code: "OTP_REQUIRED"
+    });
+  }
+  try {
+    const user = await userModel.findOne({otp:{$exists:true}}).select("+otp +otpExpiry +email +isVerified");
+    if(!user){
+      return res.status(404).json({
+        status: false,
+        body: "No OTP Session Found",
+        code: "OTP_SESSION_NOT_FOUND"
+      });
+    }
+    if(!user.otpExpiry || Date.now() > user.otpExpiry){
+      return res.status(400).json({
+        status: false,
+        body: "Otp Expired",
+        code: "OTP_EXPIRED"
+      });
+    }
+    const otpValidity = await bcrypt.compare(otp.toString(), user.otp);
+    if (!otpValidity) {
+      return res.status(401).json({
+        status: false,
+        body: "Invalid Otp",
+        code: "INVALID_OTP"
+      });
+    }
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    user.isVerified = true;
+    await user.save();
+    const token = jwt.sign({id: user._id,email: user.email, isVerified:user.isVerified},process.env.SECRETKEY, {expiresIn:"7d"});
+    res.cookie("authCookie", token, cookieDetails);
+    return res.status(200).json({
+      status: true,
+      body: "Login Successful",
+      code: "LOGIN_SUCCESS"
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: false,
+      body: `Internal Server Error ${err.message}`,
+      code: "SERVER_SIDE_ERROR"
+    });
+  }
+};
 
-module.exports = {signin, signup, signOut, checkAuth, guestCreator, signupOtpVerification}
+
+module.exports = {signin, signup, signOut, checkAuth, guestCreator, signupOtpVerification, signinOtpVerification}

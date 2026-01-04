@@ -4,8 +4,8 @@ import "../credentials.css";
 import { useState, useEffect } from "react";
 import Link from "next/link.js";
 import { useRouter } from "next/navigation.js";
-import Loader from "../../components/loader.js";
-import SignupOtpVerificationBox from "../../components/signupOtpverification.js";
+import {FullScreenLoader} from "../../components/loader.js";
+import {SignupOtpVerificationBox} from "../../components/Otpverification.js";
 import { toast } from "sonner";
 
 
@@ -34,8 +34,9 @@ export default function SignUp(){
     async function checkAuth(){
      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, {method:"GET", credentials:"include", headers:{"Content-Type":"application/json"}});
      const pr = await unp.json();
-     if(pr.status){
-      router.push("/dashboard");
+     if(pr.status && pr.isVerified){
+        router.push("/dashboard");
+        return;
      }
    }
 
@@ -59,10 +60,9 @@ export default function SignUp(){
      try{
         const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signup`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify(formData)});
         const pr = await unp.json();
-        if(pr.status && pr.code=="OTP_VERIFICARION_REQUIRED"){
+        if(pr.status && pr.code=="OTP_VERIFICATION_REQUIRED"){
           toast.success("Otp Sent", {duration:1000});
           setHiddenOtpBox(true);
-          return;
         }
         if(!pr.status && pr.code=="USER_EXISTS"){
           toast.error("User already exists. Redirecting to login...",{ duration: 1000});
@@ -134,7 +134,7 @@ export default function SignUp(){
                       </form>)
                     }
                 </section>
-            </>):(<Loader theme={(lightTheme)?"lightTheme":"darkTheme"}/>)
+            </>):(<FullScreenLoader theme={(lightTheme)?"lightTheme":"darkTheme"}/>)
           }
         </main>
       )
