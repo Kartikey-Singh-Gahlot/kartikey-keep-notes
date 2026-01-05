@@ -91,7 +91,7 @@ const signup = async (req, res)=>{
 const signin = async (req, res)=>{
     const {email, password} = req.body;
     try{
-      const user = await userModel.findOne({email}).select("+password +otp +otpExpiry");
+      const user = await userModel.findOne({email}).select("+password +otp +otpExpiry +googleId");
       if(!user){
          return res.status(404).json({
            status:false,
@@ -99,13 +99,11 @@ const signin = async (req, res)=>{
            code :"NO_USER_FOUND"
          })
       }  
-      if((user.googleId && !user.password) || (user.password && !user.isVerified) ){
+      if(user.googleId && !user.password){
         const otp = Math.floor(1000+Math.random()*9000).toString();
         const salt  = await bcrypt.genSalt();
-        const hashedOtp = await bcrypt.hash(otp, salt);
-        const otpExpiry = new Date(Date.now()+10*60*1000);
-        user.otp = hashedOtp;
-        user.otpExpiry = otpExpiry;
+        user.otpExpiry = new Date(Date.now()+10*60*1000);
+        user.otp = await bcrypt.hash(otp, salt);
         await user.save();
         await mailerFunction(user.email, "Login Verification", loginOtpVerificationMailTemplate(otp))
         return res.status(200).json({
@@ -113,6 +111,13 @@ const signin = async (req, res)=>{
           body:"Otp Verification Pending",
           code :"OTP_VERIFICATION_REQUIRED"
         })
+      }
+      if(!password){
+        return res.status(400).json({
+          status:false,
+          body:"Password Required",
+          code: "PASSWORD_REQUIRED" 
+        });
       }
       const isValid =await bcrypt.compare(password, user.password);
       if(!isValid){
@@ -122,6 +127,21 @@ const signin = async (req, res)=>{
           code : "UNAUTHORIZED_ACCESS"
         });
       }
+
+      if(!user.isVerified){
+        const otp = Math.floor(1000+Math.random()*9000).toString();
+        const salt = await bcrypt.genSalt();
+        user.otp = await bcrypt.hash(otp, salt);
+        user.otpExpiry = new Date(Date.now()+10*60*1000);
+        await user.save();
+        await mailerFunction(user.email,"Login Verification", loginOtpVerificationMailTemplate(otp));
+        return res.status(200).json({
+          status:true,
+          body:"Otp Verification Pending",
+          code:"OTP_VERIFICATION_REQUIRED"
+        })
+      }
+      
       const token = jwt.sign({id:user.id, email:user.email, isVerified:user.isVerified}, process.env.SECRETKEY, {expiresIn:"7d"});
       res.cookie("authCookie", token, cookieDetails);
       return res.status(200).json({
@@ -196,7 +216,7 @@ const signupOtpVerification = async (req, res)=>{
     }
     try{
       const valid = jwt.verify(authCookie,process.env.SECRETKEY);
-      const user = await userModel.findOne({email:valid.email}) .select("+otp +otpExpiry");
+      const user = await userModel.findOne({email:valid.email}).select("+otp +otpExpiry");
       if(!user){
         return res.status(404).json({
           status:false,
