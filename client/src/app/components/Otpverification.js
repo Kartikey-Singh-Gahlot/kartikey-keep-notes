@@ -1,6 +1,7 @@
 "use client"
 import { useRouter } from "next/navigation.js";
 import {useState} from "react";
+import { toast } from "sonner";
 
 export function SigninOtpVerificationBox(){
     const [formData, setFormData] = useState({one:"", two:"", three:"", four:""});
@@ -8,13 +9,17 @@ export function SigninOtpVerificationBox(){
 
     async function trgrFormSubmit(e){
       e.preventDefault();
-      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
-      const pr = await unp.json();
-      if(pr.status){
-        router.push("/dashboard");
-        return;
+      try{
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
+        const pr = await unp.json();
+        if(pr.status){
+          router.push("/dashboard");
+        }
       }
-      console.log(pr);
+      catch(err){
+        toast.error("Server Side Error");
+      }
+    
     }
 
     function trgrChange(e){
@@ -50,13 +55,17 @@ export  function SignupOtpVerificationBox(){
 
     async function trgrFormSubmit(e){
       e.preventDefault();
-      const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
-      const pr = await unp.json();
-      if(pr.status){
-        router.push("/dashboard");
-        return;
+      try{
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
+        const pr = await unp.json();
+        if(pr.status){
+          router.push("/dashboard");
+          return;
+         }
       }
-      console.log(pr);
+      catch(err){
+        toast.error("Server Side Error");
+      }
     }
 
     function trgrChange(e){

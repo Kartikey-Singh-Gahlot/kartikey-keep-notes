@@ -75,7 +75,7 @@ const signup = async (req, res)=>{
      return res.status(200).json({
        status:true,
        body : "Otp Verification Pending",
-       code : "OTP_VERIFICARION_REQUIRED"
+       code : "OTP_VERIFICATION_REQUIRED"
      })
    }
    catch(err){
