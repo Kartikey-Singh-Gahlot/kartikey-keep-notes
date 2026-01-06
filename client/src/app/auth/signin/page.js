@@ -59,10 +59,10 @@ export default function SignIn(){
      e.preventDefault();
      if(loading){ return};
      setLoading(true);
-     console.log(pr);
      try{
         const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signin`, {method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body:JSON.stringify(formData)});
         const pr = await unp.json();
+        console.log(pr);
         if(pr.status && pr.code=="OTP_VERIFICATION_REQUIRED"){
           toast.success("Otp Sent", {duration:1000});
           setHiddenOtpBox(true);
