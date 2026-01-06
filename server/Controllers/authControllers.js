@@ -260,7 +260,7 @@ const signupOtpVerification = async (req, res)=>{
 }
 
 const signinOtpVerification = async (req, res) => {
-  const { otp } = req.body;
+  const { otp, password, email } = req.body;
   if(!otp){
     return res.status(400).json({
       status: false,
@@ -269,7 +269,7 @@ const signinOtpVerification = async (req, res) => {
     });
   }
   try {
-    const user = await userModel.findOne({otp:{$exists:true}}).select("+otp +otpExpiry +email +isVerified");
+    const user = await userModel.findOne({email}).select("+otp +otpExpiry +email +isVerified");
     if(!user){
       return res.status(404).json({
         status: false,
@@ -295,6 +295,8 @@ const signinOtpVerification = async (req, res) => {
     user.otp = undefined;
     user.otpExpiry = undefined;
     user.isVerified = true;
+    const salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(password, salt);
     await user.save();
     const token = jwt.sign({id: user._id,email: user.email, isVerified:user.isVerified},process.env.SECRETKEY, {expiresIn:"7d"});
     res.cookie("authCookie", token, cookieDetails);
@@ -303,7 +305,8 @@ const signinOtpVerification = async (req, res) => {
       body: "Login Successful",
       code: "LOGIN_SUCCESS"
     });
-  } catch (err) {
+  } catch(err){
+    console.log(err);
     return res.status(500).json({
       status: false,
       body: `Internal Server Error ${err.message}`,

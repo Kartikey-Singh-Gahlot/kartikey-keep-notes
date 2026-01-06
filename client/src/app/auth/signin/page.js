@@ -62,10 +62,13 @@ export default function SignIn(){
      try{
         const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signin`, {method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body:JSON.stringify(formData)});
         const pr = await unp.json();
-        console.log(pr);
         if(pr.status && pr.code=="OTP_VERIFICATION_REQUIRED"){
           toast.success("Otp Sent", {duration:1000});
           setHiddenOtpBox(true);
+        }
+        if(pr.status && pr.code=="LOGIN_SUCCESS"){
+           toast.success("Login Successfull",{ duration: 1000});
+           router.push("/dashboard");
         }
         if(!pr.status){
            toast.error("Invalid Credentials", {duration:1000});
@@ -97,7 +100,7 @@ export default function SignIn(){
                    </li>  
             </header>
             <section className="formWrapper" >
-                {(hiddenOtpBox)?(<SigninOtpVerificationBox/>):
+                {(hiddenOtpBox)?(<SigninOtpVerificationBox password={formData.password} email={formData.email}/>):
 
                   (<form className="form" onSubmit={(e)=>{ trgrFormSubmit(e)}} autoComplete="new-password">
                        <label className="formHeading">Login To Your Account</label>

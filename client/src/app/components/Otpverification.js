@@ -3,14 +3,14 @@ import { useRouter } from "next/navigation.js";
 import {useState} from "react";
 import { toast } from "sonner";
 
-export function SigninOtpVerificationBox(){
+export function SigninOtpVerificationBox({password, email}){
     const [formData, setFormData] = useState({one:"", two:"", three:"", four:""});
     const router = useRouter();
 
     async function trgrFormSubmit(e){
       e.preventDefault();
       try{
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four, password:password, email:email })});
         const pr = await unp.json();
         if(pr.status){
           router.push("/dashboard");
