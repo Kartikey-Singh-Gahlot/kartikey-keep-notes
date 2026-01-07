@@ -89,7 +89,7 @@ const loginOtpVerificationMailTemplate = (otp) => {
   `);
 };
 
-const contactMailTemplate = ( email, message) => {
+const contactMailTemplate = (email, message) => {
   return `
     <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 30px;">
       <div style="max-width: 520px; margin: auto; background-color: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
@@ -181,8 +181,6 @@ const contactAcknowledgementMailTemplate = (email) => {
     </div>
   `;
 };
-
-
 
 
 module.exports = {signupOtpVerificationMailTemplate, loginOtpVerificationMailTemplate, contactMailTemplate, contactAcknowledgementMailTemplate};

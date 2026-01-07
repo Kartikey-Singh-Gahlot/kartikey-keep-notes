@@ -12,6 +12,7 @@ export function SigninOtpVerificationBox({password, email}){
       try{
         const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four, password:password, email:email })});
         const pr = await unp.json();
+        console.log(pr);
         if(pr.status){
           router.push("/dashboard");
         }
@@ -56,12 +57,15 @@ export  function SignupOtpVerificationBox(){
     async function trgrFormSubmit(e){
       e.preventDefault();
       try{
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signupOtpVerification`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify({otp:formData.one+formData.two+formData.three+formData.four})});
         const pr = await unp.json();
+        console.log(pr);
         if(pr.status){
           router.push("/dashboard");
           return;
-         }
+        }
+        toast.error(pr.body);
+        setFormData({one:"", two:"", three:"", four:""});
       }
       catch(err){
         toast.error("Server Side Error");

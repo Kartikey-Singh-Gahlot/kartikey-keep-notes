@@ -75,17 +75,16 @@ const setUserTheme = async (req, res)=>{
    const {authCookie} = req.cookies;
    const {theme} = req.body;
    if(!authCookie){
-     return req.status(401).json({
+     return res.status(401).json({
        status : false,
        body : "Authentication Required"
      });
    }
    try{
       const valid = jwt.verify(authCookie, process.env.SECRETKEY);
-      console.log(valid);
-      const user = await userModel.findOneAndUpdate({email:valid.email}, {});
+      const user = await userModel.findOneAndUpdate({email:valid.email},{lightTheme: theme},{new:true});
       if(!user){
-        return req.status(404).json({
+        return res.status(404).json({
           status:false,
           body : "User Not Found"
         })
@@ -128,7 +127,28 @@ const contact = async (req, res)=>{
     body:`Internal Server Error : ${err.message}`
    })
   }
-
 }
 
-module.exports = {checkGuestTheme, getUserDetails, setUserTheme, contact}
+const editNote = async (req, res)=>{
+  const {email} = req.body;
+  const {authCookie} = req.cookies;
+  if(!authCookie){
+    return res.status(409).json({
+       status:false,
+       body:"Unauthorized Access",
+       code:"UNAUTHORIZED_ACCESS"
+    });
+  }
+  try{
+    const valid = jwt.verify(authCookie, process.env.SECRETKEY);
+    const user = await userModel.findOneAndUpdate
+    if(!user){
+      return res.st
+    }
+  }
+  catch(err){
+
+  }
+}
+
+module.exports = {checkGuestTheme, getUserDetails, setUserTheme, contact, editNote}
