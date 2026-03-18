@@ -12,7 +12,6 @@ export default function Dashboard(){
     const router = useRouter();
 
     const [userDetails, setUserDetails] = useState({email:"",name:"", lightTheme:true, notes:[]});
-
     const [mobileNav, setMobileNav] = useState(false);
 
     function trgrMobileNav(){
@@ -29,7 +28,6 @@ export default function Dashboard(){
       })
       const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/theme`, {method:"PATCH",credentials:"include", headers: { "Content-Type": "application/json"}, body: JSON.stringify({theme:!userDetails.lightTheme})});
       const pr = await unp.json();
-      console.log(pr);
     }
     
     useEffect(()=>{
@@ -65,7 +63,7 @@ export default function Dashboard(){
                  </div>
 
                  <div className={`min-[780px]:flex min-[780px]:relative ${(mobileNav)? `${(userDetails.lightTheme)?"lightTheme":"darkTheme"}  flex absolute top-12  py-10 gap-10 left-0 w-full  items-start border-b-2 border-b-green-800`:"hidden" }  min-[780px]:flex-row flex-col`}>
-                     <HomeNavBar items={["Home", "About", "Contact"]} itemLinks={["#home", "#about", "#contact"]} />
+                     <HomeNavBar items={["Add Note"]} itemLinks={["#home"]} />
                      <ul className="flex flex-row  w-full box-border gap-2 px-10">
                         <li className=" transition-all flex  items-center box-border cursor-pointer border-green-800 border border-[#ffffff00] text-nowrap px-4 py-1 rounded-[4px]" onClick={trgrModeChange} >
                              <img src={`${(userDetails.lightTheme)?"/darkModeIcon.png":"/lightModeIcon.png"}`} className="h-5"/>

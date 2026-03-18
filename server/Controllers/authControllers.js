@@ -60,13 +60,6 @@ const signup = async (req, res)=>{
      const hashedOtp = await bcrypt.hash(otp.toString(), salt2);
      const otpExpiry = new Date(Date.now()+10*60*1000);
      const user = new userModel({name, email, password:hashedPassword, lightTheme:theme, otp:hashedOtp, otpExpiry});
-     const newNote = new notesModel({
-        notesTitle : `Welcome ${user.name}`,
-        notesContent :"Team keep notes welcomes you",
-        user:user._id
-     });
-     await newNote.save()
-     user.notes.push(newNote._id);
      await user.save();
      await mailerFunction(email, "Otp Verification", signupOtpVerificationMailTemplate(otp));
      const token = jwt.sign({id:user._id, email:user.email, isVerified:user.isVerified}, process.env.SECRETKEY, {expiresIn:"7d"});

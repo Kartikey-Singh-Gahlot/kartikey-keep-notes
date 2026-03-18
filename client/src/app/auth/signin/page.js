@@ -41,6 +41,7 @@ export default function SignIn(){
         router.push("/dashboard");
         return;
      }
+     console.log(pr);
    }
 
     async function trgrModeChange(){
@@ -63,16 +64,18 @@ export default function SignIn(){
         const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signin`, {method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body:JSON.stringify(formData)});
         const pr = await unp.json();
         if(pr.status && pr.code=="OTP_VERIFICATION_REQUIRED"){
-          toast.success("Otp Sent", {duration:1000});
+          toast.success("Otp Sent", {duration:2000});
           setHiddenOtpBox(true);
         }
         if(pr.status && pr.code=="LOGIN_SUCCESS"){
-           toast.success("Login Successfull",{ duration: 1000});
+           toast.success("Login Successfull",{ duration: 2000});
            router.push("/dashboard");
         }
         if(!pr.status){
-           toast.error("Invalid Credentials", {duration:1000});
-           setFormData({email:"", password:""});
+           toast.error("Invalid Credentials ", {duration:2000});
+           setFormData((prev)=>{
+            return {...prev, password:""};
+           });
            return;
         }
      }

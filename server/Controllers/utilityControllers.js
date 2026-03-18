@@ -129,26 +129,6 @@ const contact = async (req, res)=>{
   }
 }
 
-const editNote = async (req, res)=>{
-  const {email} = req.body;
-  const {authCookie} = req.cookies;
-  if(!authCookie){
-    return res.status(409).json({
-       status:false,
-       body:"Unauthorized Access",
-       code:"UNAUTHORIZED_ACCESS"
-    });
-  }
-  try{
-    const valid = jwt.verify(authCookie, process.env.SECRETKEY);
-    const user = await userModel.findOneAndUpdate
-    if(!user){
-      return res.st
-    }
-  }
-  catch(err){
 
-  }
-}
 
 module.exports = {checkGuestTheme, getUserDetails, setUserTheme, contact, editNote}

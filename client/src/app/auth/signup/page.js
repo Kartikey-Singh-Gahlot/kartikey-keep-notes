@@ -55,21 +55,26 @@ export default function SignUp(){
    async function trgrFormSubmit(e){
      e.preventDefault();
      if(loading){ return};
-
      setLoading(true);
      try{
         const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signup`, {method:"POST", credentials:"include", headers:{"Content-Type": "application/json"}, body:JSON.stringify(formData)});
         const pr = await unp.json();
         if(pr.status && pr.code=="OTP_VERIFICATION_REQUIRED"){
-          toast.success("Otp Sent", {duration:1000});
+          toast.success("Otp Sent", {duration:2000});
           setHiddenOtpBox(true);
         }
         if(!pr.status && pr.code=="USER_EXISTS"){
-          toast.error("User already exists. Redirecting to login...",{ duration: 1000});
+          toast.error("User already exists. Redirecting to login...",{ duration: 2000});
           setTimeout(()=>{
            router.push("/auth/signin");
           },1000);
           return;
+        }
+        if(!pr.status){
+           toast.error("Invalid Credentials", {duration:2000});
+           setFormData((prev)=>{
+             return {...prev, password:""};
+           })
         }
      }
      catch(err){
