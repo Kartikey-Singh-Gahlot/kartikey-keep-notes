@@ -131,4 +131,4 @@ const contact = async (req, res)=>{
 
 
 
-module.exports = {checkGuestTheme, getUserDetails, setUserTheme, contact, editNote}
+module.exports = {checkGuestTheme, getUserDetails, setUserTheme, contact}
