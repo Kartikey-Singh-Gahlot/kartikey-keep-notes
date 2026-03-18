@@ -1,4 +1,3 @@
-const notesModel = require('../Models/notesModel.js');
 const userModel = require('../Models/userModel.js');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -28,15 +27,9 @@ passport.use(new GoogleStrategy({
               email: email,
               googleId: profile.id,
               password: null,
-              isVerified : true 
+              isVerified : true,
+              subjects:[]
             });
-            const newNote = new notesModel({
-               notesTitle : `Welcome ${user.name}`,
-               notesContent :"Welcome team keep notes welcomes you",
-               user:user._id
-            });
-            await newNote.save();
-            user.notes.push(newNote._id);
             await user.save();
          }
       }
