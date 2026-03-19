@@ -20,8 +20,6 @@ const sectionSchema = new mongoose.Schema({
   isSubSection:{type:Boolean, default:false},
   order:{type:Number, required:true, unique:true},
   createdAt:{type:Date, default:Date.now}
-})
+});
 
-const SectionModel = mongoose.model('Section', sectionSchema);
-
-module.exports = SectionModel;
+module.exports = mongoose.model('sections', sectionSchema);

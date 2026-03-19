@@ -8,6 +8,5 @@ const chapterSchema = new mongoose.Schema({
   createdAt:{type:Date, default:Date.now}
 })
 
-const ChapterModel = mongoose.model('Chapter', chapterSchema);
 
-module.exports = ChapterModel;
+module.exports = mongoose.model('chapters', chapterSchema);

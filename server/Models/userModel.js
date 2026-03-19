@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const SubjectModel = require('./subjectModel');
 
 const usersSchema = new mongoose.Schema({
    name : {type:String, default:"guest"},
@@ -10,9 +11,9 @@ const usersSchema = new mongoose.Schema({
    otp: {type:String, select:false},
    otpExpiry: {type:Date, select:false},
    isVerified : {type:Boolean, default:false},
-   chapters:{type:[mongoose.Schema.Types.ObjectId], ref:'Chapters', default:[]},
+   subjects:{type:[mongoose.Schema.Types.ObjectId], ref:'Subjects', default:[]},
 })
 
 
 
-module.exports = new mongoose.model("kpUsers", usersSchema );
+module.exports = new mongoose.model("Users", usersSchema );

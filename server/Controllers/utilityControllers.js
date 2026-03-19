@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const userModel = require('../Models/userModel.js');
 const { mailerFunction } = require('../Config/nodeMailer.js');
 const {contactMailTemplate, contactAcknowledgementMailTemplate} = require("../Utils/emailTemplate.js");
+const SubjectModel = require('../Models/subjectModel.js');
 require('dotenv').config();
 
 const checkGuestTheme = async (req, res)=>{
@@ -40,12 +41,11 @@ const checkGuestTheme = async (req, res)=>{
 
 const getUserDetails = async (req,res)=>{
     const {authCookie} = req.cookies;
-    const cookieDetails = { httpOnly: true, secure: true, sameSite: "None", path: "/" }
     try{
       if(authCookie){
         const valid = jwt.verify(authCookie, process.env.SECRETKEY);
         const email = valid.email;
-        const user = await userModel.findOne({email}).populate("notes");
+        const user = await userModel.findOne({email});
         if(!user){
           return res.status(404).json({
             status:false,
@@ -54,7 +54,7 @@ const getUserDetails = async (req,res)=>{
         }
         return res.status(200).json({
           status : true,
-          body : {email:user.email, name:user.name, lightTheme:user.lightTheme, notes:user.notes, isVerified:user.isVerified}
+          body : {email:user.email, name:user.name, lightTheme:user.lightTheme, subjects:user.subjects, isVerified:user.isVerified}
         })
       }
       return res.status(401).json({
@@ -68,6 +68,23 @@ const getUserDetails = async (req,res)=>{
         status : false,
         body : `Internal Server Error ${err.message}` 
       })
+    }
+}
+
+const getAllSubjects = async (req, res)=>{
+    try{
+       const subjects = await SubjectModel.find();
+       console.log(subjects);
+       return res.status(200).json({
+         status:true,
+         body:subjects
+       });
+    }
+    catch(err){
+      return res.status(500).json({
+        status:false,
+        body:`Internal Server Error ${err.message}`
+      });
     }
 }
 
@@ -131,4 +148,4 @@ const contact = async (req, res)=>{
 
 
 
-module.exports = {checkGuestTheme, getUserDetails, setUserTheme, contact}
+module.exports = {checkGuestTheme, getUserDetails, getAllSubjects, setUserTheme, contact}
