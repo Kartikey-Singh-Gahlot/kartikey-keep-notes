@@ -41,8 +41,11 @@ export default function SignIn(){
         router.push("/dashboard");
         return;
      }
-     console.log(pr);
-   }
+     if(pr.status && !pr.isVerified){
+        setHiddenOtpBox(true);
+        return;
+    }
+    } 
 
     async function trgrModeChange(){
      const newTheme = !lightTheme;

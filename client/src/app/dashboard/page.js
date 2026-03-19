@@ -3,7 +3,6 @@ import Logo from "../components/logo";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { HamBurgerMenu } from "../components/hamBurgerMenu";
-import { HomeNavBar } from "../components/navBar";
 import Link from "next/link";
 import "./dashboard.css";
 

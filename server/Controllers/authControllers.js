@@ -224,7 +224,7 @@ const signupOtpVerification = async (req, res)=>{
         })
       }
 
-      const otpValidity = await bcrypt.compare(otp.toString(), user.otp);
+      const otpValidity = await bcrypt.compare(otp.toString().trim(), user.otp);
       if(!otpValidity){
         return res.status(401).json({
           status:false,
