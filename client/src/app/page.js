@@ -17,6 +17,8 @@ export default function Home() {
 
    let [lightTheme, setLightTheme] = useState(true);
    let [mobileNav, setMobileNav] = useState(false);
+   let [subjects, setSubjects] = useState([{name:"", description:"", chapters:[], createdAt:""}]);
+
 
    async function trgrModeChange(){
      const newTheme = !lightTheme;
@@ -50,6 +52,16 @@ export default function Home() {
      }
    }
 
+   async function getAllSubjects(){
+      const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subjects`,{method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
+      const pr = await un.json();
+      if(pr.status){
+        setSubjects(pr.body);
+      } else {
+        console.log("Failed to fetch subjects");
+      }     
+    }
+
    function handleResize(){
       if (window.innerWidth > 780) {
         setMobileNav(false);
@@ -61,6 +73,7 @@ export default function Home() {
      handleResize();
      checkTheme();
      checkAuth();
+     getAllSubjects();
      window.addEventListener("resize", handleResize);
    },[]);
 
@@ -91,12 +104,12 @@ export default function Home() {
          <section className="h-fit w-full flex flex-col items-center px-1.5 py-10" id="home">
 
                 <div className="w-full flex  flex-col justify-center py-10">
-                    <h1 className="w-full text-center min-[780px]:text-7xl     min-[500px]:text-5xl text-2xl px-2 py-3">Don’t just write, keep it.</h1>
-                    <h6 className="w-full text-center min-[780px]:text-[15px]  min-[500px]:text-[12px] text-[10px] px-2 py-5">Keep Notes helps you capture, organize, and access your ideas anytime, anywhere.</h6>
+                    <h1 className="w-full text-center min-[780px]:text-7xl     min-[500px]:text-5xl text-2xl px-2 py-3">Learn with Kartz. Track Your Growth</h1>
+                    <h6 className="w-full text-center min-[780px]:text-[15px]  min-[500px]:text-[12px] text-[10px] px-2 py-5">Access structured notes, follow along with YouTube lessons, and track your progress — all in one place.</h6>
                 </div>
 
                 <div className="flex flex-col items-center justify-center  rounded-t-2xl rounded-b-[10px]  to-[white]  gap-5 ">
-                    <img src={(lightTheme)?"/mainBgBlackImage.png":"/mainBgImage.png"} className="min-[780px]:h-90 h-70"/>
+                    <img src="/mainBgBlackImageOne.png" className="min-[780px]:h-90 h-70"/>
                     <div className="w-full flex  justify-center gap-5 items-center">
                           <h1 className="text-center">Start Noting</h1>
                           <button><Link href={`auth/signin`} className=" transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer" >Get Started</Link></button>
@@ -105,20 +118,27 @@ export default function Home() {
 
           </section>
 
-           <section className=" h-fit px-4  py-7 flex flex-col justify-center" id="about">
-                <h1 className="w-full box-border py-4 px-2 text-4xl">About</h1>
-                
-                <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Keep Notes makes it effortless to organize your thoughts and ideas. Whether it’s a quick note or an important reminder, everything stays just a click away.</p>
+           <section className=" h-fit px-4  py-7 flex flex-col justify-center" id="about">                
             
-                <div className="flex py-10">
-                    <ul className="min-[780px]:flex grid min-[450px]:grid-cols-2  grid-rows-[auto]  w-full justify-around py-6">
-                       <Features featureHeading="Add a new note instantly"  featureImageLink={(lightTheme)?"/addNoteDark.png":"/addNote.png"} />
-                       <Features featureHeading="Edit or update notes effortlessly" featureImageLink={(lightTheme)?"/editNoteDark.png":"/editNote.png"} />
-                       <Features featureHeading="Delete notes with a single click" featureImageLink={(lightTheme)?"/deleteNoteDark.png":"/deleteNote.png"} />
-                       <Features featureHeading="Access your notes anywhere, anytime" featureImageLink={(lightTheme)?"/accessNoteDark.png":"/accessNote.png"} />
-                    </ul>
-                </div>
-                
+                <h1 className="w-full  text-4xl py-5">Why Choose Keep Notes?</h1>
+                <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Keep Notes makes it effortless to organize your thoughts and ideas. Whether it’s a quick note or an important reminder, everything stays just a click away.</p>
+                <ul className="flex gap-2 w-full">
+                   {
+                      subjects.map((subject, index)=>{
+                        return (  
+                          <li key={index} className={`min-w-[400px] transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer`}>
+                              <div className="w-full flex items-center justify-between">
+                                  <h2 className="text-xl font-bold underline">{subject.name}</h2>
+                                  <p className="text-sm text-gray-500">{new Date(subject.createdAt).toLocaleDateString()}</p> 
+                            </div>
+                            <p>{subject.description}</p>
+                            <button className="w-full flex items-center"><Link href={`auth/signin`} className="w-full transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-green-800 bg-amber-50 hover:border-green-800 hover:bg-amber-green-800 border  cursor-pointer" >Start</Link></button>
+                        </li>
+                        )
+                      }
+                      )
+                   }
+                </ul>  
             </section>
 
             <div className="w-full px-10">
