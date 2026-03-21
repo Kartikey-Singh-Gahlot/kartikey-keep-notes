@@ -111,8 +111,8 @@ export default function Home() {
                 <div className="flex flex-col items-center justify-center  rounded-t-2xl rounded-b-[10px]  to-[white]  gap-5 ">
                     <img src="/mainBgBlackImageOne.png" className="min-[780px]:h-90 h-70"/>
                     <div className="w-full flex  justify-center gap-5 items-center">
-                          <h1 className="text-center">Start Noting</h1>
-                          <button><Link href={`auth/signin`} className=" transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer" >Get Started</Link></button>
+                          <h1 className="text-center">Want to get started?</h1>
+                          <button><Link href={`auth/signin`} className=" transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer" >Come along</Link></button>
                     </div> 
                 </div>
 
@@ -120,19 +120,19 @@ export default function Home() {
 
            <section className=" h-fit px-4  py-7 flex flex-col justify-center" id="about">                
             
-                <h1 className="w-full  text-4xl py-5">Why Choose Keep Notes?</h1>
-                <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Keep Notes makes it effortless to organize your thoughts and ideas. Whether it’s a quick note or an important reminder, everything stays just a click away.</p>
-                <ul className="flex gap-2 w-full">
+                <h1 className="w-full  text-4xl py-5">Why Choose Us?</h1>
+                <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Kartz Stories makes it effortless to organize your thoughts and ideas. Whether it’s a quick note or an important reminder, everything stays just a click away.</p>
+                <ul className="flex gap-5 w-full flex-wrap justify-start py-5">
                    {
                       subjects.map((subject, index)=>{
                         return (  
-                          <li key={index} className={`min-w-[400px] transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer`}>
+                          <li key={index} className={`min-w-[280px] max-w-[400px]  w-full transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer`}>
                               <div className="w-full flex items-center justify-between">
                                   <h2 className="text-xl font-bold underline">{subject.name}</h2>
                                   <p className="text-sm text-gray-500">{new Date(subject.createdAt).toLocaleDateString()}</p> 
                             </div>
                             <p>{subject.description}</p>
-                            <button className="w-full flex items-center"><Link href={`auth/signin`} className="w-full transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-green-800 bg-amber-50 hover:border-green-800 hover:bg-amber-green-800 border  cursor-pointer" >Start</Link></button>
+                            <button className="w-full flex items-center"><Link href={`auth/signin`} className="w-full transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-green-800 bg-amber-50 hover:border-green-800 hover:bg-green-800 hover:text-amber-50 border  cursor-pointer" >Start</Link></button>
                         </li>
                         )
                       }

@@ -74,7 +74,6 @@ const getUserDetails = async (req,res)=>{
 const getAllSubjects = async (req, res)=>{
     try{
        const subjects = await SubjectModel.find();
-       console.log(subjects);
        return res.status(200).json({
          status:true,
          body:subjects
