@@ -61,7 +61,7 @@ const signup = async (req, res)=>{
      const user = new userModel({name, email, password:hashedPassword, lightTheme:theme, otp:hashedOtp, otpExpiry});
      await user.save();
      await mailerFunction(email, "Otp Verification", signupOtpVerificationMailTemplate(otp));
-     const token = jwt.sign({id:user._id, email:user.email, isVerified:user.isVerified}, process.env.SECRETKEY, {expiresIn:"7d"});
+     const token = jwt.sign({email:user.email, admin:user.admin, isVerified:user.isVerified}, process.env.SECRETKEY, {expiresIn:"7d"});
      res.clearCookie("themeCookie", cookieDetails);
      res.cookie("authCookie",token, cookieDetails);
      return res.status(200).json({
@@ -134,7 +134,7 @@ const signin = async (req, res)=>{
         })
       }
       
-      const token = jwt.sign({id:user.id, email:user.email, isVerified:user.isVerified}, process.env.SECRETKEY, {expiresIn:"7d"});
+      const token = jwt.sign({email:user.email, isVerified:user.isVerified, admin:user.admin}, process.env.SECRETKEY, {expiresIn:"7d"});
       res.cookie("authCookie", token, cookieDetails);
       return res.status(200).json({
         status:true,
@@ -262,6 +262,7 @@ const signinOtpVerification = async (req, res) => {
   }
   try {
     const user = await userModel.findOne({email}).select("+otp +otpExpiry +email +isVerified");
+    console.log(email);
     if(!user){
       return res.status(404).json({
         status: false,
@@ -290,7 +291,7 @@ const signinOtpVerification = async (req, res) => {
     const salt = await bcrypt.genSalt();
     user.password = await bcrypt.hash(password, salt);
     await user.save();
-    const token = jwt.sign({id: user._id,email: user.email, isVerified:user.isVerified},process.env.SECRETKEY, {expiresIn:"7d"});
+    const token = jwt.sign({email: user.email, isVerified:user.isVerified},process.env.SECRETKEY, {expiresIn:"7d"});
     res.cookie("authCookie", token, cookieDetails);
     return res.status(200).json({
       status: true,

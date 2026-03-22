@@ -3,6 +3,7 @@ import Logo from "../components/logo";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { HamBurgerMenu } from "../components/hamBurgerMenu";
+import { NormalSubjectsPresenter } from "../components/sbjectsPresenter";
 import Link from "next/link";
 import "./dashboard.css";
 
@@ -11,7 +12,6 @@ export default function Dashboard(){
     const router = useRouter();
 
     const [userDetails, setUserDetails] = useState({email:"",name:"", lightTheme:true, subjects:[]});
-    const [subjects, setSubjects] = useState([{name:"", description:"", chapters:[], createdAt:""}]);
     const [mobileNav, setMobileNav] = useState(false);
 
     function trgrMobileNav(){
@@ -46,20 +46,9 @@ export default function Dashboard(){
         }
         router.push("/auth/signin");
     }
-
-    async function getAllSubjects(){
-      const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subjects`,{method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
-      const pr = await un.json();
-      if(pr.status){
-        setSubjects(pr.body);
-      } else {
-        console.log("Failed to fetch subjects");
-      }     
-    }
     
     useEffect(()=>{
       getCredentials();
-      getAllSubjects();
     },[])
 
     async function trgrSignOut(){
@@ -91,43 +80,10 @@ export default function Dashboard(){
             </nav>     
         </header>
 
-        <section className="h-fit w-full flex flex-col items-center justify-center px-1.5 py-20"  >                      
-                 <ul className="w-full max-w-3xl flex flex-col gap-5">
-                    {
-                      (userDetails.subjects.length === 0) ? <p className="text-center text-gray-500">No Subjects Found. Please Add a Subject.</p> : userDetails.subjects.map((subject, index)=>{
-                        return (
-                          <li key={index} className="w-full flex flex-col gap-2 p-5 rounded-lg border border-gray-300">   
-                              <div className="w-full flex items-center justify-between">
-                                  <h2 className="text-xl font-bold">{subject.name}</h2>
-                                  <p className="text-sm text-gray-500">{new Date(subject.createdAt).toLocaleDateString()}</p>   
-                            </div>  
-                        </li>
-                      )
-                     })
-                    }
-                 </ul>    
+        <section className="h-fit w-full flex flex-col items-center justify-center px-1.5 py-20"  > 
+                <h1>Subjects available</h1>                     
+                <NormalSubjectsPresenter/>  
         </section>
-
-        <section className="h-fit w-full flex flex-col items-center justify-center px-1.5 py-20">
-                 <h1 className="p-4">Subjects Available</h1>
-                 <ul className="w-full  flex  gap-5">
-                    {
-                      (subjects.length === 0) ? <p className="text-center text-gray-500">No Subjects Found.</p> : subjects.map((subject, index)=>{
-                        return (  
-                          <li key={index} className={`w-full flex flex-col gap-2 p-5 rounded-lg border border-gray-300 ${(userDetails.lightTheme)?"hover:shadow-md transition-shadow cursor-pointer":"hover:shadow-md shadow-amber-50 transition-shadow cursor-pointer"}`} onClick={()=>router.push(`/dashboard/subject/${subject._id}`)}>
-                              <div className="w-full flex items-center justify-between">
-                                  <h2 className="text-xl font-bold">{subject.name}</h2>
-                                  <p className="text-sm text-gray-500">{new Date(subject.createdAt).toLocaleDateString()}</p> 
-                            </div>
-                            <p>{subject.description}</p>
-                        </li>
-                        )
-                      }
-                      )
-                      }
-                 </ul>
-        </section>
-        
 
       </main>
     )

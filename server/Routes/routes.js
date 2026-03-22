@@ -1,5 +1,5 @@
 const { guestCreator, checkAuth, signOut, signup, signin, signupOtpVerification, signinOtpVerification } = require('../Controllers/authControllers.js');
-const {getUserDetails, checkGuestTheme, contact, setUserTheme, getAllSubjects} = require("../Controllers/utilityControllers.js");
+const {getUserDetails, checkGuestTheme, contact, setUserTheme, getAllSubjects, addNewSubject} = require("../Controllers/utilityControllers.js");
 const limiter = require("../Middlewares/rateLimiter.js");
 
 const Router = require('express').Router();
@@ -7,6 +7,8 @@ const Router = require('express').Router();
 
 
 Router.post("/auth/guest", guestCreator);
+Router.get("/guest/theme", checkGuestTheme);
+
 
 Router.get("/auth/user", checkAuth);
 
@@ -26,13 +28,13 @@ Router.post("/auth/user/signinOtpVerification", signinOtpVerification);
 
 
 
-Router.get("/guest/theme", checkGuestTheme);
 Router.post("/contact", limiter, contact);
 
 Router.get("/user", getUserDetails);
 Router.get("/subjects", getAllSubjects);
 Router.patch("/user/theme", setUserTheme);
 
+Router.post("/subjects", addNewSubject);
 
 
 

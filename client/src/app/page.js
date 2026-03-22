@@ -1,8 +1,8 @@
 "use client";
 import {HomeNavBar} from "./components/navBar.js";
 import Link from "next/link.js";
-import Features from "./components/features.js";
 import Logo from "./components/logo.js";
+import { ExploreSubjectsPresenter } from "./components/sbjectsPresenter.js";
 import "./globals.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation.js";
@@ -18,6 +18,7 @@ export default function Home() {
    let [lightTheme, setLightTheme] = useState(true);
    let [mobileNav, setMobileNav] = useState(false);
    let [subjects, setSubjects] = useState([{name:"", description:"", chapters:[], createdAt:""}]);
+   
 
 
    async function trgrModeChange(){
@@ -52,15 +53,7 @@ export default function Home() {
      }
    }
 
-   async function getAllSubjects(){
-      const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subjects`,{method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
-      const pr = await un.json();
-      if(pr.status){
-        setSubjects(pr.body);
-      } else {
-        console.log("Failed to fetch subjects");
-      }     
-    }
+  
 
    function handleResize(){
       if (window.innerWidth > 780) {
@@ -73,7 +66,6 @@ export default function Home() {
      handleResize();
      checkTheme();
      checkAuth();
-     getAllSubjects();
      window.addEventListener("resize", handleResize);
    },[]);
 
@@ -104,7 +96,7 @@ export default function Home() {
          <section className="h-fit w-full flex flex-col items-center px-1.5 py-10" id="home">
 
                 <div className="w-full flex  flex-col justify-center py-10">
-                    <h1 className="w-full text-center min-[780px]:text-7xl     min-[500px]:text-5xl text-2xl px-2 py-3">Learn with Kartz. Track Your Growth</h1>
+                    <h1 className="w-full text-center min-[780px]:text-7xl     min-[500px]:text-5xl text-3xl px-2 py-3">Learn with Kartz. Track Your Growth</h1>
                     <h6 className="w-full text-center min-[780px]:text-[15px]  min-[500px]:text-[12px] text-[10px] px-2 py-5">Access structured notes, follow along with YouTube lessons, and track your progress — all in one place.</h6>
                 </div>
 
@@ -122,23 +114,7 @@ export default function Home() {
             
                 <h1 className="w-full  text-4xl py-5">Why Choose Us?</h1>
                 <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Kartz Stories makes it effortless to organize your thoughts and ideas. Whether it’s a quick note or an important reminder, everything stays just a click away.</p>
-                <ul className="flex gap-5 w-full flex-wrap justify-start py-5">
-                   {
-                      subjects.map((subject, index)=>{
-                        return (  
-                          <li key={index} className={`min-w-[280px] max-w-[400px]  w-full transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer`}>
-                              <div className="w-full flex items-center justify-between">
-                                  <h2 className="text-xl font-bold underline">{subject.name}</h2>
-                                  <p className="text-sm text-gray-500">{new Date(subject.createdAt).toLocaleDateString()}</p> 
-                            </div>
-                            <p>{subject.description}</p>
-                            <button className="w-full flex items-center"><Link href={`auth/signin`} className="w-full transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-green-800 bg-amber-50 hover:border-green-800 hover:bg-green-800 hover:text-amber-50 border  cursor-pointer" >Start</Link></button>
-                        </li>
-                        )
-                      }
-                      )
-                   }
-                </ul>  
+                <ExploreSubjectsPresenter/> 
             </section>
 
             <div className="w-full px-10">

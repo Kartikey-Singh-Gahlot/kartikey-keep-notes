@@ -3,7 +3,47 @@ const userModel = require('../Models/userModel.js');
 const { mailerFunction } = require('../Config/nodeMailer.js');
 const {contactMailTemplate, contactAcknowledgementMailTemplate} = require("../Utils/emailTemplate.js");
 const SubjectModel = require('../Models/subjectModel.js');
+const subjectModel = require('../Models/subjectModel.js');
 require('dotenv').config();
+
+
+const addNewSubject = async (req, res)=>{
+  const {authCookie} = req.cookies;
+  if(!authCookie){
+    console.log(authCookie+":auth ")
+    return res.status(401).json({
+      status:false,
+      code :"UNAUTHORIZED_ACCESS",
+      body:"No Auth Token Found"
+    })
+  }
+  try{
+     const valid = jwt.verify(authCookie,process.env.SECRETKEY);
+     const user = await userModel.findOne({email:valid.email});
+     if(!user || !user.admin){
+      return res.status(401).json({
+        status:false,
+        code :"UNAUTHORIZED_ACCESS",
+        body:"Restricted"
+      });
+     }
+     const {name, description} = req.body;
+     const newSubject = new SubjectModel({name, description});  
+     await newSubject.save();
+     return res.status(200).json({
+      status:true,  
+      code :"SUBJECT_CREATION_SUCCESSFULL",
+      body:"New Subject Added"
+     });
+  }
+  catch(err){
+    return res.status(500).json({
+      status:false,
+      code :"SERVER_SIDE_ERROR",
+      body:`Internal Server Error ${err.message}`
+    });
+  }
+}
 
 const checkGuestTheme = async (req, res)=>{
   const {themeCookie} = req.cookies;
@@ -54,7 +94,7 @@ const getUserDetails = async (req,res)=>{
         }
         return res.status(200).json({
           status : true,
-          body : {email:user.email, name:user.name, lightTheme:user.lightTheme, subjects:user.subjects, isVerified:user.isVerified}
+          body : {email:user.email, name:user.name, lightTheme:user.lightTheme, subjects:user.subjects, isVerified:user.isVerified, completedSubjects:user.completedSubjects, completedChapters:user.completedChapters, completedSections:user.completedSections}
         })
       }
       return res.status(401).json({
@@ -147,4 +187,4 @@ const contact = async (req, res)=>{
 
 
 
-module.exports = {checkGuestTheme, getUserDetails, getAllSubjects, setUserTheme, contact}
+module.exports = {checkGuestTheme, getUserDetails, getAllSubjects, setUserTheme, contact ,addNewSubject}

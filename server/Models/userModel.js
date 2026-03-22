@@ -12,6 +12,11 @@ const usersSchema = new mongoose.Schema({
    otpExpiry: {type:Date, select:false},
    isVerified : {type:Boolean, default:false},
    subjects:{type:[mongoose.Schema.Types.ObjectId], ref:'Subjects', default:[]},
+   completedSubjects:{type:[mongoose.Schema.Types.ObjectId], ref:'Subjects', default:[]},
+   completedChapters:{type:[mongoose.Schema.Types.ObjectId], ref:'Chapters', default:[]},
+   completedSections:{type:[mongoose.Schema.Types.ObjectId], ref:'Sections', default:[]},
+   likedSubjects:{type:[mongoose.Schema.Types.ObjectId], ref:'Subjects', default:[]},
+   createdAt : {type:Date, default:Date.now}
 })
 
 

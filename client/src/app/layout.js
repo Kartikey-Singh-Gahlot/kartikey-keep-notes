@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { styleEffect } from "framer-motion";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "keep-notes",
   description: "Basic Keep Notes App",
+  icons :{
+    icon: "/mainBgBlackImageOne.png",
+  }
 };
 
 export default function RootLayout({ children }) {
