@@ -185,6 +185,8 @@ const contact = async (req, res)=>{
   }
 }
 
-
+const createSubject = async (req, res)=>{
+   const {name, description}=req.body;
+}     
 
 module.exports = {checkGuestTheme, getUserDetails, getAllSubjects, setUserTheme, contact ,addNewSubject}
