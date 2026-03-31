@@ -7,43 +7,6 @@ const subjectModel = require('../Models/subjectModel.js');
 require('dotenv').config();
 
 
-const addNewSubject = async (req, res)=>{
-  const {authCookie} = req.cookies;
-  if(!authCookie){
-    console.log(authCookie+":auth ")
-    return res.status(401).json({
-      status:false,
-      code :"UNAUTHORIZED_ACCESS",
-      body:"No Auth Token Found"
-    })
-  }
-  try{
-     const valid = jwt.verify(authCookie,process.env.SECRETKEY);
-     const user = await userModel.findOne({email:valid.email});
-     if(!user || !user.admin){
-      return res.status(401).json({
-        status:false,
-        code :"UNAUTHORIZED_ACCESS",
-        body:"Restricted"
-      });
-     }
-     const {name, description} = req.body;
-     const newSubject = new SubjectModel({name, description});  
-     await newSubject.save();
-     return res.status(200).json({
-      status:true,  
-      code :"SUBJECT_CREATION_SUCCESSFULL",
-      body:"New Subject Added"
-     });
-  }
-  catch(err){
-    return res.status(500).json({
-      status:false,
-      code :"SERVER_SIDE_ERROR",
-      body:`Internal Server Error ${err.message}`
-    });
-  }
-}
 
 const checkGuestTheme = async (req, res)=>{
   const {themeCookie} = req.cookies;
@@ -186,7 +149,42 @@ const contact = async (req, res)=>{
 }
 
 const createSubject = async (req, res)=>{
-   const {name, description}=req.body;
+   try{
+    const {authCookie} = req.cookies;
+    const {name, description} = req.body;
+    const isValid = jwt.verify(authCookie, process.env.SECRETKEY);
+    const verify = await userModel.findOne({email:isValid.email});
+    if(isValid.admin  && verify.admin){
+      const subExists = await subjectModel.findOne({name});
+      if(subExists){
+        console.log(subExists);
+        return res.status(400).json({
+          status:false,
+          code:"SUBJECT_ALREADY_EXISTS",
+          body:"Subject Name Already Exists"
+        })
+      }
+      const subject = new subjectModel({name, description});
+      const newSub = await subject.save();
+      return res.status(201).json({
+        status:true,
+        code:"NEW_SUBJECT_CREATED",
+        body : newSub
+      });
+    }
+    return res.status(401).json({
+      status:false,
+      code:"UNAUTHORIZED_ACCESS",
+      body:{one: isValid.admin, two:verify.admin}
+    })
+   }
+   catch(err){
+    return res.status(500).json({
+      status:false,
+      code:"INTERNAL_SERVER_ERROR",
+      body:err.message
+    })
+   }
 }     
 
-module.exports = {checkGuestTheme, getUserDetails, getAllSubjects, setUserTheme, contact ,addNewSubject}
+module.exports = {checkGuestTheme, getUserDetails, getAllSubjects, setUserTheme, contact , createSubject}
