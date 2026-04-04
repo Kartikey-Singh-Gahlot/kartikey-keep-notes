@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../Models/userModel.js');
+const roadMapModel = require("../Models/roadmapModel.js");
 const { mailerFunction } = require('../Config/nodeMailer.js');
 const {contactMailTemplate, contactAcknowledgementMailTemplate} = require("../Utils/emailTemplate.js");
-const SubjectModel = require('../Models/subjectModel.js');
 const subjectModel = require('../Models/subjectModel.js');
+const roadmapModel = require('../Models/roadmapModel.js');
 require('dotenv').config();
 
 
@@ -74,22 +75,6 @@ const getUserDetails = async (req,res)=>{
     }
 }
 
-const getAllSubjects = async (req, res)=>{
-    try{
-       const subjects = await SubjectModel.find();
-       return res.status(200).json({
-         status:true,
-         body:subjects
-       });
-    }
-    catch(err){
-      return res.status(500).json({
-        status:false,
-        body:`Internal Server Error ${err.message}`
-      });
-    }
-}
-
 const setUserTheme = async (req, res)=>{
    const {authCookie} = req.cookies;
    const {theme} = req.body;
@@ -148,6 +133,80 @@ const contact = async (req, res)=>{
   }
 }
 
+const createRoadmap = async (req, res)=>{
+   try{
+     const {authCookie} = req.cookies;
+     const {name, description, subjects} = req.body;
+     const isValid = jwt.verify(authCookie, process.env.SECRETKEY);
+     const verify = await userModel.findOne({email:isValid.email});
+     if(isValid && verify.admin){
+       const roadmapExists = await roadMapModel.findOne({name});
+       if(roadmapExists){
+        console.log(roadmapExists);
+        return res.status(400).json({
+          status:false,
+          code:"ROADMAP_ALREADY_EXISTS",
+          body:"Roadmap Name Already Exists"
+        })
+       }
+       let subsToCreate = [];
+       if(subjects){
+         for(const subName of subjects){ 
+              const subExists = await subjectModel.findOne({name:subName});
+              if(subExists){ 
+                subsToCreate.push(subExists._id) 
+                continue;
+              }
+              const newSub = new subjectModel({name:subName});
+              const createdSub = await newSub.save();
+              subsToCreate.push(createdSub._id);
+         }
+       }
+       const newRoadmap = new roadmapModel({name, description:(description)?description:undefined, subjects:subsToCreate});
+       const createdRoadmap = await (await newRoadmap.save()).populate({
+        path:"subjects",
+        select:"name"
+       });
+       return res.status(201).json({
+         status:true,
+         code:"ROADMAP_CREATED_SUCCESSFULLY",
+         body:createdRoadmap
+       })
+     }
+     return res.status(401).json({
+      status:false,
+      code:"UNAUTHORIZED_ACCESS",
+      body:"Unauthorized Acess"
+     })
+   }
+   catch(err){
+     return res.status(500).json({
+       status:false,
+       code:"INTERNAL_SERVER_ERROR",
+       body:err.message
+     })
+   }
+}
+
+const getAllRoadmaps = async (req, res)=>{
+   try{
+       const roadmaps = await roadMapModel.find({}).populate({ path:'subjects', select:"name"});
+       return res.status(200).json({
+         status:true,
+         body:roadmaps
+       });
+    }
+    catch(err){
+      return res.status(500).json({
+        status:false,
+        body:`Internal Server Error ${err.message}`
+      });
+    }
+}
+
+const getARoadmap = async (req, res)=>{
+}
+
 const createSubject = async (req, res)=>{
    try{
     const {authCookie} = req.cookies;
@@ -185,6 +244,26 @@ const createSubject = async (req, res)=>{
       body:err.message
     })
    }
-}     
+} 
 
-module.exports = {checkGuestTheme, getUserDetails, getAllSubjects, setUserTheme, contact , createSubject}
+const getAllSubjects = async (req, res)=>{
+    try{
+       const subjects = await subjectModel.find();
+       return res.status(200).json({
+         status:true,
+         body:subjects
+       });
+    }
+    catch(err){
+      return res.status(500).json({
+        status:false,
+        body:`Internal Server Error ${err.message}`
+      });
+    }
+}
+
+const getASubject = async (req, res)=>{
+
+}
+
+module.exports = {checkGuestTheme, getUserDetails, getAllRoadmaps, setUserTheme, contact , createSubject, createRoadmap}
