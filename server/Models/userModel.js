@@ -11,7 +11,7 @@ const usersSchema = new mongoose.Schema({
    otp: {type:String, select:false},
    otpExpiry: {type:Date, select:false},
    isVerified : {type:Boolean, default:false},
-   subjects:{type:[mongoose.Schema.Types.ObjectId], ref:'Subjects', default:[]},
+   roadmaps:{type:[mongoose.Schema.Types.ObjectId], ref:'roadmap', default:[]},
    completedSubjects:{type:[mongoose.Schema.Types.ObjectId], ref:'Subjects', default:[]},
    completedChapters:{type:[mongoose.Schema.Types.ObjectId], ref:'Chapters', default:[]},
    completedSections:{type:[mongoose.Schema.Types.ObjectId], ref:'Sections', default:[]},
