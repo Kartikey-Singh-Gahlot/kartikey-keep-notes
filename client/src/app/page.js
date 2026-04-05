@@ -113,7 +113,7 @@ export default function Home() {
            <section className=" h-fit px-4  py-7 flex flex-col justify-center" id="about">                
             
                 <h1 className="w-full  text-4xl py-5">Why Choose Us?</h1>
-                <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Kartz Stories makes it effortless to organize your thoughts and ideas. Whether it’s a quick note or an important reminder, everything stays just a click away.</p>
+                <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Structured paths. Real lessons. Clear progress. Everything you need to go from curious to confident — without the chaos.</p>
                 <ExploreSubjectsPresenter/> 
             </section>
 
