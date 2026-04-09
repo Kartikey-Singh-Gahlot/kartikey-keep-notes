@@ -13,6 +13,11 @@
   animation-iteration-count: 1;
   animation-duration: 400ms;
 }
+
+.sliding-ul {
+  animation: slide 20s linear infinite;
+}
+
 @keyframes loadingAnimation {
       0%{ content:"."}
      25%{ content:".."}
@@ -28,4 +33,9 @@
    60%{transform: translateX(-4px);}
    80%{transform: translateX(4px);}
   100%{transform: translateX(0);}
+}
+
+@keyframes slide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
