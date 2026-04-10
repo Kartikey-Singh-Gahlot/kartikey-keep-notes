@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import "./components.css";
+import Marquee from "react-fast-marquee";
 
 export function ExploreSubjectsPresenter(){
     let [roadmaps, setRoadmaps] = useState([{name:"", description:"", subjects:[{name:""}], createdAt:"", imageUrl:"/mainBgBlackImageOne.png", likesCount:0}]);
@@ -66,6 +67,7 @@ export function NormalSubjectsPresenter(){
             {   
                 roadmaps.map((roadmap, index)=>{    
                     return(
+                        <Marquee speed={40} pauseOnHover={true} gradient={false}>
                         <Link href={'/roadmap/' + roadmap._id} key={index} className={`min-w-[280px] max-w-[400px] flex flex-col w-full transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer`}> 
                                     <div className="w-full flex items-center justify-between">
                                         <h2 className="text-xl font-bold underline">{roadmap.name}</h2>
@@ -76,6 +78,7 @@ export function NormalSubjectsPresenter(){
                                      {roadmap.description}
                                     </p>
                         </Link>
+                        </Marquee>
                     )
                 })
              }
