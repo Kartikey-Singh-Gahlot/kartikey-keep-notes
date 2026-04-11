@@ -24,11 +24,12 @@ export function ExploreSubjectsPresenter(){
     const duplicatedRoadmaps = [...roadmaps, ...roadmaps];
 
     return(
+        <Marquee speed={40} pauseOnHover={true} gradient={false}>
           <ul className="sliding-ul flex gap-5 w-full justify-start py-5 overflow-x-scroll scroll-smooth scroll-hidden max-w-[98vw] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {
               duplicatedRoadmaps.map((roadmap, index)=>{
                   return(          
-                      <Link href={'/auth/signin'} key={index} className={`min-w-[350px] max-w-[400px]  flex flex-col w-full transition-colors text-nowrap px-4 py-2 mx-5 rounded-sm  text-white  border-2 border-[#ffffff00] hover:scale-103 transition-transform  bg-green-800  cursor-pointer hover`}>
+                      <Link href={'/auth/signin'} key={index} className={`min-w-[350px] max-w-[400px]  flex flex-col w-full transition-colors text-nowrap px-4 py-2  rounded-sm  text-white  border-2 border-[#ffffff00] hover:scale-103 transition-transform  bg-green-800  cursor-pointer hover`}>
                                  <div className="w-full flex items-center justify-between pb-5">
                                         <h2 className="text-xl font-bold underline">{roadmap.name}</h2>
                                         <h2 className="text-sm text-green-800 border-2 bg-amber-50  px-2 py-1 rounded-2xl"> ❤︎⁠ {roadmap.likesCount}</h2>
@@ -42,6 +43,7 @@ export function ExploreSubjectsPresenter(){
               })
             }
           </ul>
+       </Marquee>
     )
 }
 
@@ -67,7 +69,6 @@ export function NormalSubjectsPresenter(){
             {   
                 roadmaps.map((roadmap, index)=>{    
                     return(
-                        <Marquee speed={40} pauseOnHover={true} gradient={false}>
                         <Link href={'/roadmap/' + roadmap._id} key={index} className={`min-w-[280px] max-w-[400px] flex flex-col w-full transition-colors text-nowrap px-4 py-2 rounded-[4px]  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer`}> 
                                     <div className="w-full flex items-center justify-between">
                                         <h2 className="text-xl font-bold underline">{roadmap.name}</h2>
@@ -78,7 +79,6 @@ export function NormalSubjectsPresenter(){
                                      {roadmap.description}
                                     </p>
                         </Link>
-                        </Marquee>
                     )
                 })
              }
