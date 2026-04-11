@@ -1,4 +1,4 @@
-"use clent";
+"use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import "./components.css";
@@ -25,7 +25,7 @@ export function ExploreSubjectsPresenter(){
     const duplicatedRoadmaps = [...roadmaps, ...roadmaps];
 
     return(
-        (roadmaps.length<1)?
+        (roadmaps.length>0)?
         (<Marquee speed={40} pauseOnHover={true} gradient={false}>
           <ul className="sliding-ul flex gap-5 w-full justify-start py-5 overflow-x-scroll scroll-smooth scroll-hidden max-w-[98vw] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {
