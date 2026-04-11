@@ -6,7 +6,7 @@ import {SectionalLoader} from "./loader.js";
 import Marquee from "react-fast-marquee";
 
 export function ExploreSubjectsPresenter(){
-    let [roadmaps, setRoadmaps] = useState(null);
+    let [roadmaps, setRoadmaps] = useState([{name:"", description:"", subjects:[{name:""}], createdAt:"", imageUrl:"/mainBgBlackImageOne.png", likesCount:0}]);
     async function getAllRoadmaps(){
       const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/roadmap`,{method:"GET", credentials:"include", headers: { "Content-Type": "application/json"}});
       const pr = await un.json();
@@ -25,7 +25,7 @@ export function ExploreSubjectsPresenter(){
     const duplicatedRoadmaps = [...roadmaps, ...roadmaps];
 
     return(
-        (roadmaps)?
+        (roadmaps[0].name.length>0)?
         (<Marquee speed={40} pauseOnHover={true} gradient={false}>
           <ul className="sliding-ul flex gap-5 w-full justify-start py-5 overflow-x-scroll scroll-smooth scroll-hidden max-w-[98vw] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {
