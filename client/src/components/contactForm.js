@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { toast } from "sonner";
-import { SectionalLoader } from "../(components)/loader.js";
+import { SectionalLoader } from "./loader.js";
 
 
 

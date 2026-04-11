@@ -1,11 +1,11 @@
 "use client";
-import Logo from "../../(components)/logo.js";
+import Logo from "../../../components/logo.js";
 import "../credentials.css";
 import { useState, useEffect, use } from "react";
 import Link from "next/link.js";
 import { useRouter } from "next/navigation.js";
-import { FullScreenLoader } from "../../(components)/loader.js";
-import {SigninOtpVerificationBox} from "../../(components)/otpVerification.js"
+import { FullScreenLoader } from "../../../components/loader.js";
+import {SigninOtpVerificationBox} from "../../../components/otpVerification.js"
 import { toast } from "sonner";
 
 
