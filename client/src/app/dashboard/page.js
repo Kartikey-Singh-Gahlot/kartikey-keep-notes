@@ -1,9 +1,9 @@
 "use client";
-import Logo from "../components/logo";
+import Logo from "../(components)/logo";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { HamBurgerMenu } from "../components/hamBurgerMenu";
-import { NormalSubjectsPresenter } from "../components/sbjectsPresenter";
+import { HamBurgerMenu } from "../(components)/hamBurgerMenu";
+import { NormalSubjectsPresenter } from "../(components)/sbjectsPresenter";
 import Link from "next/link";
 import "./dashboard.css";
 

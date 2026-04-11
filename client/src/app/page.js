@@ -1,13 +1,13 @@
 "use client";
-import {HomeNavBar} from "./components/navBar.js";
+import {HomeNavBar} from "./(components)/navBar.js";
 import Link from "next/link.js";
-import Logo from "./components/logo.js";
-import { ExploreSubjectsPresenter } from "./components/sbjectsPresenter.js";
+import Logo from "./(components)/logo.js";
+import { ExploreSubjectsPresenter } from "./(components)/sbjectsPresenter.js";
 import "./globals.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation.js";
-import { HamBurgerMenu } from "./components/hamBurgerMenu.js";
-import ContactForm from "./components/contactForm.js";
+import { HamBurgerMenu } from "./(components)/hamBurgerMenu.js";
+import ContactForm from "./(components)/contactForm.js";
 
 
 export default function Home() {
