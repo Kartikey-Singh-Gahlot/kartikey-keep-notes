@@ -9,7 +9,6 @@ import {SignupOtpVerificationBox} from "../../(components)/otpVerification.js";
 import { toast } from "sonner";
 
 
-
 export default function SignUp(){
     
     const router = useRouter();
