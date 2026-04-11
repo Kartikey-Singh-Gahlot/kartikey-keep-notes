@@ -4,14 +4,12 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 
-// ================= SIGNIN OTP =================
 
 export function SigninOtpVerificationBox({ password, email }) {
   const [formData, setFormData] = useState({ one: "", two: "", three: "", four: "" });
   const [shake, setShake] = useState(false);
   const router = useRouter();
 
-  // ✅ Auto submit when OTP complete (FIXED)
   useEffect(() => {
     const otp = Object.values(formData).join("");
     if (otp.length === 4) {
@@ -100,14 +98,12 @@ export function SigninOtpVerificationBox({ password, email }) {
 }
 
 
-// ================= SIGNUP OTP =================
 
 export function SignupOtpVerificationBox() {
   const [formData, setFormData] = useState({ one: "", two: "", three: "", four: "" });
   const [shake, setShake] = useState(false);
   const router = useRouter();
 
-  // ✅ Auto submit when OTP complete (FIXED)
   useEffect(() => {
     const otp = Object.values(formData).join("");
     if (otp.length === 4) {

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import "./components.css";
+import {SectionalLoader} from "./loader.js";
 import Marquee from "react-fast-marquee";
 
 export function ExploreSubjectsPresenter(){
@@ -24,10 +25,11 @@ export function ExploreSubjectsPresenter(){
     const duplicatedRoadmaps = [...roadmaps, ...roadmaps];
 
     return(
-        <Marquee speed={40} pauseOnHover={true} gradient={false}>
+        (roadmaps.length<1)?
+        (<Marquee speed={40} pauseOnHover={true} gradient={false}>
           <ul className="sliding-ul flex gap-5 w-full justify-start py-5 overflow-x-scroll scroll-smooth scroll-hidden max-w-[98vw] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {
-              duplicatedRoadmaps.map((roadmap, index)=>{
+             duplicatedRoadmaps.map((roadmap, index)=>{
                   return(          
                       <Link href={'/auth/signin'} key={index} className={`min-w-[350px] max-w-[400px]  flex flex-col w-full transition-colors text-nowrap px-4 py-2  rounded-sm  text-white  border-2 border-[#ffffff00] hover:scale-103 transition-transform  bg-green-800  cursor-pointer hover`}>
                                  <div className="w-full flex items-center justify-between pb-5">
@@ -43,7 +45,8 @@ export function ExploreSubjectsPresenter(){
               })
             }
           </ul>
-       </Marquee>
+       </Marquee>):<SectionalLoader/>
+     
     )
 }
 
