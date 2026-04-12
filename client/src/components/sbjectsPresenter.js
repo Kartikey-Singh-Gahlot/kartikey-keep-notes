@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import "./components.css";
 import { SectionalLoader } from "./loader.js";
 import Marquee from "react-fast-marquee";
 
