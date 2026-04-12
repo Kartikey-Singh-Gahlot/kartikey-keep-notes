@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import "./components.css";
 
 export default function Logo(){
     return(
