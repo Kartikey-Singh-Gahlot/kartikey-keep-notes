@@ -114,7 +114,7 @@ export default function Home() {
             
                 <h1 className="w-full  text-4xl py-5">Why Choose Us?</h1>
                 <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Structured paths. Real lessons. Clear progress. Everything you need to go from curious to confident — without the chaos.</p>
-                <ExploreSubjectsPresenter/> 
+                <ExploreSubjectsPresenter theme={lightTheme}/> 
             </section>
 
             <div className="w-full px-10">

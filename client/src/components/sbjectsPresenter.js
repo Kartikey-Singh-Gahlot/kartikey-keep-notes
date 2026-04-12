@@ -5,7 +5,7 @@ import "./components.css";
 import { SectionalLoader } from "./loader.js";
 import Marquee from "react-fast-marquee";
 
-export function ExploreSubjectsPresenter() {
+export function ExploreSubjectsPresenter({theme}) {
   let [roadmaps, setRoadmaps] = useState([
     { name: "", description: "", subjects: [{ name: "" }], createdAt: "", imageUrl: "/mainBgBlackImageOne.png", likesCount: 0 },
   ]);
@@ -52,7 +52,7 @@ export function ExploreSubjectsPresenter() {
       </ul>
     </Marquee>
   ) : (
-    <SectionalLoader />
+    <SectionalLoader theme={theme}/>
   );
 }
 
