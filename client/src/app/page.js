@@ -72,7 +72,7 @@ export default function Home() {
 
   return (
    <main className={`pageWrapper ${(lightTheme)?"lightTheme":"darkTheme"} transition-colors font-semibold`} onClick={trgrMobileNavOff}>
-         <header className={`${(lightTheme)?"lightTheme":"darkTheme"} fixed w-full flex px-5 py-3 items-center box-border  transition-colors`}>
+         <header className={`${(lightTheme)?"lightTheme":"darkTheme"} fixed w-full flex px-5 py-3 items-center box-border z-20  transition-colors`}>
                 <div className="w-full"><Logo/></div>
 
                 <nav className="pl-2 px-2 flex min-[780px]:flex-row flex-col justify-end items-center box-border w-full " >

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { SectionalLoader } from "./loader.js";
 import Marquee from "react-fast-marquee";
+import "./styles/sbjectsPresenter.css";
+
 
 export function ExploreSubjectsPresenter({theme}) {
   let [roadmaps, setRoadmaps] = useState([
@@ -31,19 +33,19 @@ export function ExploreSubjectsPresenter({theme}) {
   const duplicatedRoadmaps = [...roadmaps, ...roadmaps];
 
   return roadmaps[0].name.length > 0 ? (
-    <Marquee speed={40} pauseOnHover={true} gradient={false}>
-      <ul className="sliding-ul flex gap-4 w-full justify-start py-5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <Marquee speed={40} pauseOnHover={true} gradient={false} >
+      <ul className="subjects-presenter-wrapper">
         {duplicatedRoadmaps.map((roadmap, index) => (
-          <Link href={"/auth/signin"} key={index} className="w-[80vw] sm:w-[320px] md:w-[350px] flex-shrink-0 flex flex-col text-white bg-green-800 px-4 py-3 rounded-sm border-2 border-transparent hover:scale-[1.03] transition-transform cursor-pointer">
-            <div className="w-full flex items-center justify-between pb-4 gap-2">
-              <h2 className="text-lg font-bold underline line-clamp-1">{roadmap.name}</h2>
-              <span className="text-sm text-green-800 border-2 bg-amber-50 px-2 py-1 rounded-2xl whitespace-nowrap flex-shrink-0">
+          <Link href={"/auth/signin"} key={index} className="subjects-card">
+            <div className="subjects-card-header">
+              <h2 className="subjects-card-title">{roadmap.name}</h2>
+              <span className="subjects-card-likes">
                 ❤︎ {roadmap.likesCount}
               </span>
             </div>
             <img
               src={roadmap.imageUrl}
-              className="w-full h-28 object-contain my-4 py-3 bg-amber-50 border-2 border-green-800 rounded"
+              className="subjects-card-image"
             />
             <p className="w-full text-wrap text-sm line-clamp-3">{roadmap.description}</p>
           </Link>

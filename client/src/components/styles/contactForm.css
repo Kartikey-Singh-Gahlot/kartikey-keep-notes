@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+.contact-form{
+    @apply flex flex-col  gap-2 p-4 rounded-2xl;
+}
+
+.sender-input{
+    @apply rounded-[5px] border-green-800 border-[1.5px] w-[30vw] min-w-[250px] h-10 text-center placeholder-gray-400 text-[14px];
+}   
+
+.message-input{
+ @apply rounded-[5px] border-green-800 border-[1.5px]  p-1.5 min-h-40  placeholder:text-gray-400 text-[14px];
+}
+
+.submit-button{
+    @apply transition-colors text-nowrap px-4 py-2 rounded-2xl  text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00]  bg-green-800  cursor-pointer;
+}
