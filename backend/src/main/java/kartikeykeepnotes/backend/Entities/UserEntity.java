@@ -82,9 +82,9 @@ public class UserEntity{
         this.isVerified = isVerified;
     }
 
-    public  List<String> getRoadmaps() {
+    public  List<RoadmapEntity> getRoadmaps() {
+        List<RoadmapEntity> roadmaps = new ArrayList<>();
         return roadmaps;
     }   
     
-    public List<String>
 }
