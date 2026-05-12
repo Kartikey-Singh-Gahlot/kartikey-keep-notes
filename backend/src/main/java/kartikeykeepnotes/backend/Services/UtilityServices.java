@@ -1,5 +1,5 @@
 package kartikeykeepnotes.backend.Services;
 
-public class NotesServices {
+public class UtilityServices {
     
 }
