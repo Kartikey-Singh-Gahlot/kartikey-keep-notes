@@ -10,6 +10,9 @@ const passport = require("./Config/passport.js");
 
 setDataBaseConnection().then(()=>{
     console.log("working");
+    app.listen(8080, ()=>{
+         console.log(`listening on ${8080}`);
+    });
 }).catch((err)=>{
    process.exit(1);
 })
@@ -24,15 +27,5 @@ app.use(cors({
 }));
 
 app.use(passport.initialize());
-
-
 app.use("/", Router);
 app.use("/", googleRouter);
-
-
-app.listen(8080, ()=>{
-    console.log("listening..")
-});
-
-
-module.exports = app;
