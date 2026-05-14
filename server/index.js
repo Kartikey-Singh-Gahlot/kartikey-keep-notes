@@ -8,10 +8,12 @@ const Router = require('./Routes/routes.js');
 const passport = require("./Config/passport.js");
 
 
+const port = process.env.PORT || 8080;
+
 setDataBaseConnection().then(()=>{
     console.log("working");
-    app.listen(8080, ()=>{
-         console.log(`listening on ${8080}`);
+    app.listen(port, ()=>{
+         console.log(`listening on ${port}`);
     });
 }).catch((err)=>{
    process.exit(1);
