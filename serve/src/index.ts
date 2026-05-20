@@ -19,7 +19,7 @@ app.use(cors({
 
 app.use(passport.initialize());
 app.use("/", router);
-app.use("/auth", googleRouter);
+app.use("/", googleRouter);
 
 const PORT = process.env.PORT || 8080;
 
