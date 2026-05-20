@@ -4,18 +4,19 @@ import SMTPTransport from "nodemailer/lib/smtp-transport/index.js";
 
 
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || '',
-    port: process.env.SMTP_PORT || 465 ,
-    secure:true,
-    auth:{
-         user: process.env.SMTP_USER || '',
-         pass: process.env.SMTP_PASS || ''
-    }
-}as SMTPTransport.Options);
+  host: process.env.SMTP_HOST || '',
+  port: process.env.SMTP_PORT || 465,
+  family: 4,
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || ''
+  }
+} as SMTPTransport.Options);
 
 
 transporter.verify((err, success) => {
-  if(err) {
+  if (err) {
     console.error("SMTP VERIFY FAILED");
     console.error(err);
   } else {
@@ -26,16 +27,16 @@ transporter.verify((err, success) => {
 
 
 const mailerFunction = async (to: string, sub: string, msg: string): Promise<void> => {
-  try{
-      await transporter.sendMail({
-        from: `Keep Notes <${process.env.SMTP_USER}>`, 
-        to:to,
-        subject:sub,
-        html:msg
-      });
+  try {
+    await transporter.sendMail({
+      from: `Keep Notes <${process.env.SMTP_USER}>`,
+      to: to,
+      subject: sub,
+      html: msg
+    });
   }
-  catch(err){
-     console.log(err);
+  catch (err) {
+    console.log(err);
   }
 }
 
