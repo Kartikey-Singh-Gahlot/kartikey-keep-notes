@@ -1,5 +1,5 @@
 import mongoose, {type mongo} from "mongoose"
-import type sectionSchemaType from "./Interfaces/sectionModelInterface.js";
+import type sectionSchemaType from "../Interfaces/SchemaInterfaces/sectionModelInterface.js";
 
 
 const sectionSchema = new mongoose.Schema<sectionSchemaType>({

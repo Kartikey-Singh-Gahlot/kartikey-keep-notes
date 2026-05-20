@@ -1,5 +1,5 @@
 import mongoose, {type mongo} from "mongoose"
-import type roadmapSchemaType from "./Interfaces/roadmapModelInterface.js";
+import type roadmapSchemaType from "../Interfaces/SchemaInterfaces/roadmapModelInterface.js";
 
 const roadmapSchema = new mongoose.Schema<roadmapSchemaType>({
     name:{type:String, unique:true},

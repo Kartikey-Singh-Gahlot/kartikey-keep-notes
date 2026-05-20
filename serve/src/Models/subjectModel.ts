@@ -1,5 +1,5 @@
 import mongoose, {type mongo} from "mongoose"
-import type subjectSchemaType from "./Interfaces/subjectModelInterface.js";
+import type subjectSchemaType from "../Interfaces/SchemaInterfaces/subjectModelInterface.js";
 
 const subjectSchema = new mongoose.Schema<subjectSchemaType>({
   name:{type:String, default:'General', unique:true, required:true},

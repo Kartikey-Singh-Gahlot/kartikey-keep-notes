@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type chapterSchemaType from "./Interfaces/chapterModelInterface.js"
+import type chapterSchemaType from "../Interfaces/SchemaInterfaces/chapterModelInterface.js"
 
 const chapterSchema = new mongoose.Schema<chapterSchemaType>({
   subjectId:{type:mongoose.Schema.Types.ObjectId, ref:'subjects', required:true},

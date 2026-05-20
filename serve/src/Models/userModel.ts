@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import type userSchemaType from "./Interfaces/userModelInterface.js";
+import type userSchemaType from "../Interfaces/SchemaInterfaces/userModelInterface.js";
 
 const usersSchema = new mongoose.Schema<userSchemaType>({
    name: {type:String, default:"guest"},
