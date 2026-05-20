@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import passport from "./Config/passport.js";
 import router from "./Routes/routes.js";
+import googleRouter from "./Routes/googleAuthRoutes.js";
 
 const app: Application = express();
 
@@ -18,6 +19,7 @@ app.use(cors({
 
 app.use(passport.initialize());
 app.use("/", router);
+app.use("/auth", googleRouter);
 
 const PORT = process.env.PORT || 8080;
 
