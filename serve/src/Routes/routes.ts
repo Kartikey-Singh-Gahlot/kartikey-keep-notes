@@ -1,36 +1,37 @@
-const { guestCreator, checkAuth, signOut, signup, signin, signupOtpVerification, signinOtpVerification } = require('../Controllers/authControllers.js');
-const {getUserDetails, checkGuestTheme, contact, setUserTheme, getAllRoadmaps, createSubject, createRoadmap, getAllSubjects} = require("../Controllers/utilityControllers.js");
-const limiter = require("../Middlewares/rateLimiter.js");
-
-const Router = require('express').Router();
-
-
-
-Router.post("/auth/guest", guestCreator);
-Router.get("/guest/theme", checkGuestTheme);
-
-
-Router.get("/auth/user", checkAuth);
-Router.post("/auth/user/signup",signup);
-Router.post("/auth/user/signupOtpVerification", signupOtpVerification);
-
-Router.post("/auth/user/signout",signOut);
-Router.post("/auth/user/signin",signin);
-Router.post("/auth/user/signinOtpVerification", signinOtpVerification);
+import { guestCreator, checkAuth, signOut, signup, signin, signupOtpVerification, signinOtpVerification } from "../Controllers/authControllers.js";
+import { getUserDetails, checkGuestTheme, contact, setUserTheme, getAllRoadmaps, createSubject, createRoadmap, getAllSubjects } from "../Controllers/utilityControllers.js";
+import limiter from "../Middlewares/rateLimiter.js";
+import { Router } from "express";
 
 
 
+const router = Router();
 
-Router.post("/contact", limiter, contact);
-Router.get("/user", getUserDetails);
-Router.patch("/user/theme", setUserTheme);
-
-
-
-Router.get("/roadmap", getAllRoadmaps);
-Router.post("/roadmap", createRoadmap);
-Router.post("/subject", createSubject);
+router.post("/auth/guest", guestCreator);
+router.get("/guest/theme", checkGuestTheme);
 
 
+router.get("/auth/user", checkAuth);
+router.post("/auth/user/signup", signup);
+router.post("/auth/user/signupOtpVerification", signupOtpVerification);
 
-module.exports = Router;
+router.post("/auth/user/signout", signOut);
+router.post("/auth/user/signin", signin);
+router.post("/auth/user/signinOtpVerification", signinOtpVerification);
+
+
+
+
+router.post("/contact", limiter, contact);
+router.get("/user", getUserDetails);
+router.patch("/user/theme", setUserTheme);
+
+
+
+router.get("/roadmap", getAllRoadmaps);
+router.post("/roadmap", createRoadmap);
+router.post("/subject", createSubject);
+
+
+
+export default router;
