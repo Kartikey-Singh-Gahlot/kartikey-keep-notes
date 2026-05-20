@@ -8,8 +8,8 @@ export default interface userSchemaType {
  googleId: string,
  admin:boolean,
  lightTheme: boolean,
- otp:string,
- otpExpiry:Date,
+ otp?: string | undefined,
+ otpExpiry?: Date | undefined,
  isVerified: boolean,
  roadmaps: mongoose.Types.ObjectId[];
  completedSubjects: mongoose.Types.ObjectId[]
