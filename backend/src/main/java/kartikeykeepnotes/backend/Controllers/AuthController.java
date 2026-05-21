@@ -1,7 +1,6 @@
 package kartikeykeepnotes.backend.Controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import kartikeykeepnotes.backend.Entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,23 +8,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import kartikeykeepnotes.backend.Services.AuthServices;
-import kartikeykeepnotes.backend.Entities.ResponseEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import kartikeykeepnotes.backend.Entities.ApiResponseEntity;
+import kartikeykeepnotes.backend.Repositories.UserRepository;
+import java.util.Optional;
 
 
 
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @CrossOrigin(origins = "${FRONTEND_URL}")
 public class AuthController {
 
    
+
     @Autowired
-    private ResponseEntity ResponseEntity;
+    private AuthServices authService;
 
 
     @Autowired
-    private AuthServices AuthService;
+    private UserRepository userRepository;
 
 
     @GetMapping("")
@@ -35,10 +39,19 @@ public class AuthController {
 
 
     @PostMapping("user/signup")
-    public ResponseEntity signup(@RequestBody UserEntity userEntity) {   
-        ResponseEntity res = new ResponseEntity();
-        res.setMessage(AuthService.signUp(userEntity));
-        return res;
+    public ResponseEntity<ApiResponseEntity<UserEntity>> signup(@RequestBody UserEntity userEntity) {   
+        Optional<UserEntity> existingUser = userRepository.findByEmail(userEntity.getEmail());
+        ApiResponseEntity<UserEntity> res = new ApiResponseEntity<>();
+        if(existingUser.isPresent()){
+            res.setStatus(false); 
+            res.setMessage("User with this email already exists");
+
+            return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+
+        }
+        res.setMessage(authService.signUp(userEntity));
+        res.setStatus(true);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
     
 }

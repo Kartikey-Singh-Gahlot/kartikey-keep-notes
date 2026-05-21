@@ -1,11 +1,8 @@
 package kartikeykeepnotes.backend.Entities;
-import org.springframework.data.mongodb.core.aggregation.SetOperators.AnyElementTrue;
-import org.springframework.stereotype.Component;
 
-@Component
-public class ResponseEntity {
+public class ApiResponseEntity<T>{
     private boolean status;
-    private Object message;
+    private T message;
 
     public boolean isStatus() {
         return status;
@@ -15,11 +12,11 @@ public class ResponseEntity {
         this.status = status;
     }
 
-    public Object getMessage() {
+    public T getMessage() {
         return message;
     }
 
-    public void setMessage(Object message) {
+    public void setMessage(T message) {
         this.message = message;
     }
 
