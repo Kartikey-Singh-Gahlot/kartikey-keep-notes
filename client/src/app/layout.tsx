@@ -1,7 +1,7 @@
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { styleEffect } from "framer-motion";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,22 +13,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "keep-notes",
   description: "Basic Keep Notes App",
-  icons :{
+  icons: {
     icon: "/mainBgBlackImageOne.png",
   }
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-full flex flex-col`}>
         {children}
-         <Toaster position="top-right" theme={"light"} richColors/>
+        <Toaster position="top-right" theme={"light"} richColors />
       </body>
     </html>
   );

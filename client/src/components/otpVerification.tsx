@@ -1,11 +1,10 @@
 "use client"
-import { useRouter } from "next/navigation.js";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { OtpVerificationBoxProps } from "../interfaces/OtpVerificationInterfaces";
 
-
-
-export function SigninOtpVerificationBox({ password, email }) {
+export function SigninOtpVerificationBox({ password, email }: OtpVerificationBoxProps) {
   const [formData, setFormData] = useState({ one: "", two: "", three: "", four: "" });
   const [shake, setShake] = useState(false);
   const router = useRouter();
@@ -17,7 +16,7 @@ export function SigninOtpVerificationBox({ password, email }) {
     }
   }, [formData]);
 
-  async function handleSubmit(otp) {
+  async function handleSubmit(otp: string) {
     try {
       const cleanOtp = otp.trim();
 
@@ -59,7 +58,7 @@ export function SigninOtpVerificationBox({ password, email }) {
     }, 400);
   }
 
-  function trgrChange(e) {
+  function trgrChange(e: ChangeEvent<HTMLInputElement>) {
     if (!/^\d?$/.test(e.target.value)) return;
 
     const value = e.target.value;
@@ -70,7 +69,7 @@ export function SigninOtpVerificationBox({ password, email }) {
     }));
 
     if (value && e.target.nextSibling) {
-      e.target.nextSibling.focus();
+      (e.target.nextSibling as HTMLInputElement).focus();
     }
   }
 
@@ -97,8 +96,6 @@ export function SigninOtpVerificationBox({ password, email }) {
   );
 }
 
-
-
 export function SignupOtpVerificationBox() {
   const [formData, setFormData] = useState({ one: "", two: "", three: "", four: "" });
   const [shake, setShake] = useState(false);
@@ -111,7 +108,7 @@ export function SignupOtpVerificationBox() {
     }
   }, [formData]);
 
-  async function handleSubmit(otp) {
+  async function handleSubmit(otp: string) {
     try {
       const cleanOtp = otp.trim();
 
@@ -149,7 +146,7 @@ export function SignupOtpVerificationBox() {
     }, 400);
   }
 
-  function trgrChange(e) {
+  function trgrChange(e: ChangeEvent<HTMLInputElement>) {
     if (!/^\d?$/.test(e.target.value)) return;
 
     const value = e.target.value;
@@ -160,7 +157,7 @@ export function SignupOtpVerificationBox() {
     }));
 
     if (value && e.target.nextSibling) {
-      e.target.nextSibling.focus();
+      (e.target.nextSibling as HTMLInputElement).focus();
     }
   }
 

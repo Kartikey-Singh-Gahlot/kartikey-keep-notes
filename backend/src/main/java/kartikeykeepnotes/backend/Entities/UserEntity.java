@@ -32,6 +32,8 @@ public class UserEntity{
 
     private Date createdAt = new Date();
 
+}
+
     public String getName() {
         return name;
     }
