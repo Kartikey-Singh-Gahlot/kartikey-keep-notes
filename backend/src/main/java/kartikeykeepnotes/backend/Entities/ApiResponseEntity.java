@@ -1,23 +1,12 @@
 package kartikeykeepnotes.backend.Entities;
+import lombok.*;
 
-public class ApiResponseEntity<T>{
+@Getter
+@Setter
+public class ApiResponseEntity{
     private boolean status;
-    private T message;
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public T getMessage() {
-        return message;
-    }
-
-    public void setMessage(T message) {
-        this.message = message;
-    }
-
+    private String message;
+    private Object data;
 }
+
+

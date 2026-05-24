@@ -39,19 +39,21 @@ public class AuthController {
 
 
     @PostMapping("user/signup")
-    public ResponseEntity<ApiResponseEntity<UserEntity>> signup(@RequestBody UserEntity userEntity) {   
+    public ResponseEntity<ApiResponseEntity> signup(@RequestBody UserEntity userEntity) {   
         Optional<UserEntity> existingUser = userRepository.findByEmail(userEntity.getEmail());
-        ApiResponseEntity<UserEntity> res = new ApiResponseEntity<>();
+        ApiResponseEntity res = new ApiResponseEntity();
         if(existingUser.isPresent()){
             res.setStatus(false); 
+            res.setData(null);
             res.setMessage("User with this email already exists");
-
             return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
 
         }
-        res.setMessage(authService.signUp(userEntity));
+        res.setMessage("User created successfully");
         res.setStatus(true);
+        res.setData(authService.signUp(userEntity));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
     
 }
+
