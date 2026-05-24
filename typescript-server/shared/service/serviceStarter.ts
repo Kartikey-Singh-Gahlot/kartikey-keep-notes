@@ -2,7 +2,6 @@ import express, {type Application, type Router} from 'express';
 import "dotenv/config";
 import cors from "cors";
 import setDatabaseConnection from '../database/dbConnection';
-import { connected } from 'node:process';
 
 
 interface configType{
