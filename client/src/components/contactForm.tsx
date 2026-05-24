@@ -47,10 +47,15 @@ export default function ContactForm({ lightTheme }: ContactFormProps) {
 
     return (
         (!loading) ?
-            (<form onSubmit={trgrFormSubmit} className="contact-form">
+            (
+             <form onSubmit={trgrFormSubmit} className="contact-form">
                 <input required onChange={trgrFormChange} value={formData.sender} name="sender" className="sender-input" placeholder="xyz@gmail.com" />
                 <textarea onChange={trgrFormChange} value={formData.message} name="message" className="message-input" placeholder="Your message for us" />
                 <button type="submit" className="submit-button">Send</button>
-            </form>) : (<SectionalLoader theme={(lightTheme) ? "lightTheme" : "darkTheme"} />)
+             </form>
+            ) : 
+            (
+             <SectionalLoader theme={(lightTheme) ? "lightTheme" : "darkTheme"} />
+            )
     );
 }

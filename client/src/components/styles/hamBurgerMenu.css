@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+.menu-wrapper{
+    @apply min-[780px]:hidden flex flex-col justify-center h-fit gap-1 cursor-pointer ;
+}
+
+.bars {
+    @apply transition-all h-0.5 w-6 bg-green-800;
+}
+
