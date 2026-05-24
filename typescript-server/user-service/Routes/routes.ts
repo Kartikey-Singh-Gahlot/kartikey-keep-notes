@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {authService} from "../Controllers/controllers.js";
+import {userService} from "../Controllers/controllers.js";
 
 const routes:Router = Router();
 
-routes.get("/", authService);
+routes.get("/", userService);
 
 
 export default routes;
