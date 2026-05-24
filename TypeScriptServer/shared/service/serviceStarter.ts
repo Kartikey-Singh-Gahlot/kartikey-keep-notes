@@ -6,7 +6,7 @@ import { connected } from 'node:process';
 
 
 interface configType{
-  dbUrl:string,
+  dbName:string,
   frontendUrl:string,
   servicePort:number,
   routes?:Router[]
@@ -23,7 +23,7 @@ export async function startServer(config:configType){
   }));
 
 
-  const connection = await setDatabaseConnection(config.dbUrl || "");
+  const connection = await setDatabaseConnection(config.dbName || "");
   if(!connection.status){
     process.exit(1);
   }
