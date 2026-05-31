@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 
 
@@ -13,8 +14,12 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 @Getter
 @Setter
 public class UserEntity{
-    private String name;
+
+
+    @Indexed(unique = true)
     private String email;
+  
+    private String name;
     private String password;
     private String googleId;
     private Boolean admin;

@@ -1,5 +1,7 @@
 package kartikeykeepnotes.backend.Entities;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Getter
 @Setter
