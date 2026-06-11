@@ -7,7 +7,6 @@ export default interface sectionSchemaType{
     content:string,
     blocks:object,
     images:string[],
-    subProjects:mongoose.Schema.Types.ObjectId[],
     isSubSection:boolean,
     order:number,
     createdAt:Date

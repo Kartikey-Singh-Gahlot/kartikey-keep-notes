@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
-html{
+html, body{
   scroll-behavior: smooth;
+  background-color: #fffbeb; /* matches bg-amber-50 (light theme default) */
+  min-height: 100%;
 }
 
 
@@ -14,11 +16,54 @@ html{
 }
 
 .pageWrapper{
-  @apply h-fit ;
+  @apply h-fit min-h-screen flex flex-col w-full  transition-colors font-semibold ;
+}
+
+.header{
+  @apply fixed w-full flex px-5 py-3 items-center box-border z-20 transition-colors;
+}
+
+.nav{
+  @apply pl-2 px-2 flex min-[780px]:flex-row flex-col justify-end items-center box-border w-full ;
+}
+
+.menuWrapper{
+  @apply min-[780px]:w-fit w-full flex justify-end ;
+}
+
+.navBarWrapper{
+  @apply min-[780px]:!flex min-[780px]:relative min-[780px]:flex-row flex-col;
+}
+.navBarOn{
+  @apply flex absolute top-12 py-10 gap-10 left-0 w-full items-start border-b-2 border-b-green-800;
 }
 
 .mainItem:hover .dropContent{
   @apply block;
+}
+
+.navBarDropMenu{
+  @apply flex flex-row w-full box-border gap-2 px-10;
+}
+
+.navBarDropMenuItem{
+  @apply transition-all flex items-center box-border cursor-pointer border-green-800 border text-nowrap px-4 py-1 rounded-[4px];
+}
+
+.heroButton{
+  @apply transition-colors text-nowrap px-4 py-2 rounded-[4px] text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00] bg-green-800 cursor-pointer;
+}
+
+.sections{
+  @apply h-fit w-full flex flex-col items-center;
+}
+
+.sectionContent{
+  @apply w-full  min-[780px]:text-[15px] min-[500px]:text-[12px] text-[10px] px-2 py-5;
+}
+
+.heroTitle{
+  @apply w-full text-center min-[780px]:text-7xl min-[500px]:text-5xl text-3xl px-2 py-3;
 }
 
 .dropContent{

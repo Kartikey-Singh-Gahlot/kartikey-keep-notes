@@ -1,0 +1,21 @@
+{
+  "name": "kartikey-keep-notes",
+  "version": "1.0.0",
+  "description": "A full-stack note-taking web application that allows users to securely create, edit, delete, and manage personal notes. Built with MERN stack and integrated with JWT & cookie-based authentication for secure login and session handling.",
+  "main": "index.js",
+  "scripts": {
+    "dev:client": "npm run --prefix client dev",
+    "dev:auth-service": "npm run --prefix typescript-server dev:auth-service",
+    "dev:mailer-service": "npm run --prefix typescript-server dev:mailer-service",
+    "dev:notes-service": "npm run --prefix typescript-server dev:notes-service",
+    "dev:user-service": "npm run --prefix typescript-server dev:user-service",
+    "build": "npm run --prefix typescript-server build",
+    "start:client": "npm run --prefix client start",
+    "start:auth-service": "npm run --prefix typescript-server start:auth-service",
+    "start:mailer-service": "npm run --prefix typescript-server start:mailer-service",
+    "start:notes-service": "npm run --prefix typescript-server start:notes-service",
+    "start:user-service": "npm run --prefix typescript-server start:user-service"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -63,56 +63,72 @@ export default function Home() {
     }, []);
 
     return (
-        <main className={`pageWrapper ${(lightTheme) ? "lightTheme" : "darkTheme"} transition-colors font-semibold`} onClick={trgrMobileNavOff}>
-            <header className={`${(lightTheme) ? "lightTheme" : "darkTheme"} fixed w-full flex px-5 py-3 items-center box-border z-20 transition-colors`}>
-                <div className="w-full"><Logo /></div>
+    <main className={`pageWrapper ${(lightTheme) ? "lightTheme" : "darkTheme"}`} onClick={trgrMobileNavOff}>
+            
+        <header className={`header ${(lightTheme) ? "lightTheme" : "darkTheme"}`}>
 
-                <nav className="pl-2 px-2 flex min-[780px]:flex-row flex-col justify-end items-center box-border w-full " >
-                    <div className="min-[780px]:w-fit w-full flex justify-end ">
+            {/* -----------< Logo >-------------------- */}
+                <div className="w-full"> 
+                    <Logo/> 
+                </div>
+            {/* -----------< Logo >-------------------- */}
+
+
+            {/* -----------< Navigation Bar >-------------------- */}
+                <nav className="nav" >
+
+                    <div className="menuWrapper">
                         <HamBurgerMenu trgrMobileNav={trgrMobileNav} mobileNav={mobileNav} />
                     </div>
-                    <div className={`min-[780px]:flex min-[780px]:relative ${(mobileNav) ? `${(lightTheme) ? "lightTheme" : "darkTheme"} flex absolute top-12 py-10 gap-10 left-0 w-full items-start border-b-2 border-b-green-800` : "hidden"} min-[780px]:flex-row flex-col`}>
+
+                    <div className={`navBarWrapper ${(mobileNav) ? `${(lightTheme) ? "lightTheme" : "darkTheme"} navBarOn` : "hidden"}`}>
                         <HomeNavBar items={["Home", "About", "Contact"]} itemLinks={["#home", "#about", "#contact"]} />
 
-                        <ul className="flex flex-row w-full box-border gap-2 px-10">
-                            <li className="transition-all flex items-center box-border cursor-pointer border-green-800 border text-nowrap px-4 py-1 rounded-[4px]" onClick={trgrModeChange} >
+                        <ul className="navBarDropMenu">
+                            <li className="navBarDropMenuItem" onClick={(e) => { e.stopPropagation(); trgrModeChange(); }} >
                                 <img src={`${(lightTheme) ? "/darkModeIcon.png" : "/lightModeIcon.png"}`} className="h-5" alt="Theme Toggle"/>
                             </li>
-                            <Link href={"/auth/signin"} className="transition-colors text-nowrap px-4 py-2 rounded-[4px] text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00] bg-green-800 cursor-pointer">Get Started</Link>
+                            <Link href={"/auth/signin"} className="heroButton">Get Started</Link>
                         </ul>
                     </div>
                 </nav>
-            </header>
+            {/* -----------< Navigation Bar >-------------------- */}
 
-            <section className="h-fit w-full flex flex-col items-center px-1.5 py-10" id="home">
-                <div className="w-full flex flex-col justify-center py-10">
-                    <h1 className="w-full text-center min-[780px]:text-7xl min-[500px]:text-5xl text-3xl px-2 py-3">Learn with Kartz. Track Your Growth</h1>
-                    <h6 className="w-full text-center min-[780px]:text-[15px] min-[500px]:text-[12px] text-[10px] px-2 py-5">Access structured notes, follow along with YouTube lessons, and track your progress — all in one place.</h6>
-                </div>
+        </header>
 
-                <div className="flex flex-col items-center justify-center rounded-t-2xl rounded-b-[10px] to-[white] gap-5 ">
-                    <img src="/mainBgBlackImageOne.png" className="min-[780px]:h-90 h-70" alt="Main Hero"/>
-                    <div className="w-full flex justify-center gap-5 items-center">
-                        <h1 className="text-center">Want to get started?</h1>
-                        <button><Link href={`auth/signin`} className="transition-colors text-nowrap px-4 py-2 rounded-[4px] text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00] bg-green-800 cursor-pointer" >Come along</Link></button>
+        {/* -----------< Hero Section >-------------------- */}
+            <section className="sections px-1.5 py-10" id="home">
+                    <div className="w-full flex flex-col justify-center py-10">
+                        <h1 className="heroTitle">Learn with Kartz. Track Your Growth</h1>
+                        <h6 className="sectionContent text-center">Access structured notes, follow along with YouTube lessons, and track your progress — all in one place.</h6>
                     </div>
-                </div>
+                    <div className="flex flex-col items-center justify-center rounded-t-2xl rounded-b-[10px] to-[white] gap-5 ">
+                        <img src="/mainBgBlackImageOne.png" className="min-[780px]:h-90 h-70" alt="Main Hero"/>
+                        <div className="w-full flex justify-center gap-5 items-center">
+                            <h1 className="text-center">Want to get started?</h1>
+                            <button><Link href={`auth/signin`} className="transition-colors text-nowrap px-4 py-2 rounded-[4px] text-white hover:border-green-800 hover:bg-amber-50 hover:text-green-800 border border-[#ffffff00] bg-green-800 cursor-pointer" >Come along</Link></button>
+                        </div>
+                    </div>
             </section>
+        {/* -----------< Hero Section >-------------------- */}
 
-            <section className="h-fit px-4 py-7 flex flex-col justify-center" id="about">
+<div className="w-full px-10"><hr className={`w-full h border ${(lightTheme) ? "border-[#00000018]" : "border-[#ffffff25]"}`} /></div>
+
+        {/* -----------< About Section >-------------------- */}
+            <section className="sections px-4  py-10 justify-center" id="about">
                 <h1 className="w-full text-4xl py-5">Why Choose Us?</h1>
-                <p className="px-2 py-2 text-[10px] min-[780px]:text-[15px] ">Structured paths. Real lessons. Clear progress. Everything you need to go from curious to confident — without the chaos.</p>
+                <p className="sectionContent ">Structured paths. Real lessons. Clear progress. Everything you need to go from curious to confident — without the chaos.</p>
                 <ExploreSubjectsPresenter theme={lightTheme} />
             </section>
+        {/* -----------< About Section >-------------------- */}
 
-            <div className="w-full px-10">
-                <hr className={`w-full h border ${(lightTheme) ? "border-[#00000018]" : "border-[#ffffff25]"}`} />
-            </div>
+<div className="w-full px-10"><hr className={`w-full h border ${(lightTheme) ? "border-[#00000018]" : "border-[#ffffff25]"}`} /></div>
 
-            <section className="h-fit w-full px-4 " id="contact">
+        {/* -----------< Contact Section >-------------------- */}
+            <section className="sections px-4 py-10" id="contact">
                 <h1 className="w-full py-4 px-2 text-center text-4xl">Get In Touch</h1>
                 <div className="w-full flex justify-center">
-                    <p className="px-1 py-5 text-[10px] min-[780px]:text-[15px] text-left">Your feedback helps us grow and improve. If you have suggestions, feature requests, or want to collaborate, we’re just a message away.</p>
+                    <p className="sectionContent text-center">Your feedback helps us grow and improve. If you have suggestions, feature requests, or want to collaborate, we’re just a message away.</p>
                 </div>
 
                 <div className="flex w-full justify-center py-2">
@@ -128,6 +144,8 @@ export default function Home() {
                     <h1 className={`w-full text-center text-[10px] py-2 ${(lightTheme) ? "text-gray-400" : "text-gray-500"}`}>© 2025 Keep Notes. All rights reserved.</h1>
                 </footer>
             </section>
-        </main>
+        {/* -----------< Contact Section >-------------------- */}
+
+    </main>
     );
 }

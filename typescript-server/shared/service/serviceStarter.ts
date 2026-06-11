@@ -26,9 +26,10 @@ export async function startServer(config:configType){
   if(!connection.status){
     process.exit(1);
   }
+  console.log(connection.message);
 
   app.listen(config.servicePort, ()=>{
-    console.log("Server Listening");
+    console.log(`Server Listening at ${config.servicePort}`);
   })
 
   config.routes?.forEach((route)=>{

@@ -30,13 +30,11 @@ export function ExploreSubjectsPresenter({ theme }: ExploreSubjectsPresenterProp
     getAllRoadmaps();
   }, []);
 
-  const duplicatedRoadmaps = [...roadmaps, ...roadmaps];
-
   return roadmaps[0].name.length > 0 ? (
-    <Marquee speed={40} pauseOnHover={true} gradient={false} >
+    <Marquee speed={40} pauseOnHover={true} gradient={false} autoFill={true}>
       <ul className="subjects-presenter-wrapper">
-        {duplicatedRoadmaps.map((roadmap, index) => (
-          <Link href={"/auth/signin"} key={index} className="subjects-card">
+        {roadmaps.map((roadmap, index) => (
+          <Link href={"/auth/signin"} key={index} className="subjects-card group">
             <div className="subjects-card-header">
               <h2 className="subjects-card-title">{roadmap.name}</h2>
               <span className="subjects-card-likes">
@@ -48,7 +46,7 @@ export function ExploreSubjectsPresenter({ theme }: ExploreSubjectsPresenterProp
               className="subjects-card-image"
               alt="roadmap"
             />
-            <p className="w-full text-wrap text-sm line-clamp-3">{roadmap.description}</p>
+            <p className="subjects-card-description">{roadmap.description}</p>
           </Link>
         ))}
       </ul>
@@ -82,14 +80,16 @@ export function NormalSubjectsPresenter() {
   }, []);
 
   return (
-    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full py-5">
+    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full py-5">
       {roadmaps.map((roadmap, index) => (
-        <Link href={"/roadmap/" + roadmap._id} key={index} className="flex flex-col w-full text-white bg-green-800 px-4 py-3 rounded-[4px] border border-transparent hover:border-green-800 hover:bg-amber-50 hover:text-green-800 transition-colors cursor-pointer">
-          <div className="w-full flex items-center justify-between gap-2">
-            <h2 className="text-xl font-bold underline line-clamp-1">{roadmap.name}</h2>
-            <span className="text-sm text-amber-50 flex-shrink-0">❤︎ {roadmap.likesCount}</span>
+        <Link href={"/roadmap/" + roadmap._id} key={index} className="flex flex-col w-full text-white bg-green-800 px-5 py-4 rounded-xl border border-transparent hover:border-green-800 hover:bg-[#fbf9f4] hover:text-green-800 transition-all duration-300 cursor-pointer shadow-md hover:shadow-xl group">
+          <div className="w-full flex items-center justify-between pb-1 gap-2">
+            <h2 className="text-xl font-bold line-clamp-1">{roadmap.name}</h2>
+            <span className="text-sm bg-[#fbf9f4] text-green-800 border border-green-800 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0 font-medium transition-colors group-hover:bg-green-800 group-hover:text-[#fbf9f4] group-hover:border-transparent shadow-sm">
+              ❤︎ {roadmap.likesCount}
+            </span>
           </div>
-          <img src={roadmap.imageUrl} className="w-full h-40 object-cover my-2 rounded" alt="roadmap" />
+          <img src={roadmap.imageUrl} className="w-full h-40 object-cover my-3 rounded-lg border border-transparent shadow-sm group-hover:border-green-800/20 bg-white" alt="roadmap" />
           <p className="w-full text-wrap text-sm line-clamp-3">{roadmap.description}</p>
         </Link>
       ))}

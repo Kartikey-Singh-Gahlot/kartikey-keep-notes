@@ -12,6 +12,7 @@ public class AuthServices {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional
     public UserEntity signUp(UserEntity userEntity){
         UserEntity newUser = new UserEntity();
         newUser.setEmail(userEntity.getEmail());

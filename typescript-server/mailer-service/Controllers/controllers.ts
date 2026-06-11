@@ -10,7 +10,7 @@ export async function mailerService(request:Request, response:Response):Promise<
   }
    try{
        responsePayLoad.code="SERVICE_REACHABLE";
-       responsePayLoad.body="Auth Service Reachable :)";
+       responsePayLoad.body="Mailer Service Reachable :)";
        return response.status(200).json(responsePayLoad);
 
    }
