@@ -1,6 +1,7 @@
 import express, {type Application, type Router} from 'express';
 import "dotenv/config";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import setDatabaseConnection from '../database/dbConnection';
 
 
@@ -16,6 +17,7 @@ export async function startServer(config:configType){
   const app :Application= express();
   app.use(express.urlencoded({extended:true}));
   app.use(express.json());
+  app.use(cookieParser());
   app.use(cors({
      origin:[config.frontendUrl || ""],
      credentials:true
@@ -24,6 +26,7 @@ export async function startServer(config:configType){
 
   const connection = await setDatabaseConnection(config.dbName || "");
   if(!connection.status){
+    console.error("Database connection failed:", connection.message);
     process.exit(1);
   }
   console.log(connection.message);

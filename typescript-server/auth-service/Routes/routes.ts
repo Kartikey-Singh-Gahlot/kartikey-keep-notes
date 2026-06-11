@@ -1,9 +1,10 @@
 import { Router } from "express";
-import {authService} from "../Controllers/controllers.js";
+import {getGuest, createGuest} from "../Controllers/GuestControllers.js";
 
 const routes:Router = Router();
 
-routes.get("/", authService);
+routes.get("/guest", getGuest);
+routes.post("/guest", createGuest);
 
 
 export default routes;

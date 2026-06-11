@@ -8,6 +8,7 @@ async function setDatabaseConnection(dbName:string):Promise<{status:boolean,mess
       return {status:true, message:"Database Connected"};
     }
     catch(err:any){
+      console.error(err.stack || err);
       return {status:false, message:err.message};
     }
 }

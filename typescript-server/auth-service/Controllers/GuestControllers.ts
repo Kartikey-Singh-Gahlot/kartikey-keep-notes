@@ -1,31 +1,11 @@
 import ResponseEntity from "../../shared/interfaces/responseEntityInterface";
 import { Request, Response } from "express";
-import jwt  from "jsonwebtoken";
+import  jwt, {type JwtPayload}  from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import cookieDetails from "../../shared/templates/cookieDetails"
 
 
-export async function authService(request:Request, response:Response):Promise<Response>{
-  const responsePayLoad:ResponseEntity<string>={
-    status:true,
-    code:"",
-    body:"",
-  }
-   try{
-       responsePayLoad.code="SERVICE_REACHABLE";
-       responsePayLoad.body="Auth Service Reachable :)";
-       return response.status(200).json(responsePayLoad);
-
-   }
-   catch(err){
-      responsePayLoad.code="INTERNAL_SERVER_ERROR",
-      responsePayLoad.body="Auth Service Not Reachable !"
-      return response.status(500).json()
-   }
-   
-}
-
-export async function guestCreator(request:Request, response:Response):Promise<Response>{
+export async function createGuest(request:Request, response:Response):Promise<Response>{
    const responsePayLoad:ResponseEntity<string>={
     status:true,
     code:"",
@@ -45,6 +25,40 @@ export async function guestCreator(request:Request, response:Response):Promise<R
     return response.status(500).json(responsePayLoad);
   }
 
+}
+
+export async function getGuest(request:Request, response:Response):Promise<Response>{
+  const responsePayLoad:ResponseEntity<{}>={
+    status:true,
+    code:"",
+    body:true,
+  }
+  console.log("working");
+   try{
+      const {themeCookie}=request.cookies;
+      let currentTheme = true;
+      if(themeCookie){
+        try{
+          const validTheme=jwt.verify(themeCookie,process.env.SECRETKEY || '') as JwtPayload;
+          if(!validTheme.lightTheme){
+            currentTheme = false;
+          }
+        } 
+        catch(err){
+          console.log(err);
+        }
+      }
+       responsePayLoad.code="THEME_PREFERENCE_SAVED";
+       responsePayLoad.body={lightTheme:currentTheme};
+       return response.status(200).json(responsePayLoad);
+
+   }
+   catch(err){
+      responsePayLoad.code="INTERNAL_SERVER_ERROR",
+      responsePayLoad.body=false;
+      return response.status(500).json(responsePayLoad);
+   }
+   
 }
 
 
