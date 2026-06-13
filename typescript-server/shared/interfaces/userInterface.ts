@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 interface userInterface{
    authId:String,
+   name:String,
+   imageUrl:String,
    lightTheme: true | false,
    roadmaps:mongoose.Schema.Types.ObjectId[],
    completedSubjects:mongoose.Schema.Types.ObjectId[]
