@@ -67,7 +67,7 @@ export async function getGuest(request:Request, response:Response):Promise<Respo
           console.log(err);
         }
       }
-       responsePayLoad.code="THEME_PREFERENCE_SAVED";
+       responsePayLoad.code="GUEST_NOT_FOUND";
        responsePayLoad.body={lightTheme:currentTheme};
        return response.status(200).json(responsePayLoad);
 
