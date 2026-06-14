@@ -28,6 +28,28 @@ import { userValiditityInterface, userDetailsInterface } from "../../shared/inte
 // }
 
 
+export async function createGuest(request:Request, response:Response):Promise<Response>{
+   const responsePayLoad:ResponseEntity<string>={
+    status:true,
+    code:"",
+    body:"",
+  }
+  try{
+    const { lightTheme } = request.body;
+    const themeToken = jwt.sign({lightTheme}, process.env.SECRETKEY || '', {expiresIn:"7d"});
+    response.cookie("guestCookie", themeToken, cookieDetails);
+    responsePayLoad.code="THEME_PREFERENCE_SAVED";
+    responsePayLoad.body="Theme Preference Saved";
+    return response.status(201).json(responsePayLoad);
+  }
+  catch(err){
+    responsePayLoad.code="SERVER_SIDE_ERROR";
+    responsePayLoad.body="Internal Server Error";
+    return response.status(500).json(responsePayLoad);
+  }
+}
+
+
 export async function checkAuth(request:Request, response:Response):Promise<Response>{
    const responsePayLoad:ResponseEntity<{}>={
     status:true,
@@ -35,33 +57,57 @@ export async function checkAuth(request:Request, response:Response):Promise<Resp
     body:"",
   }
   try{
-    const {authCookie} =  request.cookies;
-    if(!authCookie){
-      responsePayLoad.status=false;
-      responsePayLoad.code="AUTH_COOKIE_NOT_FOUND";
-      responsePayLoad.body="Auth Cookie Not Found";
-      return response.status(401).json(responsePayLoad);
+    const {authCookie, guestCookie} =  request.cookies;
+    if(authCookie){
+      const jwtString = jwt.verify(authCookie, process.env.SECRETKEY || '') as JwtPayload;
+      if(!jwtString){
+        responsePayLoad.status=false;
+        responsePayLoad.code="AUTH_COOKIE_INVALID";
+        responsePayLoad.body="Auth Cookie Invalid";
+        return response.status(401).json(responsePayLoad);
+      }
+      const authUser = await authUserModel.findById(jwtString._id);
+      if(!authUser){  
+        responsePayLoad.status=false;
+        responsePayLoad.code="USER_NOT_FOUND";
+        responsePayLoad.body="User Not Found";
+        return response.status(404).json(responsePayLoad);
+      }
+      const userQuery= await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
+      const userDetails= await userQuery.json();
+      responsePayLoad.status=true;
+      responsePayLoad.code="AUTH_COOKIE_VALID";
+      responsePayLoad.body={
+          firstName:userDetails.body?.firstName,
+          middleName:userDetails.body?.middleName,
+          lastName:userDetails.body?.lastName,
+          email:authUser?.email, 
+          isAdmin:authUser?.admin, 
+          imageUrl:userDetails.body?.imageUrl, 
+          lightTheme:userDetails.body?.lightTheme
+      }
+      return response.status(200).json(responsePayLoad);
     }
-    const jwtString = jwt.verify(authCookie, process.env.SECRETKEY || '') as JwtPayload;
-    if(!jwtString){
-      responsePayLoad.status=false;
-      responsePayLoad.code="AUTH_COOKIE_INVALID";
-      responsePayLoad.body="Auth Cookie Invalid";
-      return response.status(401).json(responsePayLoad);
+    if(guestCookie){
+      const jwtString = jwt.verify(guestCookie, process.env.SECRETKEY || '') as JwtPayload;
+      if(!jwtString){
+        responsePayLoad.status=false;
+        responsePayLoad.code="INVALID_GUEST";
+        responsePayLoad.body="Invalid Guest";
+        return response.status(401).json(responsePayLoad);
+      }
+      const currentTheme = jwtString.lightTheme;
+      responsePayLoad.status=true;
+      responsePayLoad.code="GUEST_FOUND";
+      responsePayLoad.body={
+        lightTheme:currentTheme
+      };
+      return response.status(200).json(responsePayLoad); 
     }
-    const authUser = await authUserModel.findById(jwtString._id);
-    if(!authUser){  
-      responsePayLoad.status=false;
-      responsePayLoad.code="USER_NOT_FOUND";
-      responsePayLoad.body="User Not Found";
-      return response.status(404).json(responsePayLoad);
-    }
-    const userQuery= await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
-    const userDetails= await userQuery.json();
-    responsePayLoad.status=true;
-    responsePayLoad.code="AUTH_COOKIE_VALID";
-    responsePayLoad.body={name:userDetails.body?.name,  email:authUser?.email, isAdmin:authUser?.admin, imageUrl:userDetails.body?.imageUrl, lightTheme:userDetails.body?.lightTheme}
-    return response.status(200).json(responsePayLoad);
+    responsePayLoad.status=false;
+    responsePayLoad.code="UNAUTHORIZED_ACESS";
+    responsePayLoad.body="Unauthorized Acess";
+    return response.status(401).json(responsePayLoad);
   } 
   catch(err){ 
    responsePayLoad.status=false;
@@ -71,7 +117,7 @@ export async function checkAuth(request:Request, response:Response):Promise<Resp
   }
 }
 
-export async function getUser(request:Request, response:Response):Promise<Response>{
+export async function login(request:Request, response:Response):Promise<Response>{
   const responsePayLoad:ResponseEntity<{}>={
     status:true,
     code:"",
@@ -116,7 +162,7 @@ export async function getUser(request:Request, response:Response):Promise<Respon
   }
 }
 
-export async function createUser(request:Request, response:Response):Promise<Response>{
+export async function signup(request:Request, response:Response):Promise<Response>{
    const responsePayLoad:ResponseEntity<{}>={
     status:true,
     code:"",
@@ -143,7 +189,10 @@ export async function createUser(request:Request, response:Response):Promise<Res
 
      responsePayLoad.status=true;
      responsePayLoad.code="SINGUP_SUCCESSFULL";
-     responsePayLoad.body={email:authDbEntry?.email, name:userDetails.body?.name};
+     responsePayLoad.body={
+      email:authDbEntry?.email,
+      name:userDetails.body?.name
+     };
      return response.status(201).json(responsePayLoad);
    }
    catch(err){

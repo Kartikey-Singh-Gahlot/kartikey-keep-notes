@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 
 interface userInterface{
    authId:String,
-   name:String,
+   firstName:String,
+   middleName:String,
+   lastName:String,
    imageUrl:String,
    lightTheme: true | false,
    roadmaps:mongoose.Schema.Types.ObjectId[],

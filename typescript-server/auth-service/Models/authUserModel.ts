@@ -5,6 +5,8 @@ const authUserSchema = new mongoose.Schema<authUserInterface>({
    email: {type:String, required:true, unique:true},
    password: {type:String, default:null, select:false},
    salt:{type:String, default:null, select:false},
+   otp: {type:String, select:false},
+   otpExpiry: {type:Date, select:false},
    googleId: {type:String, default:null},
    admin: {type:Boolean, default:false},
    isVerified: {type:Boolean, default:false},

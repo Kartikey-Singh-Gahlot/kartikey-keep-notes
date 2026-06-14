@@ -4,7 +4,9 @@ import userInterface from "../../shared/interfaces/userInterface";
 
 const userModelSchema = new mongoose.Schema<userInterface>({
    authId: {type:mongoose.Schema.Types.ObjectId, required:true},
-   name: {type:String, required:true},
+   firstName: {type:String, required:true},
+   middleName: {type:String},
+   lastName: {type:String, required:true},
    imageUrl: {type:String, required:true},
    lightTheme: {type:Boolean, default:true},
    roadmaps:{type:[mongoose.Schema.Types.ObjectId], ref:'roadmap', default:[]},
