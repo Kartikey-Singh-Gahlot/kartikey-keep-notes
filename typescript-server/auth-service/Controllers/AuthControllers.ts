@@ -29,7 +29,7 @@ import { userValiditityInterface, userDetailsInterface } from "../../shared/inte
 
 
 export async function createGuest(request:Request, response:Response):Promise<Response>{
-   const responsePayLoad:ResponseEntity<string>={
+   const responsePayLoad:ResponseEntity<Object>={
     status:true,
     code:"",
     body:"",
@@ -57,57 +57,11 @@ export async function checkAuth(request:Request, response:Response):Promise<Resp
     body:"",
   }
   try{
-    const {authCookie, guestCookie} =  request.cookies;
-    if(authCookie){
-      const jwtString = jwt.verify(authCookie, process.env.SECRETKEY || '') as JwtPayload;
-      if(!jwtString){
-        responsePayLoad.status=false;
-        responsePayLoad.code="AUTH_COOKIE_INVALID";
-        responsePayLoad.body="Auth Cookie Invalid";
-        return response.status(401).json(responsePayLoad);
-      }
-      const authUser = await authUserModel.findById(jwtString._id);
-      if(!authUser){  
-        responsePayLoad.status=false;
-        responsePayLoad.code="USER_NOT_FOUND";
-        responsePayLoad.body="User Not Found";
-        return response.status(404).json(responsePayLoad);
-      }
-      const userQuery= await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
-      const userDetails= await userQuery.json();
-      responsePayLoad.status=true;
-      responsePayLoad.code="AUTH_COOKIE_VALID";
-      responsePayLoad.body={
-          firstName:userDetails.body?.firstName,
-          middleName:userDetails.body?.middleName,
-          lastName:userDetails.body?.lastName,
-          email:authUser?.email, 
-          isAdmin:authUser?.admin, 
-          imageUrl:userDetails.body?.imageUrl, 
-          lightTheme:userDetails.body?.lightTheme
-      }
-      return response.status(200).json(responsePayLoad);
-    }
-    if(guestCookie){
-      const jwtString = jwt.verify(guestCookie, process.env.SECRETKEY || '') as JwtPayload;
-      if(!jwtString){
-        responsePayLoad.status=false;
-        responsePayLoad.code="INVALID_GUEST";
-        responsePayLoad.body="Invalid Guest";
-        return response.status(401).json(responsePayLoad);
-      }
-      const currentTheme = jwtString.lightTheme;
-      responsePayLoad.status=true;
-      responsePayLoad.code="GUEST_FOUND";
-      responsePayLoad.body={
-        lightTheme:currentTheme
-      };
-      return response.status(200).json(responsePayLoad); 
-    }
-    responsePayLoad.status=false;
-    responsePayLoad.code="UNAUTHORIZED_ACESS";
-    responsePayLoad.body="Unauthorized Acess";
-    return response.status(401).json(responsePayLoad);
+   console.log("working")
+   responsePayLoad.status=false;
+   responsePayLoad.code="INTERNAL_SERVER_ERROR";
+   responsePayLoad.body={message: "Internal Server Error"};
+   return response.status(200).json(responsePayLoad);
   } 
   catch(err){ 
    responsePayLoad.status=false;

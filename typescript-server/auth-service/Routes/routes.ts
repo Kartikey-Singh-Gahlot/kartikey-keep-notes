@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {login, signup, checkAuth, createGuest} from "../Controllers/AuthControllers.js";
-
+import { authFirewall } from "../MiddleWares/authenticationMiddleWares.js";
 
 const routes:Router = Router();
 
@@ -11,7 +11,7 @@ routes.post("/guest", createGuest);
 
 
 //Auth Routes
-routes.get("/auth", checkAuth);
+routes.get("/auth", authFirewall,checkAuth);
 routes.get("/user", login);
 routes.post("/user", signup);
 // routes.get("");
