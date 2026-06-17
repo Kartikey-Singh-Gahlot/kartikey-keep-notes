@@ -60,12 +60,32 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
   }
   try{
     const {authData} = request;
-    const authUserQuery = await authUserModel.findById(authData?.authId);
-    if(!authUserQuery){
+    const userQuery= await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
+    const userDetails = await userQuery.json();
+    if(!userDetails.status){
       responsePayLoad.status=false;
-      responsePayLoad.code="USER_NOT_FOUND";
-      responsePayLoad.body="User Not Found";
+      responsePayLoad.code="USER_SERVICE_ERROR";
+      responsePayLoad.body=`USER_SERVICE_ERROR : ${userDetails.body}`;
+      return response.status(500).json(responsePayLoad);
     }
+    responsePayLoad.status=true;
+    responsePayLoad.code="AUTH_SUCCESSFULL";
+    responsePayLoad.body={
+      isAdmin:authData?.isAdmin,
+      isVerified:authData?.isVerified,
+      firstName:userDetails.body?.firstName,
+      middleName:userDetails.body?.firstName,
+      lastName:userDetails.body?.firstName,
+      imageUrl:userDetails.body?.imageUrl,
+      roadmaps:userDetails.body?.roadmaps,
+      completedSubjects:userDetails.body?.completedSubjects,
+      completedChapters:userDetails.body?.completedChapters,
+      completedSections:userDetails.body?.completedSections,
+      likedSubjects:userDetails.body?.likedSubjects,
+      lightTheme:userDetails.body?.lightTheme,
+      createdAt:userDetails.body?.createdAt
+    };
+    return response.status(200).json(responsePayLoad);
   } 
   catch(err){ 
    responsePayLoad.status=false;
@@ -127,7 +147,13 @@ export async function signup(request:Request, response:Response):Promise<Respons
     body:"",
    }
    try{
-     const {name, email, password} = request.body;
+     let currentTheme = true;
+     const {firstName, middleName, lastName, email, password} = request.body;
+     const {guestCookie} = request.cookies;
+     if(guestCookie && guestCookie.lightTheme==false){
+         currentTheme = false;
+         response.clearCookie("guestCookie");
+     }  
      const userExists : Object | null = await authUserModel.findOne({email});
      if(userExists){
         responsePayLoad.status=false;
@@ -139,18 +165,32 @@ export async function signup(request:Request, response:Response):Promise<Respons
      const hashedPassword1 = await bcrypt.hash(password, salt1);
      const salt2 = await bcrypt.genSalt(10);
      const hashedPassword2 = await bcrypt.hash(hashedPassword1, salt2);
-     const authDbEntry = await authUserModel.create({email, password:hashedPassword2, salt:salt1});
-     const userQuery = await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({authId:authDbEntry._id,name:name})}); 
-     const userDetails = await userQuery.json();
-     const jwtString = jwt.sign({_id:authDbEntry._id}, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
-     response.cookie("authCookie", jwtString , cookieDetails);
+     const otp = Math.floor(1000 + Math.random() * 9000).toString();
+     const salt3 = await bcrypt.genSalt();
+     const hashedOtp = await bcrypt.hash(otp.toString(), salt2);
+     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+     const authDbEntry = await authUserModel.create({
+      email:email, 
+      password:hashedPassword2, 
+      salt:salt1,
+      otp:hashedOtp,
+      otpExpiry:otpExpiry
+     });
+     const userQuery = await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
+       authId:authDbEntry._id,
+       firstName:firstName,
+       middleName:middleName,
+       lastName:lastName,
+       lightTheme:currentTheme
+     })}); 
+     const jwtString = jwt.sign({
+        auth_Id:authDbEntry._id
+      }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
 
+     response.cookie("authCookie", jwtString , cookieDetails);
      responsePayLoad.status=true;
      responsePayLoad.code="SINGUP_SUCCESSFULL";
-     responsePayLoad.body={
-      email:authDbEntry?.email,
-      name:userDetails.body?.name
-     };
+     responsePayLoad.body="Signup Successfull";
      return response.status(201).json(responsePayLoad);
    }
    catch(err){

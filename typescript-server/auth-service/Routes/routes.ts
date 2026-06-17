@@ -13,7 +13,7 @@ routes.get("/guest", themeFirewall, getGuest)
 
 //Auth Routes
 routes.get("/auth", authFirewall,checkAuth);
-routes.get("/user", login);
+routes.get("/user", authFirewall, login);
 routes.post("/user", signup);
 // routes.get("");
 // routes.get("");

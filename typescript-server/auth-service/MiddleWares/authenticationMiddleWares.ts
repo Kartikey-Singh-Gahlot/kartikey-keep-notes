@@ -51,6 +51,8 @@ export async function authFirewall(request:extendedRequest, response:Response, n
       return response.status(401).json(responsePayLoad);
     }
     const jwtString = jwt.verify(authCookie, process.env.SECRETKEY || '') as JwtPayload;
+    const authUserDetails = await authUserModel.findById(jwtString?.authId);
+
     if(!jwtString){
       responsePayLoad.status=false;
       responsePayLoad.code="INVALID_USER";
@@ -58,9 +60,9 @@ export async function authFirewall(request:extendedRequest, response:Response, n
       return response.status(401).json(responsePayLoad);
     } 
     request.authData = {
-      authId:jwtString?._id,
-      isAdmin:jwtString?.isAdmin, 
-      isVerified:jwtString?.isVerified
+      authId:String(authUserDetails?._id),
+      isAdmin:Boolean(authUserDetails?.isAdmin), 
+      isVerified:Boolean(authUserDetails?.isVerified)
     };
     return next();
   }
@@ -71,3 +73,4 @@ export async function authFirewall(request:extendedRequest, response:Response, n
     return response.status(500).json(responsePayLoad);
   }
 }
+

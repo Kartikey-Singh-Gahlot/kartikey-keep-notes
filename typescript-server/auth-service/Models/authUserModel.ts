@@ -8,7 +8,7 @@ const authUserSchema = new mongoose.Schema<authUserInterface>({
    otp: {type:String, select:false},
    otpExpiry: {type:Date, select:false},
    googleId: {type:String, default:null},
-   admin: {type:Boolean, default:false},
+   isAdmin: {type:Boolean, default:false},
    isVerified: {type:Boolean, default:false},
    createdAt: {type:Date, default:Date.now}
 })

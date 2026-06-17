@@ -6,7 +6,7 @@ interface authUserInterface{
    otp: string | null,
    otpExpiry: Date | null,
    googleId: string | null ,
-   admin: true | false,
+   isAdmin: true | false,
    isVerified: true | false ,
    createdAt: Date
 }
