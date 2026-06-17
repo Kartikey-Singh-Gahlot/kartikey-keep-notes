@@ -2,30 +2,33 @@ import ResponseEntity from "../../shared/interfaces/responseEntityInterface";
 import { Request, Response } from "express";
 import jwt, {JwtPayload }  from "jsonwebtoken";
 import authUserModel from "../Models/authUserModel";
-
+import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 import bcrypt from "bcrypt"
 import cookieDetails from "../../shared/templates/cookieDetails"
 import { userValiditityInterface, userDetailsInterface } from "../../shared/interfaces/utilInterfaces";
 
 
-// export async function authController(request:Request, response:Response):Promise<Response>{
-//   const responsePayLoad:ResponseEntity<string>={
-//     status:true,
-//     code:"",
-//     body:"",
-//   }
-//    try{
-//        responsePayLoad.code="SERVICE_REACHABLE";
-//        responsePayLoad.body="Auth Service Reachable :)";
-//        return response.status(200).json(responsePayLoad);
-
-//    }
-//    catch(err){
-//       responsePayLoad.code="INTERNAL_SERVER_ERROR",
-//       responsePayLoad.body="Auth Service Not Reachable !"
-//       return response.status(500).json()
-//    }  
-// }
+export async function getGuest(request:extendedRequest, response:Response):Promise<Response>{
+  const responsePayLoad:ResponseEntity<Object>={
+    status:true,
+    code:"",
+    body:"",
+  }
+  try{
+     const {themeData} = request;
+     responsePayLoad.status=true;
+     responsePayLoad.code="GUEST_FOUND";
+     responsePayLoad.body={lightTheme:themeData?.lightTheme};
+     return response.status(200).json(responsePayLoad);
+  }
+  catch(err){
+    responsePayLoad.status=false;
+    responsePayLoad.code="INTERNAL_SERVER_ERROR";
+    responsePayLoad.body=`Internal Server Error : ${err}`;
+    return response.status(500).json(responsePayLoad);
+  
+  }
+}
 
 
 export async function createGuest(request:Request, response:Response):Promise<Response>{
@@ -36,8 +39,7 @@ export async function createGuest(request:Request, response:Response):Promise<Re
   }
   try{
     const { lightTheme } = request.body;
-    const themeToken = jwt.sign({lightTheme}, process.env.SECRETKEY || '', {expiresIn:"7d"});
-    response.cookie("guestCookie", themeToken, cookieDetails);
+    response.cookie("guestCookie", {lightTheme:lightTheme}, cookieDetails);
     responsePayLoad.code="THEME_PREFERENCE_SAVED";
     responsePayLoad.body="Theme Preference Saved";
     return response.status(201).json(responsePayLoad);
@@ -50,18 +52,20 @@ export async function createGuest(request:Request, response:Response):Promise<Re
 }
 
 
-export async function checkAuth(request:Request, response:Response):Promise<Response>{
+export async function checkAuth(request:extendedRequest, response:Response):Promise<Response>{
    const responsePayLoad:ResponseEntity<{}>={
     status:true,
     code:"",
     body:"",
   }
   try{
-   console.log("working")
-   responsePayLoad.status=false;
-   responsePayLoad.code="INTERNAL_SERVER_ERROR";
-   responsePayLoad.body={message: "Internal Server Error"};
-   return response.status(200).json(responsePayLoad);
+    const {authData} = request;
+    const authUserQuery = await authUserModel.findById(authData?.authId);
+    if(!authUserQuery){
+      responsePayLoad.status=false;
+      responsePayLoad.code="USER_NOT_FOUND";
+      responsePayLoad.body="User Not Found";
+    }
   } 
   catch(err){ 
    responsePayLoad.status=false;

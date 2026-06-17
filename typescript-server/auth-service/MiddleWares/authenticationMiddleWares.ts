@@ -1,34 +1,49 @@
 import express, {Request, Response, NextFunction} from "express";
 import ResponseEntity from "../../shared/interfaces/responseEntityInterface";
+import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 import jwt, {JwtPayload }  from "jsonwebtoken";
 import authUserModel from "../Models/authUserModel";
 
 
 
-export async function authFirewall(request:Request, response:Response, next:NextFunction){
-  const responsePayLoad:ResponseEntity<Object>={
+
+
+
+export async function themeFirewall(request:extendedRequest, response:Response, next:NextFunction){
+    const responsePayLoad:ResponseEntity<Object>={
     status:true,
     code:"",
     body:"",
   }
   try{
-    const {authCookie, guestCookie} =  request.cookies;
-    if(guestCookie){
-      const jwtString = jwt.verify(guestCookie, process.env.SECRETKEY || '') as JwtPayload;
-      if(!jwtString){
-        responsePayLoad.status=false;
-        responsePayLoad.code="INVALID_GUEST";
-        responsePayLoad.body="Invalid Guest";
-        return response.status(401).json(responsePayLoad);
-      }
-      const currentTheme = jwtString.lightTheme;
-      responsePayLoad.status=true;
-      responsePayLoad.code="GUEST_FOUND";
-      responsePayLoad.body={
-        lightTheme:currentTheme
-      };
-      return response.status(200).json(responsePayLoad); 
+    const {guestCookie} =  request.cookies;
+    if(!guestCookie){
+      responsePayLoad.status=false;
+      responsePayLoad.code="UNAUTHORIZED_ACESS";
+      responsePayLoad.body="Uauthorized Access";
+      return response.status(401).json(responsePayLoad);
     }
+    request.themeData = {lightTheme:guestCookie.lightTheme};
+    return next();
+  }
+  catch(err){
+    responsePayLoad.status=false;
+    responsePayLoad.code="INTERNAL_SERVER_ERROR";
+    responsePayLoad.body=`Internal Server Error : ${err}`;
+    console.log(err);
+    return response.status(500).json(responsePayLoad);
+  }
+}
+
+
+export async function authFirewall(request:extendedRequest, response:Response, next:NextFunction){
+   const responsePayLoad:ResponseEntity<Object>={
+    status:true,
+    code:"",
+    body:"",
+  }
+  try{
+    const {authCookie} =  request.cookies;
     if(!authCookie){
       responsePayLoad.status=false;
       responsePayLoad.code="UNAUTHORIZED_ACESS";
@@ -42,14 +57,11 @@ export async function authFirewall(request:Request, response:Response, next:Next
       responsePayLoad.body="Invalid User";
       return response.status(401).json(responsePayLoad);
     } 
-    const userExist = await authUserModel.findById(jwtString._id || '');
-    if(!userExist){   
-      responsePayLoad.status=false;
-      responsePayLoad.code="USER_NOT_FOUND";
-      responsePayLoad.body="User Not Found";
-      return response.status(404).json(responsePayLoad);
-    }
-    request.body.data = {authId:jwtString?._id};
+    request.authData = {
+      authId:jwtString?._id,
+      isAdmin:jwtString?.isAdmin, 
+      isVerified:jwtString?.isVerified
+    };
     return next();
   }
   catch(err){
