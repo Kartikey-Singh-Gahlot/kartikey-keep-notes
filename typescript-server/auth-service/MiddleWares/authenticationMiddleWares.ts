@@ -62,7 +62,10 @@ export async function authFirewall(request:extendedRequest, response:Response, n
     request.authData = {
       authId:String(authUserDetails?._id),
       isAdmin:Boolean(authUserDetails?.isAdmin), 
-      isVerified:Boolean(authUserDetails?.isVerified)
+      isVerified:Boolean(authUserDetails?.isVerified),
+      otp:String(authUserDetails?.otp) || null,
+      otpExpiry:authUserDetails?.otpExpiry || null,
+      password:String(authUserDetails?.password) || null,
     };
     return next();
   }

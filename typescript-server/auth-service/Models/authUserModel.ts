@@ -4,7 +4,6 @@ import authUserInterface from "../../shared/interfaces/authUserInterface";
 const authUserSchema = new mongoose.Schema<authUserInterface>({
    email: {type:String, required:true, unique:true},
    password: {type:String, default:null, select:false},
-   salt:{type:String, default:null, select:false},
    otp: {type:String, select:false},
    otpExpiry: {type:Date, select:false},
    googleId: {type:String, default:null},

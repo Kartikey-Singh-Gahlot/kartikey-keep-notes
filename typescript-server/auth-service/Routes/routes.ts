@@ -12,9 +12,9 @@ routes.get("/guest", themeFirewall, getGuest)
 
 
 //Auth Routes
-routes.get("/auth", authFirewall,checkAuth);
-routes.get("/user", authFirewall, login);
-routes.post("/user", signup);
+routes.get("/auth/check", authFirewall,checkAuth);
+routes.post("/auth/login", login);
+routes.post("/auth/signup", signup);
 // routes.get("");
 // routes.get("");
 // routes.get("");

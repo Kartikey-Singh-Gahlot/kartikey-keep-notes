@@ -102,41 +102,48 @@ export async function login(request:Request, response:Response):Promise<Response
     body:"",
   }
   try{
-    const {authCookie}= request.cookies;
-    if(!authCookie){
+    const {email, password} = request.body;
+    const {guestCookie} = request.cookies;
+    const authDetails = await authUserModel.findOne({email});
+    if(!authDetails){
        responsePayLoad.status=false;
-       responsePayLoad.code="UNAUTHORIZED_ACESS";
-       responsePayLoad.body="Unauthorized Acess";
+       responsePayLoad.code="USER_NOT_FOUND";
+       responsePayLoad.body="User Not Found";
+       return response.status(404).json(responsePayLoad);
+    }
+    if((authDetails?.isVerified==false) || (authDetails?.isVerified && authDetails?.otp==null) ){
+       responsePayLoad.status=false;
+       responsePayLoad.code="OTP_VERIFICATION_PENDING";
+       responsePayLoad.body="Otp Verification Pending";
        return response.status(401).json(responsePayLoad);
     }
-    const validJwt : userValiditityInterface = jwt.verify(authCookie,process.env.SECRETKEY || '') as userValiditityInterface;
-
-    if(!validJwt){
-       responsePayLoad.status=false;
-       responsePayLoad.code="UNAUTHORIZED_ACESS";
-       responsePayLoad.body="Unauthorized Acess";
-       return response.status(401).json(responsePayLoad);
-    }
-    const userExist: Object | null = await authUserModel.findById(validJwt._id || '');
-    if(!userExist){
+    const passwordValid = await  bcrypt.compare(password + process.env.SECRETKEY, authDetails?.password || "");
+    if(!passwordValid){
       responsePayLoad.status=false;
-      responsePayLoad.code="USER_NOT_FOUND";
-      responsePayLoad.body="User Not Found";
-      return response.status(404).json(responsePayLoad);
+      responsePayLoad.code="INVALID_PASSWORD";
+      responsePayLoad.body="Invalid Password";
+      return response.status(401).json(responsePayLoad);
     }
-    const userQuery= await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
-    const userDetails= await userQuery.json();
-    responsePayLoad.status=true;
-    responsePayLoad.code="USER_FOUND";
-    responsePayLoad.body=userDetails.body;
-    return response.status(200).json(responsePayLoad);
 
+    if(guestCookie){
+      response.clearCookie("guestCookie");
+    }
+
+    const jwtString = jwt.sign({
+      auth_Id:authDetails._id
+    }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
+
+    response.cookie("authCookie",jwtString,cookieDetails);
+    responsePayLoad.status=true;
+    responsePayLoad.code="LOGIN_SUCCESSFULLY";
+    responsePayLoad.body="Login Successfully";
+    return response.status(200).json(responsePayLoad);
   }
   catch(err){
-   responsePayLoad.status=false;
-   responsePayLoad.code="INTERNAL_SERVER_ERROR";
-   responsePayLoad.body={message: "Internal Server Error", error: err};
-   return response.status(500).json(responsePayLoad);
+     responsePayLoad.status=false;
+     responsePayLoad.code="INTERNAL_SERVER_ERROR";
+     responsePayLoad.body={message: "Internal Server Error", error: err};
+     return response.status(500).json(responsePayLoad);
   }
 }
 
@@ -162,17 +169,14 @@ export async function signup(request:Request, response:Response):Promise<Respons
         return response.status(409).json(responsePayLoad);
      }
      const salt1 = await bcrypt.genSalt(10);
-     const hashedPassword1 = await bcrypt.hash(password, salt1);
-     const salt2 = await bcrypt.genSalt(10);
-     const hashedPassword2 = await bcrypt.hash(hashedPassword1, salt2);
+     const hashedPassword = await bcrypt.hash(password+process.env.SECRETKEY, salt1);
      const otp = Math.floor(1000 + Math.random() * 9000).toString();
-     const salt3 = await bcrypt.genSalt();
-     const hashedOtp = await bcrypt.hash(otp.toString(), salt2);
+     const salt2 = await bcrypt.genSalt();
+     const hashedOtp = await bcrypt.hash(otp+process.env.SECRETKEY, salt2);
      const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
      const authDbEntry = await authUserModel.create({
       email:email, 
-      password:hashedPassword2, 
-      salt:salt1,
+      password:hashedPassword, 
       otp:hashedOtp,
       otpExpiry:otpExpiry
      });
