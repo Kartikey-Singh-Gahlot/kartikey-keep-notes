@@ -21,17 +21,22 @@ interface loginAuthData{
 
 interface hybridAuthData{
     authId:string;
-    isAdmin:true|false;
-    isVerified:true|false;
-    password:string|null;
-    otp:string|null;
-    otpExpiry:Date|null;   
+    isAdmin?:true|false;
+    isVerified?:true|false;
+    password?:string|null;
+    otp?:string|null;
+    otpExpiry?:Date|null;   
+    firstName?:string;
+    middleName?:string;
+    lastName?:string;
+    lightTheme?:true|false;
 }
 
 interface otpAuthData{
     otp:string;
-
 }
+
+
 
 export interface  extendedRequest extends Request{
     themeData? : themeData;

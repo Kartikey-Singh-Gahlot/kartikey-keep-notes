@@ -7,7 +7,7 @@ const userModelSchema = new mongoose.Schema<userInterface>({
    firstName: {type:String, required:true},
    middleName: {type:String},
    lastName: {type:String, required:true},
-   imageUrl: {type:String, required:true},
+   imageUrl: {type:String, default:"./default.png"},
    lightTheme: {type:Boolean, default:true},
    roadmaps:{type:[mongoose.Schema.Types.ObjectId], ref:'roadmap', default:[]},
    completedSubjects:{type:[mongoose.Schema.Types.ObjectId], ref:'Subjects', default:[]},

@@ -3,6 +3,7 @@ import ResponseEntity from "../../shared/interfaces/responseEntityInterface";
 import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 import jwt, {JwtPayload }  from "jsonwebtoken";
 import authUserModel from "../Models/authUserModel";
+import { AnyCaaRecord } from "dns";
 
 
 
@@ -26,10 +27,10 @@ export async function themeFirewall(request:extendedRequest, response:Response, 
     request.themeData = {lightTheme:guestCookie.lightTheme};
     return next();
   }
-  catch(err){
+  catch(err:any){
     responsePayLoad.status=false;
     responsePayLoad.code="INTERNAL_SERVER_ERROR";
-    responsePayLoad.body=`Internal Server Error : ${err}`;
+    responsePayLoad.body={message: "Internal Server Error", error: err.message};
     console.log(err);
     return response.status(500).json(responsePayLoad);
   }
@@ -69,10 +70,10 @@ export async function authFirewall(request:extendedRequest, response:Response, n
     };
     return next();
   }
-  catch(err){
+  catch(err:any){
     responsePayLoad.status=false;
     responsePayLoad.code="INTERNAL_SERVER_ERROR";
-    responsePayLoad.body={message: "Internal Server Error", error: err};
+    responsePayLoad.body={message: "Internal Server Error", error: err.message};
     return response.status(500).json(responsePayLoad);
   }
 }
@@ -107,10 +108,10 @@ export async function signupValidationFirewall(request:extendedRequest, response
     }
     return next();
   }
-  catch(err){
+  catch(err:any){
     responsePayLoad.status=false;
     responsePayLoad.code="INTERNAL_SERVER_ERROR";
-    responsePayLoad.body={message: "Internal Server Error", error: err};
+    responsePayLoad.body={message: "Internal Server Error", error: err.message};
     return response.status(500).json(responsePayLoad);
   }
 }
@@ -137,8 +138,8 @@ export async function loginValidationFirewall(request:extendedRequest, response:
     }
     if((authDetails?.isVerified==false) || (authDetails?.isVerified && authDetails?.otp==null) ){
            responsePayLoad.status=false;
-           responsePayLoad.code="OTP_VERIFICATION_PENDING";
-           responsePayLoad.body="Otp Verification Pending";
+           responsePayLoad.code="OTP_VERIFICATION_REQUIRED";
+           responsePayLoad.body="Otp Verification REQUIRED";
            return response.status(401).json(responsePayLoad);
     }
     request.loginAuthData = {
@@ -148,10 +149,10 @@ export async function loginValidationFirewall(request:extendedRequest, response:
     }
     return next();
   }
-  catch(err){
+  catch(err:any){
 responsePayLoad.status=false;
     responsePayLoad.code="INTERNAL_SERVER_ERROR";
-    responsePayLoad.body={message: "Internal Server Error", error: err};
+    responsePayLoad.body={message: "Internal Server Error", error: err.message};
     return response.status(500).json(responsePayLoad);
   }
 }

@@ -5,7 +5,6 @@ import authUserModel from "../Models/authUserModel";
 import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 import bcrypt from "bcrypt"
 import cookieDetails from "../../shared/templates/cookieDetails"
-import { userValiditityInterface, userDetailsInterface } from "../../shared/interfaces/utilInterfaces";
 
 
 export async function getGuest(request:extendedRequest, response:Response):Promise<Response>{
@@ -21,10 +20,10 @@ export async function getGuest(request:extendedRequest, response:Response):Promi
      responsePayLoad.body={lightTheme:themeData?.lightTheme};
      return response.status(200).json(responsePayLoad);
   }
-  catch(err){
+  catch(err:any){
     responsePayLoad.status=false;
     responsePayLoad.code="INTERNAL_SERVER_ERROR";
-    responsePayLoad.body=`Internal Server Error : ${err}`;
+    responsePayLoad.body={message: "Internal Server Error", error: err.message};
     return response.status(500).json(responsePayLoad);
   
   }
@@ -91,10 +90,10 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
     };
     return response.status(200).json(responsePayLoad);
   } 
-  catch(err){ 
+  catch(err:any){ 
    responsePayLoad.status=false;
    responsePayLoad.code="INTERNAL_SERVER_ERROR";
-   responsePayLoad.body={message: "Internal Server Error", error: err};
+   responsePayLoad.body={message: "Internal Server Error", error: err.message};
    return response.status(500).json(responsePayLoad);
   }
 }
@@ -136,16 +135,16 @@ export async function login(request:extendedRequest, response:Response):Promise<
     responsePayLoad.body="Login Successfully";
     return response.status(200).json(responsePayLoad);
   }
-  catch(err){
+  catch(err:any){
      responsePayLoad.status=false;
      responsePayLoad.code="INTERNAL_SERVER_ERROR";
-     responsePayLoad.body={message: "Internal Server Error", error: err};
+     responsePayLoad.body={message: "Internal Server Error", error: err.message};
      return response.status(500).json(responsePayLoad);
   }
 }
 
 export async function signup(request:extendedRequest, response:Response):Promise<Response>{
-   const responsePayLoad:ResponseEntity<{}>={
+   const responsePayLoad:ResponseEntity<Object>={
     status:true,
     code:"",
     body:"",
@@ -177,13 +176,21 @@ export async function signup(request:extendedRequest, response:Response):Promise
       otp:hashedOtp,
       otpExpiry:otpExpiry
      });
-     const userQuery = await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
+     const userQuery = await fetch(`${process.env.PUBLIC_API_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
        authId:authDbEntry._id,
        firstName:firstName,
        middleName:middleName,
        lastName:lastName,
        lightTheme:currentTheme
-     })}); 
+     })});
+     const userResponse = await userQuery.json();
+     if(!userResponse.status){
+       await authUserModel.deleteOne({_id:authDbEntry._id});
+       responsePayLoad.status=false;
+       responsePayLoad.code="USER_SERVICE_ERROR";
+       responsePayLoad.body=`USER_SERVICE_ERROR : ${userResponse.body}`;
+       return response.status(500).json(responsePayLoad);
+     }
      const jwtString = jwt.sign({
         authId:authDbEntry._id
       }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
@@ -194,11 +201,10 @@ export async function signup(request:extendedRequest, response:Response):Promise
      responsePayLoad.body="Signup Successfull";
      return response.status(201).json(responsePayLoad);
    }
-   catch(err){
-    console.log(err);
+   catch(err:any){
     responsePayLoad.status=false;
     responsePayLoad.code="INTERNAL_SERVER_ERROR";
-    responsePayLoad.body="Internal Server Error";
+    responsePayLoad.body={message: "Internal Server Error", error: err.message};
     return response.status(500).json(responsePayLoad);
    }
 }

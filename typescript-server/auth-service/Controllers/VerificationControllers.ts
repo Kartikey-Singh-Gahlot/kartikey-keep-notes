@@ -55,6 +55,7 @@ export async function otpVerification(request:extendedRequest, response:Response
 
   }
   catch(err){
+      
      responsePayLoad.status=false;
      responsePayLoad.code="INTERNAL_SERVER_ERROR";
      return response.status(500).json(responsePayLoad);

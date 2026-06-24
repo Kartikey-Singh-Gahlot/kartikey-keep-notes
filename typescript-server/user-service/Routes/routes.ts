@@ -1,9 +1,11 @@
 import { Router } from "express";
-import {userService} from "../Controllers/controllers.js";
-
+import {createUser, getUser} from "../Controllers/UserControllers";
+import { createUserFirewall } from "../MiddleWares/UserMiddleWares";
 const routes:Router = Router();
 
-routes.get("/", userService);
+
+routes.post("/user", createUserFirewall,  createUser);
+routes.get("/user", getUser);
 
 
 export default routes;
