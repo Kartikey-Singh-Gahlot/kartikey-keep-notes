@@ -5,16 +5,32 @@ interface themeData{
     lightTheme:true|false;
 }
 
-interface authData{
+interface signupAuthData{    
+    password:string | null;
+    firstName:string;
+    middleName?:string;
+    lastName:string;
+    email:string;
+}
+
+interface loginAuthData{
+   authId:string;
+   email?:string;
+   password:string;   
+}
+
+interface hybridAuthData{
     authId:string;
     isAdmin:true|false;
     isVerified:true|false;
-    otp:string | null;
-    otpExpiry:Date | null;
-    password:string | null;
+    password:string|null;
+    otp:string|null;
+    otpExpiry:Date|null;   
 }
 
 export interface  extendedRequest extends Request{
     themeData? : themeData;
-    authData? : authData;
+    signupAuthData? : signupAuthData;
+    loginAuthData? : loginAuthData;
+    hybridAuthData? : hybridAuthData;
 }

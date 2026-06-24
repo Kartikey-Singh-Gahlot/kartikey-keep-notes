@@ -56,8 +56,14 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
     code:"",
     body:"",
   }
+  if(!request.hybridAuthData){
+    responsePayLoad.status=false;
+    responsePayLoad.code="INVALID_USER";
+    responsePayLoad.body="Invalid User";
+    return response.status(401).json(responsePayLoad);
+  }
   try{
-    const {authData} = request;
+    const {isAdmin, isVerified} = request.hybridAuthData;
     const userQuery= await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
     const userDetails = await userQuery.json();
     if(!userDetails.status){
@@ -69,8 +75,8 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
     responsePayLoad.status=true;
     responsePayLoad.code="AUTH_SUCCESSFULL";
     responsePayLoad.body={
-      isAdmin:authData?.isAdmin,
-      isVerified:authData?.isVerified,
+      isAdmin:isAdmin,
+      isVerified:isVerified,
       firstName:userDetails.body?.firstName,
       middleName:userDetails.body?.firstName,
       lastName:userDetails.body?.firstName,
@@ -93,28 +99,21 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
   }
 }
 
-export async function login(request:Request, response:Response):Promise<Response>{
+export async function login(request:extendedRequest, response:Response):Promise<Response>{
   const responsePayLoad:ResponseEntity<{}>={
     status:true,
     code:"",
     body:"",
   }
+  if(!request.loginAuthData){
+    responsePayLoad.status=false;
+    responsePayLoad.code="INVALID_CREDENTIALS";
+    responsePayLoad.body="Invalid Credentials";
+    return response.status(400).json(responsePayLoad);
+  }
   try{
-    const {email, password} = request.body;
+    const {authId, password} = request.loginAuthData;
     const {guestCookie} = request.cookies;
-    const authDetails = await authUserModel.findOne({email});
-    if(!authDetails){
-       responsePayLoad.status=false;
-       responsePayLoad.code="USER_NOT_FOUND";
-       responsePayLoad.body="User Not Found";
-       return response.status(404).json(responsePayLoad);
-    }
-    if((authDetails?.isVerified==false) || (authDetails?.isVerified && authDetails?.otp==null) ){
-       responsePayLoad.status=false;
-       responsePayLoad.code="OTP_VERIFICATION_PENDING";
-       responsePayLoad.body="Otp Verification Pending";
-       return response.status(401).json(responsePayLoad);
-    }
     const passwordValid = await  bcrypt.compare(password + process.env.SECRETKEY, authDetails?.password || "");
     if(!passwordValid){
       responsePayLoad.status=false;
@@ -128,7 +127,7 @@ export async function login(request:Request, response:Response):Promise<Response
     }
 
     const jwtString = jwt.sign({
-      auth_Id:authDetails._id
+      authId:authId
     }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
 
     response.cookie("authCookie",jwtString,cookieDetails);
@@ -145,29 +144,29 @@ export async function login(request:Request, response:Response):Promise<Response
   }
 }
 
-export async function signup(request:Request, response:Response):Promise<Response>{
+export async function signup(request:extendedRequest, response:Response):Promise<Response>{
    const responsePayLoad:ResponseEntity<{}>={
     status:true,
     code:"",
     body:"",
    }
+   if(!request.signupAuthData){
+    responsePayLoad.status=false;
+    responsePayLoad.code="INVALID_CREDENTIALS";
+    responsePayLoad.body="Invalid Credentials";
+    return response.status(400).json(responsePayLoad);
+   }
    try{
      let currentTheme = true;
-     const {firstName, middleName, lastName, email, password} = request.body;
+     const {firstName, middleName, lastName, email, password} = request.signupAuthData;
      const {guestCookie} = request.cookies;
      if(guestCookie && guestCookie.lightTheme==false){
          currentTheme = false;
          response.clearCookie("guestCookie");
      }  
-     const userExists : Object | null = await authUserModel.findOne({email});
-     if(userExists){
-        responsePayLoad.status=false;
-        responsePayLoad.code="USER_ALREADY_EXISTS";
-        responsePayLoad.body="User Already Exists";
-        return response.status(409).json(responsePayLoad);
-     }
+     
      const salt1 = await bcrypt.genSalt(10);
-     const hashedPassword = await bcrypt.hash(password+process.env.SECRETKEY, salt1);
+     const hashedPassword = await bcrypt.hash(password+ (process.env.SECRETKEY || ''), salt1);
      const otp = Math.floor(1000 + Math.random() * 9000).toString();
      const salt2 = await bcrypt.genSalt();
      const hashedOtp = await bcrypt.hash(otp+process.env.SECRETKEY, salt2);
@@ -186,7 +185,7 @@ export async function signup(request:Request, response:Response):Promise<Respons
        lightTheme:currentTheme
      })}); 
      const jwtString = jwt.sign({
-        auth_Id:authDbEntry._id
+        authId:authDbEntry._id
       }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
 
      response.cookie("authCookie", jwtString , cookieDetails);
