@@ -11,13 +11,13 @@ export async function createUser(request:extendedRequest, response:Response):Pro
     code:"",
     body:"",
   }
-  if(!request.hybridAuthData){
+  if(!request.authData){
     responsePayLoad.status=false;
     responsePayLoad.code="INVALID_USER";  
     return response.status(401).json(responsePayLoad);
   }
    try{
-     const {authId, firstName, middleName, lastName, lightTheme} = request.hybridAuthData;
+     const {authId, firstName, middleName, lastName, lightTheme} = request.authData;
      const userExists = await userModel.findOne({authId});
      if(userExists){
         responsePayLoad.status=false;
@@ -46,17 +46,16 @@ export async function createUser(request:extendedRequest, response:Response):Pro
 }
 
 
-export async function getUser(request:extendedRequest, response:Response):Promise<Response> {
-  const responsePayLoad:ResponseEntity<Object>={
-    status:false,
-    code:"",
-    body:"",
-  }
-  try{
+// export async function getUser(request:extendedRequest, response:Response):Promise<Response> {
+//   const responsePayLoad:ResponseEntity<Object>={
+//     status:false,
+//     code:"",
+//     body:"",
+//   }
+//   try{
     
-  }
-  catch(err:any){
+//   }
+//   catch(err:any){
 
-  }
-}
-
+//   }
+// }

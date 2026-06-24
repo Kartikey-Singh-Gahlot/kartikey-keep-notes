@@ -55,15 +55,17 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
     code:"",
     body:"",
   }
-  if(!request.hybridAuthData){
+  if(!request.authData){
     responsePayLoad.status=false;
     responsePayLoad.code="INVALID_USER";
     responsePayLoad.body="Invalid User";
     return response.status(401).json(responsePayLoad);
   }
   try{
-    const {isAdmin, isVerified} = request.hybridAuthData;
-    const userQuery= await fetch(`${process.env.USER_SERVICE_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
+    const {authId, isAdmin, isVerified} = request.authData;
+    const userQuery= await fetch(`${process.env.PUBLIC_API_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internalServiceSecret":process.env.INTERNAL_SERVICE_SECRET || ""}, body:JSON.stringify({
+      authId:authId
+    })});
     const userDetails = await userQuery.json();
     if(!userDetails.status){
       responsePayLoad.status=false;
@@ -104,16 +106,17 @@ export async function login(request:extendedRequest, response:Response):Promise<
     code:"",
     body:"",
   }
-  if(!request.loginAuthData){
+  if(!request.authData){
     responsePayLoad.status=false;
     responsePayLoad.code="INVALID_CREDENTIALS";
     responsePayLoad.body="Invalid Credentials";
     return response.status(400).json(responsePayLoad);
   }
   try{
-    const {authId, password} = request.loginAuthData;
+    const userEnteredPassoword = request.authData.password;
+    const {authId, password} = request.authData;
     const {guestCookie} = request.cookies;
-    const passwordValid = await  bcrypt.compare(password + process.env.SECRETKEY, password || "");
+    const passwordValid = await  bcrypt.compare(password + (process.env.SECRETKEY|| ""),String(userEnteredPassoword));
     if(!passwordValid){
       responsePayLoad.status=false;
       responsePayLoad.code="INVALID_PASSWORD";
@@ -149,15 +152,15 @@ export async function signup(request:extendedRequest, response:Response):Promise
     code:"",
     body:"",
    }
-   if(!request.signupAuthData){
+   if(!request.authData){
     responsePayLoad.status=false;
     responsePayLoad.code="INVALID_CREDENTIALS";
     responsePayLoad.body="Invalid Credentials";
     return response.status(400).json(responsePayLoad);
    }
    try{
-     let currentTheme = true;
-     const {firstName, middleName, lastName, email, password} = request.signupAuthData;
+     let currentTheme = true; // default theme
+     const {firstName, middleName, lastName, email, password} = request.authData;
      const {guestCookie} = request.cookies;
      if(guestCookie && guestCookie.lightTheme==false){
          currentTheme = false;
@@ -208,4 +211,3 @@ export async function signup(request:extendedRequest, response:Response):Promise
     return response.status(500).json(responsePayLoad);
    }
 }
-

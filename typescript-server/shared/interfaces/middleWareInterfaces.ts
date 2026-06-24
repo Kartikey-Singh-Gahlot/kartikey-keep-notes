@@ -5,43 +5,28 @@ interface themeData{
     lightTheme:true|false;
 }
 
-interface signupAuthData{    
-    password:string | null;
-    firstName:string;
-    middleName?:string;
-    lastName:string;
-    email:string;
-}
-
-interface loginAuthData{
-   authId:string;
-   email?:string;
-   password:string;   
-}
-
-interface hybridAuthData{
-    authId:string;
+interface authData{
+    authId?:String;
+    email?:String;
     isAdmin?:true|false;
     isVerified?:true|false;
-    password?:string|null;
-    otp?:string|null;
+    password?:String|null;
+    otp?:String|null;
     otpExpiry?:Date|null;   
-    firstName?:string;
-    middleName?:string;
-    lastName?:string;
+    firstName?:String;
+    middleName?:String;
+    lastName?:String;
     lightTheme?:true|false;
 }
 
 interface otpAuthData{
-    otp:string;
+    otp:String;
 }
 
 
 
 export interface  extendedRequest extends Request{
     themeData? : themeData;
-    signupAuthData? : signupAuthData;
-    loginAuthData? : loginAuthData;
-    hybridAuthData? : hybridAuthData;
+    authData?: authData;
     otpAuthData?: otpAuthData;
 }

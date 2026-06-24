@@ -60,7 +60,7 @@ export async function authFirewall(request:extendedRequest, response:Response, n
       responsePayLoad.body="Invalid User";
       return response.status(401).json(responsePayLoad);
     } 
-    request.hybridAuthData = {
+    request.authData = {
       authId:String(authUserDetails?._id),
       isAdmin:Boolean(authUserDetails?.isAdmin), 
       isVerified:Boolean(authUserDetails?.isVerified),
@@ -99,7 +99,7 @@ export async function signupValidationFirewall(request:extendedRequest, response
         responsePayLoad.body="User Already Exists";
         return response.status(409).json(responsePayLoad);
     }
-    request.signupAuthData ={
+    request.authData ={
       firstName:String(firstName),
       middleName:String(middleName),
       lastName:String(lastName),
@@ -142,7 +142,7 @@ export async function loginValidationFirewall(request:extendedRequest, response:
            responsePayLoad.body="Otp Verification REQUIRED";
            return response.status(401).json(responsePayLoad);
     }
-    request.loginAuthData = {
+    request.authData = {
       authId:String(authDetails?._id),
       email:String(email),
       password:String(password), 
@@ -156,5 +156,3 @@ responsePayLoad.status=false;
     return response.status(500).json(responsePayLoad);
   }
 }
-
-

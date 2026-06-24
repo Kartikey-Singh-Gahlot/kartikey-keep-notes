@@ -25,7 +25,7 @@ export async function createUserFirewall(request:extendedRequest, response:Respo
       responsePayLoad.body="Invalid Credentials";
       return response.status(400).json(responsePayLoad);
     }
-    request.hybridAuthData={
+    request.authData={
       authId:authId,
       firstName:firstName,
       middleName:middleName,
