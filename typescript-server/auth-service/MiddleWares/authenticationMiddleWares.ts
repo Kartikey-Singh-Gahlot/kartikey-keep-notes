@@ -137,6 +137,7 @@ export async function loginValidationFirewall(request:extendedRequest, response:
        return response.status(404).json(responsePayLoad);
     }
     if((authDetails?.isVerified==false) || (authDetails?.isVerified && authDetails?.otp==null) ){
+           console.log("triggered");
            responsePayLoad.status=false;
            responsePayLoad.code="OTP_VERIFICATION_REQUIRED";
            responsePayLoad.body="Otp Verification REQUIRED";

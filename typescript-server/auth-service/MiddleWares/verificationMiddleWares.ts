@@ -22,8 +22,8 @@ export async function otpValidationFirewall(request:extendedRequest, response:Re
      responsePayLoad.body="Invalid Otp";
      return response.status(400).json(responsePayLoad);
    }
-   const  jwtString = jwt.verify(authCookie, process.env.SECRETKEY || '') as JwtPayload;
-   const authDetails = await authUserModel.findOne({_id:jwtString?.auth_Id});
+   const jwtString = jwt.verify(authCookie, process.env.SECRETKEY || '') as JwtPayload;
+   const authDetails = await authUserModel.findOne({_id:jwtString?.authId});
    if(!authDetails){
       responsePayLoad.status=false;
       responsePayLoad.code="INVALID_USER";
@@ -38,14 +38,14 @@ export async function otpValidationFirewall(request:extendedRequest, response:Re
    }
    request.otpAuthData={
      otp:otp,
-     
    }
    return next();
   }
-  catch(err){
+  catch(err:any){
+    console.log(err);
     responsePayLoad.status=false;
     responsePayLoad.code="INTERNAL_SERVER_ERROR";
-    responsePayLoad.body="Internal Server Error";
+    responsePayLoad.body={message: "Internal Server Error", error: err.message};
     return response.status(500).json(responsePayLoad);
   }
 }

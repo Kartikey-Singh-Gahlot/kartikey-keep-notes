@@ -200,8 +200,8 @@ export async function signup(request:extendedRequest, response:Response):Promise
 
      response.cookie("authCookie", jwtString , cookieDetails);
      responsePayLoad.status=true;
-     responsePayLoad.code="SINGUP_SUCCESSFULL";
-     responsePayLoad.body="Signup Successfull";
+     responsePayLoad.code="OTP_VERIFICATION_REQUIRED";
+     responsePayLoad.body="Otp Verification Required";
      return response.status(201).json(responsePayLoad);
    }
    catch(err:any){

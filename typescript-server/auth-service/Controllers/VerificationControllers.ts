@@ -28,14 +28,14 @@ export async function otpVerification(request:extendedRequest, response:Response
        return response.status(401).json(responsePayLoad); 
      }
      const jwtString = jwt.verify(authCookie, process.env.SECRETKEY || '') as JwtPayload;
-     const authDetails = await authUserModel.findOne({_id:jwtString?.auth_Id});
+     const authDetails = await authUserModel.findOne({_id:jwtString?.authId});
      if(!authDetails){  
        responsePayLoad.status=false;
        responsePayLoad.code="USER_NOT_FOUND";
        responsePayLoad.body="User Not Found";
        return response.status(404).json(responsePayLoad);
      }
-     const otpValid = await bcrypt.compare(otp+process.env.SECRETKEY, authDetails?.otp || "");
+     const otpValid = await bcrypt.compare(otp+(process.env.SECRETKEY || ""), String(authDetails?.otp));
      if(!otpValid){
        responsePayLoad.status=false;
        responsePayLoad.code="INVALID_OTP";
@@ -54,10 +54,11 @@ export async function otpVerification(request:extendedRequest, response:Response
      return response.status(200).json(responsePayLoad);
 
   }
-  catch(err){
-      
+  catch(err:any){
+     console.log(err);
      responsePayLoad.status=false;
      responsePayLoad.code="INTERNAL_SERVER_ERROR";
+     responsePayLoad.body={message: "Internal Server Error", error: err.message};
      return response.status(500).json(responsePayLoad);
   }
 }

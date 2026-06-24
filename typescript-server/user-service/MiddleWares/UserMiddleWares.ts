@@ -41,3 +41,29 @@ export async function createUserFirewall(request:extendedRequest, response:Respo
    return response.status(500).json(responsePayLoad);
   }
 }
+
+export async function getUserFirewall(request:extendedRequest, response:Response, next:NextFunction){
+  const responsePayLoad:ResponseEntity<Object>={
+    status:true,
+    code:"",
+    body:"",
+  }
+  try{
+    const {authId} = request.query;
+    if(!authId){
+      responsePayLoad.status=false;
+      responsePayLoad.code="INVALID_CREDENTIALS";
+      responsePayLoad.body="Invalid Credentials";
+      return response.status(400).json(responsePayLoad);
+    }
+    request.authData={
+      authId:String(authId)
+    }
+    return next();
+  }
+  catch(err:any){
+    responsePayLoad.status=false;
+    responsePayLoad.code="INTERNAL_SERVER_ERROR";
+    responsePayLoad.body={message: "Internal Server Error", error: err.message}
+  }
+}
