@@ -3,16 +3,23 @@ import { Request, Response } from "express";
 import jwt, {JwtPayload }  from "jsonwebtoken";
 import authUserModel from "../Models/authUserModel";
 import bcrypt from "bcrypt"
+import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 
 
-export async function otpVerification(request:Request, response:Response):Promise<Response>{
+export async function otpVerification(request:extendedRequest, response:Response):Promise<Response>{
   const responsePayLoad:ResponseEntity<{}>={
     status:true,
     code:"",
     body:"",
   }
+  if(!request.otpAuthData){
+    responsePayLoad.status=false;
+    responsePayLoad.code="INVALID_CREDENTIALS";
+    responsePayLoad.body="Invalid Credentials";
+    return response.status(400).json(responsePayLoad);
+  }
   try{
-     const {otp} = request.body;
+     const {otp} = request.otpAuthData;
      const {authCookie} = request.cookies;
      if(!authCookie){
        responsePayLoad.status=false;
@@ -35,7 +42,7 @@ export async function otpVerification(request:Request, response:Response):Promis
        responsePayLoad.body="Invalid Otp";
        return response.status(401).json(responsePayLoad);
      }
-     if(otp != otpValid){
+     if(!otpValid){
         responsePayLoad.status=false;
         responsePayLoad.code="OTP_VERIFICATION_FAILED";
         responsePayLoad.body="Otp Verification Failed";

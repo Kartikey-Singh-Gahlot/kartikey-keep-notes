@@ -114,7 +114,7 @@ export async function login(request:extendedRequest, response:Response):Promise<
   try{
     const {authId, password} = request.loginAuthData;
     const {guestCookie} = request.cookies;
-    const passwordValid = await  bcrypt.compare(password + process.env.SECRETKEY, authDetails?.password || "");
+    const passwordValid = await  bcrypt.compare(password + process.env.SECRETKEY, password || "");
     if(!passwordValid){
       responsePayLoad.status=false;
       responsePayLoad.code="INVALID_PASSWORD";

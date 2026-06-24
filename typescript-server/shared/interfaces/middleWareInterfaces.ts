@@ -28,9 +28,15 @@ interface hybridAuthData{
     otpExpiry:Date|null;   
 }
 
+interface otpAuthData{
+    otp:string;
+
+}
+
 export interface  extendedRequest extends Request{
     themeData? : themeData;
     signupAuthData? : signupAuthData;
     loginAuthData? : loginAuthData;
     hybridAuthData? : hybridAuthData;
+    otpAuthData?: otpAuthData;
 }

@@ -157,7 +157,3 @@ responsePayLoad.status=false;
 }
 
 
-export async function otpValidationFirewall(request:extendedRequest, response:Response, next:NextFunction){
-
-}
-
