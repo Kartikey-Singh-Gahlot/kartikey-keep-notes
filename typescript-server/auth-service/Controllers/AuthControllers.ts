@@ -30,7 +30,6 @@ export async function getGuest(request:extendedRequest, response:Response):Promi
   }
 }
 
-
 export async function createGuest(request:Request, response:Response):Promise<Response>{
    const responsePayLoad:ResponseEntity<Object>={
     status:true,
@@ -50,7 +49,6 @@ export async function createGuest(request:Request, response:Response):Promise<Re
     return response.status(500).json(responsePayLoad);
   }
 }
-
 
 export async function checkAuth(request:extendedRequest, response:Response):Promise<Response>{
    const responsePayLoad:ResponseEntity<{}>={

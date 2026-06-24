@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {login, signup, checkAuth, createGuest, getGuest} from "../Controllers/AuthControllers.js";
+import { otpVerification } from "../Controllers/VerificationControllers.js";
 import { authFirewall, themeFirewall } from "../MiddleWares/authenticationMiddleWares.js";
 
 const routes:Router = Router();
@@ -15,10 +16,9 @@ routes.get("/guest", themeFirewall, getGuest)
 routes.get("/auth/check", authFirewall,checkAuth);
 routes.post("/auth/login", login);
 routes.post("/auth/signup", signup);
-// routes.get("");
-// routes.get("");
-// routes.get("");
-// routes.get("");
+
+//Verification Routes
+routes.post("/verification/otp", otpVerification);
 
 
 
