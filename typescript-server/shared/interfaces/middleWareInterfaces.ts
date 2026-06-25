@@ -19,14 +19,20 @@ interface authData{
     lightTheme?:true|false;
 }
 
+interface mailData{
+    to:String;
+    sub:String;
+    msg?:String;
+}
+
 interface otpAuthData{
     otp:String;
 }
-
-
 
 export interface  extendedRequest extends Request{
     themeData? : themeData;
     authData?: authData;
     otpAuthData?: otpAuthData;
+    mailData?: mailData;
+
 }

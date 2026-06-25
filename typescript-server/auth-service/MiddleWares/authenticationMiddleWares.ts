@@ -2,7 +2,7 @@ import express, {Request, Response, NextFunction} from "express";
 import ResponseEntity from "../../shared/interfaces/responseEntityInterface";
 import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 import jwt, {JwtPayload }  from "jsonwebtoken";
-import authUserModel from "../Models/authUserModel";
+import authUserModel from "../Models/AuthUserModel";
 import { AnyCaaRecord } from "dns";
 
 

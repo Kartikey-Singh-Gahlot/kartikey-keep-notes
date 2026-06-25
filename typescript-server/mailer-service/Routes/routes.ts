@@ -1,9 +1,12 @@
 import { Router } from "express";
-import {mailerService} from "../Controllers/controllers.js";
+import { sendMail } from "../Controllers/MailerControllers.js";
+import { sendMailFirewall } from "../Middlewares/MailerMiddleWares.js";
+import { serviceInternalCommunicationFirewall } from "../../shared/MiddleWares/ServiceInternalMiddlewares.js";
+
 
 const routes:Router = Router();
 
-routes.get("/", mailerService);
+routes.post("/mail",serviceInternalCommunicationFirewall, sendMailFirewall, sendMail);
 
 
 export default routes;

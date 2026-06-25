@@ -20,7 +20,7 @@ export const signupOtpVerificationMailTemplate = (msg:string):string =>{
             </p>
              <div style="margin: 25px 0; text-align: center;">
               <span style="display: inline-block; font-size: 26px; letter-spacing: 6px; font-weight: bold; color: #ffffff; background-color: #15803d; padding: 12px 20px; border-radius: 6px;">
-                ${msg}
+                {{msg}}
               </span>
             </div>
 
@@ -31,11 +31,6 @@ export const signupOtpVerificationMailTemplate = (msg:string):string =>{
 
             <p style="font-size: 14px; color: #777; margin-top: 25px;">
               If you did not request this, you can safely ignore this email.
-            </p>
-            <hr style="margin: 25px 0; border: none; border-top: 1px solid #e5e7eb;" />
-
-            <p style="font-size: 12px; color: #999; text-align: center;">
-              © ${new Date().getFullYear()} Kartikey Keep Notes. All rights reserved.
             </p>
         </div>
     </div>
@@ -67,7 +62,7 @@ export const loginOtpVerificationMailTemplate = (otp:string):string => {
 
         <div style="margin: 25px 0; text-align: center;">
           <span style="display: inline-block; font-size: 26px; letter-spacing: 6px; font-weight: bold; color: #ffffff; background-color: #15803d; padding: 12px 20px; border-radius: 6px;">
-            ${otp}
+            {{otp}}
           </span>
         </div>
 
@@ -79,13 +74,6 @@ export const loginOtpVerificationMailTemplate = (otp:string):string => {
         <p style="font-size: 14px; color: #777; margin-top: 25px;">
           If you did not attempt to log in, please ignore this email or secure your account.
         </p>
-
-        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e5e7eb;" />
-
-        <p style="font-size: 12px; color: #999; text-align: center;">
-          © ${new Date().getFullYear()} Kartikey Keep Notes. All rights reserved.
-        </p>
-
       </div>
     </div>
   `);
@@ -109,7 +97,7 @@ export const contactMailTemplate = (email:string, message:string):string => {
             <strong>Sender Email:</strong>
           </p>
           <p style="font-size: 14px; color: #15803d; margin-top: 4px;">
-            ${email}
+            {{email}}
           </p>
         </div>
 
@@ -118,16 +106,9 @@ export const contactMailTemplate = (email:string, message:string):string => {
             <strong>Message:</strong>
           </p>
           <div style="margin-top: 8px; padding: 15px; background-color: #f9fafb; border-left: 4px solid #15803d; border-radius: 6px; color: #444; font-size: 14px; line-height: 1.6;">
-            ${message}
+            {{message}}
           </div>
         </div>
-
-        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e5e7eb;" />
-
-        <p style="font-size: 12px; color: #999; text-align: center;">
-          © ${new Date().getFullYear()} Kartikey Keep Notes. All rights reserved.
-        </p>
-
       </div>
     </div>
   `;
@@ -156,7 +137,7 @@ export const contactAcknowledgementMailTemplate = (email:string):string => {
             <strong>Your Email:</strong>
           </p>
           <p style="font-size: 14px; color: #15803d; margin-top: 4px;">
-            ${email}
+            {{email}}
           </p>
         </div>
 
@@ -172,13 +153,6 @@ export const contactAcknowledgementMailTemplate = (email:string):string => {
           Please do not reply to this automated email.  
           Our team will contact you shortly if required.
         </p>
-
-        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e5e7eb;" />
-
-        <p style="font-size: 12px; color: #999; text-align: center;">
-          © ${new Date().getFullYear()} Kartikey Keep Notes. All rights reserved.
-        </p>
-
       </div>
     </div>
   `;

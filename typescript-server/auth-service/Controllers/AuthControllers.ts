@@ -199,7 +199,7 @@ export async function signup(request:extendedRequest, response:Response):Promise
       }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
 
      response.cookie("authCookie", jwtString , cookieDetails);
-     responsePayLoad.status=true;
+     responsePayLoad.status=false;
      responsePayLoad.code="OTP_VERIFICATION_REQUIRED";
      responsePayLoad.body="Otp Verification Required";
      return response.status(201).json(responsePayLoad);

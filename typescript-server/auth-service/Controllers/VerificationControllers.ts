@@ -1,17 +1,13 @@
 import ResponseEntity from "../../shared/interfaces/responseEntityInterface";
 import { Request, Response } from "express";
 import jwt, {JwtPayload }  from "jsonwebtoken";
-import authUserModel from "../Models/authUserModel";
+import authUserModel from "../Models/AuthUserModel";
 import bcrypt from "bcrypt"
 import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 
 
 export async function otpVerification(request:extendedRequest, response:Response):Promise<Response>{
-  const responsePayLoad:ResponseEntity<{}>={
-    status:true,
-    code:"",
-    body:"",
-  }
+  const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
   if(!request.otpAuthData){
     responsePayLoad.status=false;
     responsePayLoad.code="INVALID_CREDENTIALS";
@@ -55,7 +51,6 @@ export async function otpVerification(request:extendedRequest, response:Response
 
   }
   catch(err:any){
-     console.log(err);
      responsePayLoad.status=false;
      responsePayLoad.code="INTERNAL_SERVER_ERROR";
      responsePayLoad.body={message: "Internal Server Error", error: err.message};
