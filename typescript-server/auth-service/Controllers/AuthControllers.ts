@@ -188,6 +188,7 @@ export async function signup(request:extendedRequest, response:Response):Promise
      })});
      const userResponse = await userQuery.json();
      if(!userResponse.status){
+       console.log(userResponse.body);
        await authUserModel.deleteOne({_id:authDbEntry._id});
        responsePayLoad.status=false;
        responsePayLoad.code="USER_SERVICE_ERROR";
@@ -199,9 +200,30 @@ export async function signup(request:extendedRequest, response:Response):Promise
       }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
 
      response.cookie("authCookie", jwtString , cookieDetails);
-     responsePayLoad.status=false;
+     const getTemplateQuery = await fetch(`${process.env.PUBLIC_API_URL}:${process.env.MAILER_SERVICE_PORT}/mailer/template?templateName=signupOtpVerificationMailTemplate`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
+     const signupOtpVerificationMailTemplate = await getTemplateQuery.json();
+     
+     if(!signupOtpVerificationMailTemplate.status){
+       responsePayLoad.status=false;
+       responsePayLoad.code="TEMPLATE_SERVICE_ERROR"; 
+       responsePayLoad.body=`TEMPLATE_SERVICE_ERROR : ${signupOtpVerificationMailTemplate.body}`;
+       return response.status(500).json(responsePayLoad);
+     }
+     const mailerQuery = await fetch(`${process.env.PUBLIC_API_URL}:${process.env.MAILER_SERVICE_PORT}/mailer/sendMail`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
+        to:email,
+        subject:signupOtpVerificationMailTemplate.body.subject,
+        msg:signupOtpVerificationMailTemplate.body.templateBody.replace("{{otp}}",otp)
+     })});
+     const mailerResponse = await mailerQuery.json();
+     if(!mailerResponse.status){  
+       responsePayLoad.status=false;
+       responsePayLoad.code="MAILER_SERVICE_ERROR"; 
+       responsePayLoad.body=`MAILER_SERVICE_ERROR : ${mailerResponse.body}`;
+       return response.status(500).json(responsePayLoad);
+     }
+     responsePayLoad.status=true;
      responsePayLoad.code="OTP_VERIFICATION_REQUIRED";
-     responsePayLoad.body="Otp Verification Required";
+     responsePayLoad.body=`An OTP has been sent to ${email}. Please verify your email.`;
      return response.status(201).json(responsePayLoad);
    }
    catch(err:any){

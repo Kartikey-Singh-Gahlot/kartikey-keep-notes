@@ -14,4 +14,4 @@ const sectionModelSchema = new mongoose.Schema<sectionInterface>({
   createdAt:{type:Date, default:Date.now}
 });
 
-export default mongoose.model("sections", sectionModelSchema);
+export default mongoose.models.setions ||  mongoose.model("sections", sectionModelSchema);

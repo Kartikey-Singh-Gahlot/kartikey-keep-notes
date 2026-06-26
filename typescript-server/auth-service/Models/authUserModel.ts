@@ -12,4 +12,4 @@ const authUserSchema = new mongoose.Schema<authUserInterface>({
    createdAt: {type:Date, default:Date.now}
 })
 
-export default mongoose.model("authUsers", authUserSchema); 
+export default mongoose.models.authUsers || mongoose.model("authUsers", authUserSchema);

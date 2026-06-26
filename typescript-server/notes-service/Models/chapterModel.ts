@@ -11,4 +11,4 @@ const chapterModelSchema = new mongoose.Schema<chapterInterface>({
   createdAt:{type:Date, default:Date.now}
 });
 
-export default mongoose.model("sections", chapterModelSchema);
+export default mongoose.models.chapters ||  mongoose.model("chapters", chapterModelSchema);

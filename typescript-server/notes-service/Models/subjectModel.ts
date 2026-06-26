@@ -11,4 +11,4 @@ const subjectModelSchema = new mongoose.Schema<subjectInterface>({
   createdAt:{type:Date, default:Date.now}
 });
 
-export default mongoose.model("subjects", subjectModelSchema);
+export default mongoose.models.subjects || mongoose.model("subjects", subjectModelSchema);

@@ -13,11 +13,11 @@ export async function sendMail(request:extendedRequest, response:Response):Promi
       return response.status(401).json(responsePayLoad);
    }
    try{
-       const {to, sub, msg} = request.mailData;
+       const {to, subject, msg} = request.mailData;
        await transporter.sendMail({
             from: `Keep Notes <${process.env.MAILER_SMTP_USER}>`,
             to: String(to),
-            subject: String(sub),
+            subject: String(subject),
             html: String(msg),
        });
        responsePayLoad.status=true;
@@ -26,8 +26,9 @@ export async function sendMail(request:extendedRequest, response:Response):Promi
        return response.status(200).json(responsePayLoad);
    }
    catch(err){
-      responsePayLoad.code="INTERNAL_SERVER_ERROR",
-      responsePayLoad.body="Auth Service Not Reachable !"
-      return response.status(500).json()
+      responsePayLoad.status=false;
+      responsePayLoad.code="INTERNAL_SERVER_ERROR";
+      responsePayLoad.body={message: "Internal Server Error", error: err.message};
+      return response.status(500).json(responsePayLoad);
    } 
 }

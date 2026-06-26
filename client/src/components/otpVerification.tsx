@@ -21,21 +21,12 @@ export function SigninOtpVerificationBox({ password, email }: OtpVerificationBox
       const cleanOtp = otp.trim();
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/user/signinOtpVerification`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        `${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/verify`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json" },body: JSON.stringify({
             otp: cleanOtp,
-            password,
-            email
-          }),
         }
-      );
-
+      )});
       const data = await res.json();
-
+      console.log(data);
       if (data.status) {
         router.push("/dashboard");
         return;

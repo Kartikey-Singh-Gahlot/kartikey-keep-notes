@@ -14,33 +14,34 @@ export default function SignUp() {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [hiddenOtpBox, setHiddenOtpBox] = useState(false);
-    const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+    const [formData, setFormData] = useState({ firstName:"", middleName:"", lastName:"" ,email: "", password: "" });
 
     function trgrShowPassword() {
         setShowPassword(!showPassword);
     }
 
-    async function checkTheme() {
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/guest/theme`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
+    async function checkGuest(){
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.NEXT_INTERNAL_SERVICE_SECRET || ""  }});
         const pr = await unp.json();
-        if (pr.body.lightTheme == false) {
-            setLightTheme(!lightTheme);
+        if(pr.status && pr.body.lightTheme!=lightTheme){
+            setLightTheme(pr.body.lightTheme);
+            return ;
         }
     }
 
-    async function checkAuth() {
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
+     async function checkAuth() {
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/check`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.NEXT_INTERNAL_SERVICE_SECRET || "" } });
         const pr = await unp.json();
-        if (pr.status && pr.isVerified) {
+        if(pr.status){
             router.push("/dashboard");
-            return;
+            return ;
         }
     }
 
     async function trgrModeChange() {
         const newTheme = !lightTheme;
         setLightTheme(newTheme);
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/guest`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lightTheme: newTheme }) });
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.NEXT_INTERNAL_SERVICE_SECRET || "" }, body: JSON.stringify({ lightTheme: newTheme }) });
     }
 
     function trgrFormChange(e: ChangeEvent<HTMLInputElement>) {
@@ -54,8 +55,9 @@ export default function SignUp() {
         if (loading) { return; }
         setLoading(true);
         try {
-            const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signup`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+            const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/signup`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.NEXT_INTERNAL_SERVICE_SECRET || "" }, body: JSON.stringify(formData) });
             const pr = await unp.json();
+            console.log(pr);
             if (pr.status && pr.code == "OTP_VERIFICATION_REQUIRED") {
                 toast.success("Otp Sent", { duration: 2000 });
                 setHiddenOtpBox(true);
@@ -74,15 +76,15 @@ export default function SignUp() {
                 });
             }
         }
-        catch (err) {
-            toast.error("Server Error");
+        catch (err:any) {
+            toast.error("Server Error: "+ String(err.message));
         } finally {
             setLoading(false);
         }
     }
 
     useEffect(() => {
-        checkTheme();
+        checkGuest();
         checkAuth();
     }, []);
 
@@ -101,8 +103,16 @@ export default function SignUp() {
                             (<form className="form" onSubmit={trgrFormSubmit} autoComplete="new-password">
                                 <label className="formHeading">Create Your Account</label>
                                 <div className="inputWrapper">
-                                    <label className="inputLabel">Name</label>
-                                    <input autoComplete="new-password" autoFocus required type="text" name="name" className="inputs" placeholder="xyz" value={formData.name} onChange={trgrFormChange} />
+                                    <label className="inputLabel">First Name</label>
+                                    <input autoComplete="new-password" autoFocus required type="text" name="firstName" className="inputs" placeholder="xyz" value={formData.firstName} onChange={trgrFormChange} />
+                                </div>
+                                <div className="inputWrapper">
+                                    <label className="inputLabel">Middle Name</label>
+                                    <input autoComplete="new-password" autoFocus  type="text" name="middleName" className="inputs" placeholder="xyz" value={formData.middleName} onChange={trgrFormChange} />
+                                </div>
+                                <div className="inputWrapper">
+                                    <label className="inputLabel">Last Name</label>
+                                    <input autoComplete="new-password" autoFocus required type="text" name="lastName" className="inputs" placeholder="xyz" value={formData.lastName} onChange={trgrFormChange} />
                                 </div>
                                 <div className="inputWrapper">
                                     <label className="inputLabel">Email</label>

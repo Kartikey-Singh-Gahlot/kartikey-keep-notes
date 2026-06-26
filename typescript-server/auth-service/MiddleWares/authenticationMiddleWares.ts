@@ -2,8 +2,7 @@ import express, {Request, Response, NextFunction} from "express";
 import ResponseEntity from "../../shared/interfaces/responseEntityInterface";
 import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 import jwt, {JwtPayload }  from "jsonwebtoken";
-import authUserModel from "../Models/AuthUserModel";
-import { AnyCaaRecord } from "dns";
+import authUserModel from "../Models/AuthUserModel.js";
 
 
 
@@ -19,6 +18,7 @@ export async function themeFirewall(request:extendedRequest, response:Response, 
   try{
     const {guestCookie} =  request.cookies;
     if(!guestCookie){
+      console.log("hit from themefirewall")
       responsePayLoad.status=false;
       responsePayLoad.code="UNAUTHORIZED_ACESS";
       responsePayLoad.body="Uauthorized Access";
@@ -46,6 +46,8 @@ export async function authFirewall(request:extendedRequest, response:Response, n
   try{
     const {authCookie} =  request.cookies;
     if(!authCookie){
+            console.log("hit from authfirewall")
+
       responsePayLoad.status=false;
       responsePayLoad.code="UNAUTHORIZED_ACESS";
       responsePayLoad.body="Unauthorized Acess";

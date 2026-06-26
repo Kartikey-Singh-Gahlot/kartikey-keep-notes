@@ -19,24 +19,28 @@ export default function Home() {
     async function trgrModeChange() {
         const newTheme = !lightTheme;
         setLightTheme(newTheme);
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/guest`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lightTheme: newTheme }) });
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lightTheme: newTheme }) });
     }
 
-    async function checkTheme() {
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/guest/theme`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
+    async function checkGuest(){
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" }});
         const pr = await unp.json();
-        if (pr.body.lightTheme == false) {
-            setLightTheme(!lightTheme);
+        if(pr.status && pr.body.lightTheme!=lightTheme){
+            setLightTheme(pr.body.lightTheme);
+            return ;
         }
     }
+
 
     async function checkAuth() {
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/check`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
         const pr = await unp.json();
-        if (pr.status) {
+        if(pr.status){
             router.push("/dashboard");
+            return ;
         }
     }
+
 
     function trgrMobileNav() {
         setMobileNav(!mobileNav);
@@ -56,8 +60,8 @@ export default function Home() {
 
     useEffect(() => {
         handleResize();
-        checkTheme();
         checkAuth();
+        checkGuest();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);

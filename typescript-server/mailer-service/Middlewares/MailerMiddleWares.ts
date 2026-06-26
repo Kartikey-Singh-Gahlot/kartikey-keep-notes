@@ -15,8 +15,8 @@ export async function sendMailFirewall(request:extendedRequest, response:Respons
        responsePayLoad.body="Unauthorized Acess";
        return response.status(401).json(responsePayLoad);
      }
-     const {to, sub, msg} = request.body;
-     if(!to || !sub || !msg){
+     const {to, subject, msg} = request.body;
+     if(!to || !subject || !msg){
        responsePayLoad.status=false;
        responsePayLoad.code="INVALID_DATA";
        responsePayLoad.body="Invalid Data";
@@ -24,7 +24,7 @@ export async function sendMailFirewall(request:extendedRequest, response:Respons
      }
      request.mailData={
        to:to,
-       sub:sub,
+       subject:subject,
        msg:msg
      }
      return next();

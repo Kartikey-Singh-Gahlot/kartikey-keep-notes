@@ -27,12 +27,12 @@ export default function Dashboard() {
         setUserDetails((prev) => {
             return { ...prev, lightTheme: !prev.lightTheme };
         });
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/theme`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ theme: !userDetails.lightTheme }) });
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/${process.env.NEXT_PUBLIC_AUTH_SERVICE_SUFFIX}/theme`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ theme: !userDetails.lightTheme }) });
         const pr = await unp.json();
     }
 
     async function getCredentials() {
-        const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
+        const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/${process.env.NEXT_PUBLIC_AUTH_SERVICE_SUFFIX}/user`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
         const pr = await un.json();
         console.log(pr);
         if (pr.status && pr.body.isVerified) {
@@ -53,7 +53,7 @@ export default function Dashboard() {
     }, []);
 
     async function trgrSignOut() {
-        const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signout`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" } });
+        const un = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/${process.env.NEXT_PUBLIC_AUTH_SERVICE_SUFFIX}/signout`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" } });
         const pr = await un.json();
         if (pr.status) {
             router.push("/auth/signin");

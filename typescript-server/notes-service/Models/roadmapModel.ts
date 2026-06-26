@@ -11,4 +11,4 @@ const roadmapModelSchema = new mongoose.Schema<roadmapInterface>({
   createdAt:{type:Date, default:Date.now}
 });
 
-export default mongoose.model("sections", roadmapModelSchema);
+export default mongoose.models.roadmaps || mongoose.model("roadmaps", roadmapModelSchema);

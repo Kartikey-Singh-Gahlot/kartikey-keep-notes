@@ -20,31 +20,28 @@ export default function SignIn() {
         setShowPassword(!showPassword);
     }
 
-    async function checkTheme() {
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/guest/theme`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
+    async function checkGuest(){
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" }});
         const pr = await unp.json();
-        if (pr.body.lightTheme == false) {
-            setLightTheme(!lightTheme);
+        if(pr.status && pr.body.lightTheme!=lightTheme){
+            setLightTheme(pr.body.lightTheme);
+            return ;
         }
     }
 
-    async function checkAuth() {
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
+     async function checkAuth() {
+        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/check`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
         const pr = await unp.json();
-        if (pr.status && pr.isVerified) {
+        if(pr.status){
             router.push("/dashboard");
-            return;
-        }
-        if (pr.status && !pr.isVerified) {
-            setHiddenOtpBox(true);
-            return;
+            return ;
         }
     }
 
     async function trgrModeChange() {
         const newTheme = !lightTheme;
         setLightTheme(newTheme);
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/guest`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lightTheme: newTheme }) });
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lightTheme: newTheme }) });
     }
 
     function trgrFormChange(e: ChangeEvent<HTMLInputElement>) {
@@ -58,9 +55,10 @@ export default function SignIn() {
         if (loading) { return; }
         setLoading(true);
         try {
-            const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/user/signin`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+            const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/login`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
             const pr = await unp.json();
-            if (pr.status && pr.code == "OTP_VERIFICATION_REQUIRED") {
+            console.log(pr);
+            if (!pr.status && pr.code == "OTP_VERIFICATION_REQUIRED") {
                 toast.success("Otp Sent", { duration: 2000 });
                 setHiddenOtpBox(true);
             }
@@ -85,7 +83,7 @@ export default function SignIn() {
     }
 
     useEffect(() => {
-        checkTheme();
+        checkGuest();
         checkAuth();
     }, []);
 

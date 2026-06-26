@@ -1,12 +1,12 @@
 import { Router } from "express";
 import {createUser, getUser} from "../Controllers/UserControllers";
-import { createUserFirewall } from "../MiddleWares/UserMiddleWares";
+import { createUserFirewall, getUserFirewall } from "../MiddleWares/UserMiddleWares";
 const routes:Router = Router();
 import { serviceInternalCommunicationFirewall } from "../../shared/MiddleWares/ServiceInternalMiddlewares.js";
 
 
-routes.post("/user", serviceInternalCommunicationFirewall,  createUser);
-routes.get("/user", serviceInternalCommunicationFirewall, createUserFirewall, getUser);
+routes.post("/user", serviceInternalCommunicationFirewall, createUserFirewall, createUser);
+routes.get("/user", serviceInternalCommunicationFirewall, getUserFirewall, getUser);
 
 
 export default routes;

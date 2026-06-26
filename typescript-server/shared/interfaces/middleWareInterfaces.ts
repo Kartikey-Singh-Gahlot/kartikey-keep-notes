@@ -21,7 +21,7 @@ interface authData{
 
 interface mailData{
     to:String;
-    sub:String;
+    subject:String;
     msg?:String;
 }
 

@@ -27,7 +27,7 @@ export function ExploreSubjectsPresenter({ theme }: ExploreSubjectsPresenterProp
   }
 
   useEffect(() => {
-    getAllRoadmaps();
+    // getAllRoadmaps();
   }, []);
 
   return roadmaps[0].name.length > 0 ? (
@@ -76,7 +76,7 @@ export function NormalSubjectsPresenter() {
   }
 
   useEffect(() => {
-    getAllRoadmaps();
+    // getAllRoadmaps();
   }, []);
 
   return (
