@@ -3,13 +3,13 @@ import "dotenv/config";
 import routes from "./Routes/routes";
 
 
+
 startServer({
-    dbName:String(process.env.AUTH_SERVICE_DATABASE_NAME), 
-    servicePort:Number(process.env.AUTH_SERVICE_PORT), 
+    allowedOrigins:[String(process.env.FRONTEND_LINK_STRING)],
+    servicePort:Number(process.env.API_GATEWAY_SERVICE_PORT), 
     routes:[routes]
 }).then(()=>{
-   console.log("Auth Service Started");
+   console.log("API Gateway Started");
 }).catch((err)=>{
    console.log(err);
 });
-

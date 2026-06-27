@@ -28,11 +28,13 @@
     "typescript": "^6.0.3"
   },
   "scripts": {
+    "dev:api-gateway": "tsx watch api-gateway/service.ts",
     "dev:auth-service": "tsx watch auth-service/service.ts",
     "dev:mailer-service": "tsx watch mailer-service/service.ts",
     "dev:notes-service": "tsx watch notes-service/service.ts",
     "dev:user-service": "tsx watch user-service/service.ts",
     "build": "tsc",
+    "start:api-gateway": "node dist/api-gateway/service.js",
     "start:auth-service": "node dist/auth-service/service.js",
     "start:mailer-service": "node dist/mailer-service/service.js",
     "start:notes-service": "node dist/notes-service/service.js",
