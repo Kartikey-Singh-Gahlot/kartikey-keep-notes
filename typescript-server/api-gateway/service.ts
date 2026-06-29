@@ -1,6 +1,6 @@
 import startServer from "../shared/service/serviceStarter";
 import "dotenv/config";
-import routes from "./Routes/routes";
+import routes from "./Routes/Routes";
 
 
 

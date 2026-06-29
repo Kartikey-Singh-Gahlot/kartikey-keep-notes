@@ -1,7 +1,7 @@
 import ResponseEntity from "../../shared/interfaces/responseEntityInterface";
 import { Request, Response } from "express";
 import jwt, {JwtPayload }  from "jsonwebtoken";
-import authUserModel from "../Models/authUserModel";
+import authUserModel from "../Models/AuthUserModel";
 import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 import bcrypt from "bcrypt"
 import cookieDetails from "../../shared/templates/cookieDetails"

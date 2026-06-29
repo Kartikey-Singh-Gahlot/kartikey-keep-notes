@@ -34,5 +34,4 @@ export interface  extendedRequest extends Request{
     authData?: authData;
     otpAuthData?: otpAuthData;
     mailData?: mailData;
-
 }

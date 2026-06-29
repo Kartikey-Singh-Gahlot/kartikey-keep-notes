@@ -8,6 +8,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HamBurgerMenu } from "../components/hamBurgerMenu";
 import ContactForm from "../components/contactForm";
+import { fetchApiService } from "../fetchers/fetchers";
+import ResponseEntity from "@/interfaces/ResponseEntityInterface";
 
 export default function Home() {
     const router = useRouter();
@@ -23,19 +25,17 @@ export default function Home() {
     }
 
     async function checkGuest(){
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" }});
-        const pr = await unp.json();
-        if(pr.status && pr.body.lightTheme!=lightTheme){
-            setLightTheme(pr.body.lightTheme);
+        const processed:ResponseEntity<any> = await fetchApiService("guest", "GET", {});
+        if(processed?.status && processed?.body?.lightTheme!=lightTheme){
+            setLightTheme(processed?.body?.lightTheme);
             return ;
         }
     }
 
 
-    async function checkAuth() {
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/check`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json" } });
-        const pr = await unp.json();
-        if(pr.status){
+    async function checkAuth():Promise<void> {
+        const processed:ResponseEntity<any> = await fetchApiService("checkAuth", "GET", {});
+        if(processed?.status==true){
             router.push("/dashboard");
             return ;
         }

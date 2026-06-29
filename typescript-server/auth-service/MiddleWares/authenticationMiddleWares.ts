@@ -44,19 +44,15 @@ export async function authFirewall(request:extendedRequest, response:Response, n
     body:"",
   }
   try{
-    const {authCookie} =  request.cookies;
-    if(!authCookie){
-            console.log("hit from authfirewall")
-
+    const authId = request.headers["x-auth-id"] as string;
+    if(!authId){
       responsePayLoad.status=false;
       responsePayLoad.code="UNAUTHORIZED_ACESS";
       responsePayLoad.body="Unauthorized Acess";
       return response.status(401).json(responsePayLoad);
     }
-    const jwtString = jwt.verify(authCookie, process.env.SECRETKEY || '') as JwtPayload;
-    const authUserDetails = await authUserModel.findById(jwtString?.authId);
-
-    if(!jwtString){
+    const authUserDetails = await authUserModel.findById(authId);
+    if(!authUserDetails){
       responsePayLoad.status=false;
       responsePayLoad.code="INVALID_USER";
       responsePayLoad.body="Invalid User";
