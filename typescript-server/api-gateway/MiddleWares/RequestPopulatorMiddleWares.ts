@@ -5,7 +5,6 @@ import ResponseEntity from '../../shared/interfaces/responseEntityInterface';
 
 export function RequestPopulatorMiddleWare(serviceApiUrl?: string){
    return (request:Request, response:Response, next:NextFunction)=>{
-         console.log("REQUEST POPULATOR middle ware triggered")
     const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
     try{
        request.headers["x-internal-service-secret"] = process.env.INTERNAL_SEVICE_SECRET as string;

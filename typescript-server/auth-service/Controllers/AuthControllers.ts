@@ -63,9 +63,7 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
   }
   try{
     const {authId, isAdmin, isVerified} = request.authData;
-    const userQuery= await fetch(`${process.env.PUBLIC_API_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internalServiceSecret":process.env.INTERNAL_SERVICE_SECRET || ""}, body:JSON.stringify({
-      authId:authId
-    })});
+    const userQuery= await fetch(`${process.env.PUBLIC_API_URL}:${process.env.USER_SERVICE_PORT}/user?authId=${authId}`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internalServiceSecret":process.env.INTERNAL_SERVICE_SECRET || ""} });
     const userDetails = await userQuery.json();
     if(!userDetails.status){
       responsePayLoad.status=false;

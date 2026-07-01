@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {login, signup, checkAuth, createGuest, getGuest} from "../Controllers/AuthControllers.js";
 import { otpVerification } from "../Controllers/VerificationControllers.js";
-import { authFirewall, themeFirewall, signupValidationFirewall, loginValidationFirewall } from "../MiddleWares/authenticationMiddleWares.js";
+import { authFirewall, themeFirewall, signupValidationFirewall, loginValidationFirewall } from "../MiddleWares/AuthenticationMiddleWares.js";
 import { otpValidationFirewall } from "../MiddleWares/VerificationMiddleWares.js";
 
 
@@ -10,8 +10,8 @@ const routes:Router = Router();
 
 
 //Guest Routes
-routes.post("/guest",createGuest);
-routes.get("/guest", themeFirewall, getGuest)
+routes.post("/auth/guest",createGuest);
+routes.get("/auth/guest", themeFirewall, getGuest)
 
 
 //Auth Routes

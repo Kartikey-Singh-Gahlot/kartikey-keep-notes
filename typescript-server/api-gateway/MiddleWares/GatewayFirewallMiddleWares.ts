@@ -5,7 +5,6 @@ import { extendedRequest } from '../../shared/interfaces/middleWareInterfaces';
 
 export async function LoggedInFirewall(request:extendedRequest, response:Response, next:NextFunction){
     const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
-    console.log("logged in middleware trigerred");
     try{
        const {authCookie} = request.cookies;
        if(!authCookie){
