@@ -1,4 +1,4 @@
-import ResponseEntity from "../interfaces/ResponseEntityInterface";
+import ResponseEntity from "../interfaces/responseEntityInterface";
 
 export async function fetchApiService(endPoint:string, method:string, body:Object):Promise<ResponseEntity<Object>>{
    try{
@@ -12,7 +12,6 @@ export async function fetchApiService(endPoint:string, method:string, body:Objec
       if (method !== "GET" && method !== "HEAD" && body) {
          options.body = JSON.stringify(body);
       }
-
       const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API_GATEWAY_SERVICE_URL}/${endPoint}`, options);
       return apiResponse.json();
    }

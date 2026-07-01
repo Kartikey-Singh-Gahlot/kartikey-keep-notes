@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { HamBurgerMenu } from "../components/hamBurgerMenu";
 import ContactForm from "../components/contactForm";
 import { fetchApiService } from "../fetchers/fetchers";
-import ResponseEntity from "@/interfaces/ResponseEntityInterface";
+import ResponseEntity from "../interfaces/responseEntityInterface.js"
 
 export default function Home() {
     const router = useRouter();
