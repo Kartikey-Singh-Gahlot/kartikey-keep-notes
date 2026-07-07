@@ -6,7 +6,7 @@ import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 
 
 export async function requestProxyController(request:extendedRequest, response:Response) {
-    const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
+    const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {}, {name:"", value:"", options:""});
     const options: RequestInit = {
           method: request.method,
           headers: request.headers as HeadersInit,
@@ -23,6 +23,9 @@ export async function requestProxyController(request:extendedRequest, response:R
           responsePayLoad.code=respondedData.code;
           responsePayLoad.body=respondedData.body;
           return response.status(400).json(responsePayLoad);
+       }
+       if(respondedData.cookieData){
+         response.cookie(respondedData.cookieData.name, JSON.stringify(respondedData.cookieData.value), respondedData.cookieData.options);
        }
        responsePayLoad.status=true;
        responsePayLoad.code=respondedData.code;

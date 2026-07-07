@@ -10,6 +10,7 @@ import { HamBurgerMenu } from "../components/hamBurgerMenu";
 import ContactForm from "../components/contactForm";
 import { fetchApiService } from "../fetchers/fetchers";
 import ResponseEntity from "../interfaces/responseEntityInterface.js"
+import { toast } from "sonner";
 
 export default function Home() {
     const router = useRouter();
@@ -21,7 +22,10 @@ export default function Home() {
     async function trgrModeChange() {
         const newTheme = !lightTheme;
         setLightTheme(newTheme);
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lightTheme: newTheme }) });
+        const processed:ResponseEntity<any> = await fetchApiService("guest", "POST", { lightTheme: newTheme });
+        if(!processed.status){
+            toast(processed.body.message,{description:""});
+        }
     }
 
     async function checkGuest(){

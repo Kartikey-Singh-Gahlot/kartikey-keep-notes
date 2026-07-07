@@ -8,11 +8,7 @@ import cookieDetails from "../../shared/templates/cookieDetails"
 
 
 export async function getGuest(request:extendedRequest, response:Response):Promise<Response>{
-  const responsePayLoad:ResponseEntity<Object>={
-    status:true,
-    code:"",
-    body:"",
-  }
+  const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
   try{
      const {themeData} = request;
      responsePayLoad.status=true;
@@ -30,16 +26,12 @@ export async function getGuest(request:extendedRequest, response:Response):Promi
 }
 
 export async function createGuest(request:Request, response:Response):Promise<Response>{
-   const responsePayLoad:ResponseEntity<Object>={
-    status:true,
-    code:"",
-    body:"",
-  }
+    const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {}, {name:"", value:"", options:""});
   try{
     const { lightTheme } = request.body;
-    response.cookie("guestCookie", {lightTheme:lightTheme}, cookieDetails);
     responsePayLoad.code="THEME_PREFERENCE_SAVED";
     responsePayLoad.body="Theme Preference Saved";
+    responsePayLoad.cookieData={name:"guestCookie", value:{lightTheme:lightTheme}, options:cookieDetails};
     return response.status(201).json(responsePayLoad);
   }
   catch(err){
@@ -50,11 +42,7 @@ export async function createGuest(request:Request, response:Response):Promise<Re
 }
 
 export async function checkAuth(request:extendedRequest, response:Response):Promise<Response>{
-   const responsePayLoad:ResponseEntity<{}>={
-    status:true,
-    code:"",
-    body:"",
-  }
+  const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
   if(!request.authData){
     responsePayLoad.status=false;
     responsePayLoad.code="INVALID_USER";
@@ -99,11 +87,7 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
 }
 
 export async function login(request:extendedRequest, response:Response):Promise<Response>{
-  const responsePayLoad:ResponseEntity<{}>={
-    status:true,
-    code:"",
-    body:"",
-  }
+  const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {}, {name:"", value:"", options:""});
   if(!request.authData){
     responsePayLoad.status=false;
     responsePayLoad.code="INVALID_CREDENTIALS";
