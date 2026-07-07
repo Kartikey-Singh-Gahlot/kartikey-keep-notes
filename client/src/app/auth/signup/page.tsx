@@ -6,6 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FullScreenLoader } from "../../../components/loader";
 import { SignupOtpVerificationBox } from "../../../components/otpVerification";
+import ResponseEntity from "../../../interfaces/responseEntityInterface";
+import  { fetchApiService } from "../../../fetchers/fetchers";
+
 import { toast } from "sonner";
 
 export default function SignUp() {
@@ -20,28 +23,30 @@ export default function SignUp() {
         setShowPassword(!showPassword);
     }
 
-    async function checkGuest(){
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.NEXT_INTERNAL_SERVICE_SECRET || ""  }});
-        const pr = await unp.json();
-        if(pr.status && pr.body.lightTheme!=lightTheme){
-            setLightTheme(pr.body.lightTheme);
+     async function checkGuest(){
+        const processed:ResponseEntity<any> = await fetchApiService("guest", "GET", {});
+        if(processed?.status && processed?.body?.lightTheme!=lightTheme){
+            setLightTheme(processed?.body?.lightTheme);
             return ;
         }
     }
 
-     async function checkAuth() {
-        const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/check`, { method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.NEXT_INTERNAL_SERVICE_SECRET || "" } });
-        const pr = await unp.json();
-        if(pr.status){
+    async function checkAuth():Promise<void> {
+        const processed:ResponseEntity<any> = await fetchApiService("checkAuth", "GET", {});
+        if(processed?.status==true){
             router.push("/dashboard");
             return ;
         }
     }
 
-    async function trgrModeChange() {
+
+     async function trgrModeChange() {
         const newTheme = !lightTheme;
         setLightTheme(newTheme);
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/guest`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.NEXT_INTERNAL_SERVICE_SECRET || "" }, body: JSON.stringify({ lightTheme: newTheme }) });
+        const processed:ResponseEntity<any> = await fetchApiService("guest", "POST", { lightTheme: newTheme });
+        if(!processed.status){
+            toast(processed.body.message,{description:""});
+        }
     }
 
     function trgrFormChange(e: ChangeEvent<HTMLInputElement>) {

@@ -24,7 +24,7 @@ export async function themeFirewall(request:extendedRequest, response:Response, 
       responsePayLoad.body="Uauthorized Access";
       return response.status(401).json(responsePayLoad);
     }
-    request.themeData = {lightTheme:guestCookie.lightTheme};
+    request.themeData = JSON.parse(guestCookie);
     return next();
   }
   catch(err:any){

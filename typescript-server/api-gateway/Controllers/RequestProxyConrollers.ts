@@ -6,7 +6,7 @@ import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 
 
 export async function requestProxyController(request:extendedRequest, response:Response) {
-    const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {}, {name:"", value:"", options:""});
+    const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
     const options: RequestInit = {
           method: request.method,
           headers: request.headers as HeadersInit,
