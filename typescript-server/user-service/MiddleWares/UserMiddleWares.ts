@@ -11,8 +11,8 @@ export async function createUserFirewall(request:extendedRequest, response:Respo
     body:"",
   }
   try{
-    const {internal_service_secret} = request.headers;
-    if(internal_service_secret != process.env.INTERNAL_SERVICE_SECRET){
+    const xinternalServiceSecret = request.headers["x-internal-service-secret"];
+    if(xinternalServiceSecret != process.env.INTERNAL_SERVICE_SECRET){
       responsePayLoad.status=false;
       responsePayLoad.code="UNAUTHORIZED_ACESS";
       responsePayLoad.body="Unauthorized Acess";
@@ -32,6 +32,7 @@ export async function createUserFirewall(request:extendedRequest, response:Respo
       lastName:lastName,
       lightTheme:lightTheme,
     }
+    console.log("pass")
     return next();
   }
   catch(err:any){

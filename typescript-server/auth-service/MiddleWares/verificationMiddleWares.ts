@@ -6,7 +6,6 @@ import authUserModel from "../Models/AuthUserModel";
 
 
 
-
 export async function otpValidationFirewall(request:extendedRequest, response:Response, next:NextFunction){
   const responsePayLoad:ResponseEntity<Object>={
     status:true,

@@ -8,8 +8,8 @@ import { extendedRequest } from "../../shared/interfaces/middleWareInterfaces";
 export async function serviceInternalCommunicationFirewall(request:extendedRequest, response:Response, next:NextFunction){
    const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
     try{
-     const {internal_service_secret} = request.headers;
-     if(internal_service_secret != process.env.INTERNAL_SERVICE_SECRET){
+     const xinternalServiceSecret = request.headers["x-internal-service-secret"];
+     if(xinternalServiceSecret != process.env.INTERNAL_SERVICE_SECRET || !xinternalServiceSecret){
        responsePayLoad.status=false;
        responsePayLoad.code="UNAUTHORIZED_ACESS";
        responsePayLoad.body="Unauthorized Acess";

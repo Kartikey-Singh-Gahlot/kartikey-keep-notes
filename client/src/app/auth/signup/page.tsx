@@ -60,21 +60,20 @@ export default function SignUp() {
         if (loading) { return; }
         setLoading(true);
         try {
-            const unp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_AUTH_SERVICE_PORT}/auth/signup`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.NEXT_INTERNAL_SERVICE_SECRET || "" }, body: JSON.stringify(formData) });
-            const pr = await unp.json();
-            console.log(pr);
-            if (pr.status && pr.code == "OTP_VERIFICATION_REQUIRED") {
+            const processed:ResponseEntity<any> = await fetchApiService("signup","POST",formData);
+            console.log(processed);
+            if (processed.status && processed.code == "OTP_VERIFICATION_REQUIRED") {
                 toast.success("Otp Sent", { duration: 2000 });
                 setHiddenOtpBox(true);
             }
-            if (!pr.status && pr.code == "USER_EXISTS") {
+            if (!processed.status && processed.code == "USER_EXISTS") {
                 toast.error("User already exists. Redirecting to login...", { duration: 2000 });
                 setTimeout(() => {
                     router.push("/auth/signin");
                 }, 1000);
                 return;
             }
-            if (!pr.status) {
+            if (!processed.status) {
                 toast.error("Invalid Credentials", { duration: 2000 });
                 setFormData((prev) => {
                     return { ...prev, password: "" };

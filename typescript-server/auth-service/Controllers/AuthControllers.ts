@@ -51,7 +51,7 @@ export async function checkAuth(request:extendedRequest, response:Response):Prom
   }
   try{
     const {authId, isAdmin, isVerified} = request.authData;
-    const userQuery= await fetch(`${process.env.PUBLIC_API_URL}:${process.env.USER_SERVICE_PORT}/user?authId=${authId}`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internalServiceSecret":process.env.INTERNAL_SERVICE_SECRET || ""} });
+    const userQuery= await fetch(`${process.env.USER_SERVICE_API_URL}/user?authId=${authId}`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internalServiceSecret":process.env.INTERNAL_SERVICE_SECRET || ""} });
     const userDetails = await userQuery.json();
     if(!userDetails.status){
       responsePayLoad.status=false;
@@ -129,11 +129,7 @@ export async function login(request:extendedRequest, response:Response):Promise<
 }
 
 export async function signup(request:extendedRequest, response:Response):Promise<Response>{
-   const responsePayLoad:ResponseEntity<Object>={
-    status:true,
-    code:"",
-    body:"",
-   }
+   const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {},{name:"", value:"", options:""});
    if(!request.authData){
     responsePayLoad.status=false;
     responsePayLoad.code="INVALID_CREDENTIALS";
@@ -141,14 +137,13 @@ export async function signup(request:extendedRequest, response:Response):Promise
     return response.status(400).json(responsePayLoad);
    }
    try{
-     let currentTheme = true; // default theme
+     let currentTheme = true;
      const {firstName, middleName, lastName, email, password} = request.authData;
      const {guestCookie} = request.cookies;
      if(guestCookie && guestCookie.lightTheme==false){
          currentTheme = false;
-         response.clearCookie("guestCookie");
+         responsePayLoad.cookieToBeCleared = {name:"guestCookie", value:{}, options:{}}
      }  
-     
      const salt1 = await bcrypt.genSalt(10);
      const hashedPassword = await bcrypt.hash(password+ (process.env.SECRETKEY || ''), salt1);
      const otp = Math.floor(1000 + Math.random() * 9000).toString();
@@ -156,12 +151,12 @@ export async function signup(request:extendedRequest, response:Response):Promise
      const hashedOtp = await bcrypt.hash(otp+process.env.SECRETKEY, salt2);
      const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
      const authDbEntry = await authUserModel.create({
-      email:email, 
-      password:hashedPassword, 
-      otp:hashedOtp,
-      otpExpiry:otpExpiry
+       email:email, 
+       password:hashedPassword, 
+       otp:hashedOtp,
+       otpExpiry:otpExpiry
      });
-     const userQuery = await fetch(`${process.env.PUBLIC_API_URL}:${process.env.USER_SERVICE_PORT}/user`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
+     const userQuery = await fetch(`${process.env.USER_SERVICE_API_URL}/user`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "x-internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
        authId:authDbEntry._id,
        firstName:firstName,
        middleName:middleName,
@@ -170,19 +165,18 @@ export async function signup(request:extendedRequest, response:Response):Promise
      })});
      const userResponse = await userQuery.json();
      if(!userResponse.status){
-       console.log(userResponse.body);
        await authUserModel.deleteOne({_id:authDbEntry._id});
        responsePayLoad.status=false;
        responsePayLoad.code="USER_SERVICE_ERROR";
-       responsePayLoad.body=`USER_SERVICE_ERROR : ${userResponse.body}`;
+       responsePayLoad.body=`USER_SERVICE_ERROR: ${userResponse.body}`;
        return response.status(500).json(responsePayLoad);
      }
      const jwtString = jwt.sign({
         authId:authDbEntry._id
       }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
 
-     response.cookie("authCookie", jwtString , cookieDetails);
-     const getTemplateQuery = await fetch(`${process.env.PUBLIC_API_URL}:${process.env.MAILER_SERVICE_PORT}/mailer/template?templateName=signupOtpVerificationMailTemplate`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
+     responsePayLoad.cookieData = {name:"authCookie", value:jwtString, options:cookieDetails};
+     const getTemplateQuery = await fetch(`${process.env.MAILER_SERVICE_API_URL}/template?templateName=signupOtpVerificationMailTemplate`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
      const signupOtpVerificationMailTemplate = await getTemplateQuery.json();
      
      if(!signupOtpVerificationMailTemplate.status){
@@ -191,7 +185,7 @@ export async function signup(request:extendedRequest, response:Response):Promise
        responsePayLoad.body=`TEMPLATE_SERVICE_ERROR : ${signupOtpVerificationMailTemplate.body}`;
        return response.status(500).json(responsePayLoad);
      }
-     const mailerQuery = await fetch(`${process.env.PUBLIC_API_URL}:${process.env.MAILER_SERVICE_PORT}/mailer/sendMail`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
+     const mailerQuery = await fetch(`${process.env.MAILER_SERVICE_API_URL}/sendMail`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
         to:email,
         subject:signupOtpVerificationMailTemplate.body.subject,
         msg:signupOtpVerificationMailTemplate.body.templateBody.replace("{{otp}}",otp)
