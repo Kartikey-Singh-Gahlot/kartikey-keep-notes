@@ -9,7 +9,7 @@ export async function getTemplate(request:extendedRequest, response:Response){
    const responsePayLoad:ResponseEntity<Object>= new ResponseEntity(true, "", {});
    try{
        const {templateName} = request.query;
-       const templateData = await MailerTemplatesModel.findOne({templateName});
+       const templateData = await MailerTemplatesModel.findOne({templateName:templateName});
        if(!templateData){   
          responsePayLoad.status=false;
          responsePayLoad.code="TEMPLATE_NOT_FOUND";

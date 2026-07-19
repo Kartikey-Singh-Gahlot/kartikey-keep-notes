@@ -32,7 +32,6 @@ export async function createUserFirewall(request:extendedRequest, response:Respo
       lastName:lastName,
       lightTheme:lightTheme,
     }
-    console.log("pass")
     return next();
   }
   catch(err:any){

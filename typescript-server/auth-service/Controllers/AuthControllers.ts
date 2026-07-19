@@ -176,20 +176,19 @@ export async function signup(request:extendedRequest, response:Response):Promise
       }, process.env.SECRETKEY || '', {expiresIn:"7d"}); 
 
      responsePayLoad.cookieData = {name:"authCookie", value:jwtString, options:cookieDetails};
-     const getTemplateQuery = await fetch(`${process.env.MAILER_SERVICE_API_URL}/template?templateName=signupOtpVerificationMailTemplate`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
+     const getTemplateQuery = await fetch(`${process.env.MAILER_SERVICE_API_URL}/mailer/template?templateName=signupOtpVerificationMailTemplate`,{ method: "GET", credentials: "include", headers: { "Content-Type": "application/json", "x-internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" }});
      const signupOtpVerificationMailTemplate = await getTemplateQuery.json();
-     
      if(!signupOtpVerificationMailTemplate.status){
        responsePayLoad.status=false;
        responsePayLoad.code="TEMPLATE_SERVICE_ERROR"; 
-       responsePayLoad.body=`TEMPLATE_SERVICE_ERROR : ${signupOtpVerificationMailTemplate.body}`;
-       return response.status(500).json(responsePayLoad);
+       responsePayLoad.body=`TEMPLATE_SERVICE_ERROR: ${signupOtpVerificationMailTemplate.body}`;
+       return response.status(401).json(responsePayLoad);
      }
-     const mailerQuery = await fetch(`${process.env.MAILER_SERVICE_API_URL}/sendMail`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "internal_service_secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
+     const mailerQuery = await fetch(`${process.env.MAILER_SERVICE_API_URL}/mailer/sendMail`,{ method: "POST", credentials: "include", headers: { "Content-Type": "application/json", "x-internal-service-secret":process.env.INTERNAL_SERVICE_SECRET || "" },body:JSON.stringify({
         to:email,
         subject:signupOtpVerificationMailTemplate.body.subject,
         msg:signupOtpVerificationMailTemplate.body.templateBody.replace("{{otp}}",otp)
-     })});
+     })}); 
      const mailerResponse = await mailerQuery.json();
      if(!mailerResponse.status){  
        responsePayLoad.status=false;

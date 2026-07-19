@@ -8,13 +8,6 @@ import express, {Request, Response, NextFunction} from "express";
 export async function sendMailFirewall(request:extendedRequest, response:Response, next:NextFunction){
    const responsePayLoad:ResponseEntity<{}>= new ResponseEntity(true, "", {});
    try{
-     const {internal_service_secret} = request.headers;
-     if(internal_service_secret != process.env.INTERNAL_SERVICE_SECRET){
-       responsePayLoad.status=false;
-       responsePayLoad.code="UNAUTHORIZED_ACESS";
-       responsePayLoad.body="Unauthorized Acess";
-       return response.status(401).json(responsePayLoad);
-     }
      const {to, subject, msg} = request.body;
      if(!to || !subject || !msg){
        responsePayLoad.status=false;

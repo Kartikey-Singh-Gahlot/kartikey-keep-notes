@@ -25,7 +25,8 @@ export async function sendMail(request:extendedRequest, response:Response):Promi
        responsePayLoad.body="Mail Sent Successfully";
        return response.status(200).json(responsePayLoad);
    }
-   catch(err){
+   catch(err:any){
+      console.log("mailer servie error: "+err);
       responsePayLoad.status=false;
       responsePayLoad.code="INTERNAL_SERVER_ERROR";
       responsePayLoad.body={message: "Internal Server Error", error: err.message};
